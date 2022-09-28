@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="relatorio-comentarios-apontamentos" language="groovy" pageWidth="842" pageHeight="595" orientation="Landscape" columnWidth="802" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="2fe2afe5-00b7-4c1d-83e4-d776bba43a1f">
+	<property name="ireport.zoom" value="1.0"/>
+	<property name="ireport.x" value="0"/>
+	<property name="ireport.y" value="0"/>
+	<parameter name="codApont" class="java.util.Collection">
+		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
+	</parameter>
+	<queryString>
+		<![CDATA[SELECT PFUNC.CHAPA, PFUNC.NOME, APONTAMENTOS.DATA,
+	GCCUSTO.NOME AS CENTRO_CUSTO, COMENTARIOS.CODCOMENTARIO, COMENTARIOS.DESCRICAO,
+	COMENTARIOS.RECCREATEDON, COMENTARIOS.RECCREATEDBY, COMENTARIOS.LIDER
+FROM
+	APONTAMENTOS
+INNER JOIN
+	PFUNC
+ON
+	PFUNC.CODCOLIGADA = 1 AND PFUNC.CHAPA = APONTAMENTOS.CHAPA
+INNER JOIN
+	GCCUSTO
+ON
+	GCCUSTO.CODCUSTO = APONTAMENTOS.CODCCUSTO
+INNER JOIN
+	COMENTARIOS
+ON
+	APONTAMENTOS.CODAPONT = COMENTARIOS.CODAPONT
+WHERE COMENTARIOS.CODAPONT in ($P{codApont});]]>
+	</queryString>
+	<field name="CHAPA" class="java.lang.String">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<field name="NOME" class="java.lang.String">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<field name="DATA" class="java.sql.Date">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<field name="CENTRO_CUSTO" class="java.lang.String"/>
+	<field name="CODCOMENTARIO" class="java.lang.Integer">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<field name="DESCRICAO" class="java.lang.String">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<field name="RECCREATEDON" class="java.sql.Timestamp">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<field name="RECCREATEDBY" class="java.lang.String">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<field name="LIDER" class="java.lang.String">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<background>
+		<band splitType="Stretch"/>
+	</background>
+	<title>
+		<band height="79" splitType="Stretch"/>
+	</title>
+	<pageHeader>
+		<band height="35" splitType="Stretch"/>
+	</pageHeader>
+	<columnHeader>
+		<band height="61" splitType="Stretch">
+			<staticText>
+				<reportElement x="0" y="0" width="100" height="20" uuid="8230e9a7-1d04-4424-93fc-ebb03506e741"/>
+				<text><![CDATA[NOME]]></text>
+			</staticText>
+		</band>
+	</columnHeader>
+	<detail>
+		<band height="125" splitType="Stretch">
+			<textField>
+				<reportElement x="0" y="11" width="100" height="20" uuid="9bc4f23f-e957-4d6e-815e-d29ab3dbfb20"/>
+				<textFieldExpression><![CDATA[$F{NOME}]]></textFieldExpression>
+			</textField>
+		</band>
+	</detail>
+	<columnFooter>
+		<band height="45" splitType="Stretch"/>
+	</columnFooter>
+	<pageFooter>
+		<band height="54" splitType="Stretch"/>
+	</pageFooter>
+	<summary>
+		<band height="42" splitType="Stretch"/>
+	</summary>
+</jasperReport>
