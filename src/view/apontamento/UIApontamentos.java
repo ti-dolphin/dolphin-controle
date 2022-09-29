@@ -283,6 +283,11 @@ public class UIApontamentos extends javax.swing.JInternalFrame {
             }
         ));
         jtaApontamentos.setAutoResizeMode(javax.swing.JTable.AUTO_RESIZE_OFF);
+        jtaApontamentos.addFocusListener(new java.awt.event.FocusAdapter() {
+            public void focusLost(java.awt.event.FocusEvent evt) {
+                jtaApontamentosFocusLost(evt);
+            }
+        });
         jtaApontamentos.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
                 jtaApontamentosMouseClicked(evt);
@@ -647,6 +652,7 @@ public class UIApontamentos extends javax.swing.JInternalFrame {
         jtPonto.getColumnModel().getColumn(apTableModel.COLUNA_LIDER).setPreferredWidth(150);
         apTableCellRender = new ApontamentosPontoTableCellRender(apTableModel);
         jtPonto.setDefaultRenderer(Object.class, apTableCellRender);
+        jtPonto.putClientProperty("terminateEditOnFocusLost", Boolean.TRUE);
     }
 
     public void carregarTabelaApontamentos() {
@@ -759,7 +765,6 @@ public class UIApontamentos extends javax.swing.JInternalFrame {
         jtaApontamentos.getColumnModel()
                 .getColumn(ApontamentosTableModel.COLUNA_ASSIDUIDADE)
                 .setCellRenderer(new SinalizarColunaTabelaApontamentos(aTableModel));
-
     }
 
     private void calcularNumeroDeRegistrosRetornados(int tamanhoDaLista) {
@@ -925,6 +930,7 @@ public class UIApontamentos extends javax.swing.JInternalFrame {
     }
 
     private void jbPesquisarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jbPesquisarActionPerformed
+        
         pesquisar();
     }//GEN-LAST:event_jbPesquisarActionPerformed
 
@@ -940,8 +946,6 @@ public class UIApontamentos extends javax.swing.JInternalFrame {
     private void jtaApontamentosMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jtaApontamentosMouseClicked
         if (evt.getClickCount() == 1) {
             Apontamento apontamento = aTableModel.getApontamento(jtaApontamentos.getSelectedRow());
-            System.out.println(apontamento.isAssiduidade());
-            System.out.println(apontamento.getCompetencia());
         }
         if (evt.getClickCount() == 2) {
             UIApontamento uiApontamento = new UIApontamento(null, true, this);
@@ -1088,6 +1092,10 @@ public class UIApontamentos extends javax.swing.JInternalFrame {
     private void btnAvisosActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAvisosActionPerformed
         carregarTabelaApontamentosPontoPorNotificacoesNaoLidas();
     }//GEN-LAST:event_btnAvisosActionPerformed
+
+    private void jtaApontamentosFocusLost(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_jtaApontamentosFocusLost
+        
+    }//GEN-LAST:event_jtaApontamentosFocusLost
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnAvisos;
