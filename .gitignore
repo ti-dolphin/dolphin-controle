@@ -5,6 +5,5 @@ src/persistencia
 build/
 nbbuild/
 dist/
-store/
 nbdist/
 .nb-gradle/
