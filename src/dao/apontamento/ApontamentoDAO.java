@@ -508,12 +508,13 @@ public class ApontamentoDAO {
         try {
             String sql = "SELECT APONTAMENTOS.CODAPONT, PFUNC.CHAPA, PFUNC.NOME, APONTAMENTOS.DATA,"
                     + " APONTAMENTOS.VERIFICADO, APONTAMENTOS.PROBLEMA, APONTAMENTOS.MOTIVO_PROBLEMA,"
-                    + " APONTAMENTOS.JUSTIFICATIVA, APONTAMENTOS.COMPETENCIA,"
+                    + " APONTAMENTOS.JUSTIFICATIVA, APONTAMENTOS.COMPETENCIA, APONTAMENTOS.CODSTATUSAPONT, STATUSAPONT.DESCRICAO,"
                     + " APONTAMENTOS.CODCCUSTO, GCCUSTO.NOME, APONTAMENTOS.CODLIDER, PESSOA.NOME"
                     + " FROM APONTAMENTOS"
                     + " INNER JOIN PFUNC ON APONTAMENTOS.CHAPA = PFUNC.CHAPA"
                     + " INNER JOIN GCCUSTO ON APONTAMENTOS.CODCCUSTO = GCCUSTO.CODCUSTO"
                     + " INNER JOIN PESSOA ON APONTAMENTOS.CODLIDER = PESSOA.CODPESSOA"
+                    + " INNER JOIN STATUSAPONT ON APONTAMENTOS.CODSTATUSAPONT = STATUSAPONT.CODSTATUSAPONT"
                     + " WHERE APONTAMENTOS.CODAPONT > 0 " + query + " ORDER BY APONTAMENTOS.DATA, PFUNC.NOME";
 
             PreparedStatement prepareStatement = con.prepareStatement(sql);
@@ -527,6 +528,7 @@ public class ApontamentoDAO {
                 Funcionario funcionario = new Funcionario();
                 CentroCusto centroCusto = new CentroCusto();
                 Pessoa lider = new Pessoa();
+                StatusApont status = new StatusApont();
 
                 funcionario.setChapa(rs.getString("PFUNC.CHAPA"));
                 funcionario.setNome(rs.getString("PFUNC.NOME"));
@@ -541,14 +543,17 @@ public class ApontamentoDAO {
                 centroCusto.setNome(rs.getString("GCCUSTO.NOME"));
                 lider.setCodPessoa(rs.getInt("APONTAMENTOS.CODLIDER"));
                 lider.setNome(rs.getString("PESSOA.NOME"));
+                status.setCodStatusApont(rs.getString("APONTAMENTOS.CODSTATUSAPONT"));
+                status.setDescricao(rs.getString("STATUSAPONT.DESCRICAO"));
                 apontamento.setCentroCusto(centroCusto);
                 apontamento.setFuncionario(funcionario);
                 apontamento.setLider(lider);
+                apontamento.setStatusApont(status);
 
                 apontamentos.add(apontamento);
 
             }
-
+            
             return apontamentos;
 
         } catch (SQLException e) {

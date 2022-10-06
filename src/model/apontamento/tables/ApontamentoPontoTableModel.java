@@ -31,7 +31,7 @@ import view.Menu;
 public class ApontamentoPontoTableModel extends AbstractTableModel {
 
     private List<Apontamento> apontamentos = new ArrayList<>();
-    private String[] colunas = {"Chapa", "Nome", "Data", "Verificado", "Problema",
+    private String[] colunas = {"Chapa", "Nome", "Data", "Status", "Verificado", "Problema",
         "Motivo", "Justificativa", "Centro de Custo", "Líder"};
     private ApontamentoDAO aDAO;
     private NotificacaoService notificacaoService;
@@ -39,12 +39,13 @@ public class ApontamentoPontoTableModel extends AbstractTableModel {
     public final int COLUNA_CHAPA = 0;
     public final int COLUNA_NOME = 1;
     public final int COLUNA_DATA = 2;
-    public final int COLUNA_VERIFICADO = 3;
-    public final int COLUNA_PROBLEMA = 4;
-    public final int COLUNA_MOTIVO = 5;
-    public final int COLUNA_JUSTIFICATIVA = 6;
-    public final int COLUNA_CENTRO_CUSTO = 7;
-    public final int COLUNA_LIDER = 8;
+    public final int COLUNA_STATUS = 3;
+    public final int COLUNA_VERIFICADO = 4;
+    public final int COLUNA_PROBLEMA = 5;
+    public final int COLUNA_MOTIVO = 6;
+    public final int COLUNA_JUSTIFICATIVA = 7;
+    public final int COLUNA_CENTRO_CUSTO = 8;
+    public final int COLUNA_LIDER = 9;
     private ApontamentoService apontamentoService;
 
     public ApontamentoPontoTableModel() {
@@ -161,6 +162,8 @@ public class ApontamentoPontoTableModel extends AbstractTableModel {
                 } else {
                     return "";
                 }
+            case COLUNA_STATUS:
+                return apontamento.getStatusApont().getDescricao();
             case COLUNA_VERIFICADO:
                 return apontamento.isVerificado();
             case COLUNA_PROBLEMA:
