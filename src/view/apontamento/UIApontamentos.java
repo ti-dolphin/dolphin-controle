@@ -764,6 +764,9 @@ public class UIApontamentos extends javax.swing.JInternalFrame {
                 .getColumn(ApontamentosTableModel.COLUNA_DIA_DA_SEMANA)
                 .setCellRenderer(aTableCellRender);
         jtaApontamentos.getColumnModel()
+                .getColumn(ApontamentosTableModel.COLUNA_PONTO)
+                .setCellRenderer(new SinalizarColunaTabelaApontamentos(aTableModel));
+        jtaApontamentos.getColumnModel()
                 .getColumn(ApontamentosTableModel.COLUNA_ASSIDUIDADE)
                 .setCellRenderer(new SinalizarColunaTabelaApontamentos(aTableModel));
     }

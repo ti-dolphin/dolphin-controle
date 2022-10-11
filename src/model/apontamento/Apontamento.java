@@ -43,6 +43,7 @@ public class Apontamento {
     private String justificativa;
     private int competencia;
     private boolean assiduidade;
+    private boolean pontoAviso;
 
     public Apontamento() {
     }
@@ -221,5 +222,13 @@ public class Apontamento {
 
     public void setAssiduidade(boolean assiduidade) {
         this.assiduidade = assiduidade;
+    }
+
+    public boolean isPontoAviso() {
+        return pontoAviso;
+    }
+
+    public void setPontoAviso(boolean pontoAviso) {
+        this.pontoAviso = pontoAviso;
     }
 }

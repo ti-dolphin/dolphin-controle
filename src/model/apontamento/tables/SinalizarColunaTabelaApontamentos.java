@@ -28,14 +28,16 @@ public final class SinalizarColunaTabelaApontamentos extends DefaultTableCellRen
     private ApontamentosTableModel apTableModel;
     private Icon iconeVerde;
     private Icon iconeVermelho;
+    private Icon iconeAmarelo;
     private String caminho;
 
     public SinalizarColunaTabelaApontamentos(ApontamentosTableModel apTableModel) {
         this.apTableModel = apTableModel;
         try {
-            caminho = new File(".").getCanonicalPath() + File.separator + "img";
+            caminho = new File(".").getCanonicalPath() + File.separator + "src" + File.separator + "img";
             iconeVerde = new ImageIcon(caminho + File.separator + "verde.png");
             iconeVermelho = new ImageIcon(caminho + File.separator + "vermelho.png");
+            iconeAmarelo = new ImageIcon(caminho + File.separator + "amarelo.png");
         } catch (IOException ex) {
             Logger.getLogger(SinalizarColunaTabelaApontamentos.class.getName()).log(Level.SEVERE, null, ex);
         }
@@ -60,6 +62,16 @@ public final class SinalizarColunaTabelaApontamentos extends DefaultTableCellRen
                     label.setForeground(corEscuraDaLinha);
                 }
             }
+
+            if (column == apTableModel.COLUNA_PONTO) {
+
+                if ((boolean) value == true) {
+                    label.setIcon(iconeAmarelo);
+                } else {
+                    label.setIcon(null);
+                }
+            }
+            
             if (column == apTableModel.COLUNA_ASSIDUIDADE) {
 
                 if ((boolean) value == false) {
@@ -68,7 +80,6 @@ public final class SinalizarColunaTabelaApontamentos extends DefaultTableCellRen
                     label.setIcon(iconeVerde);
                 }
             }
-
         }
 
         return component;
