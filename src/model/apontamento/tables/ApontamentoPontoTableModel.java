@@ -49,7 +49,7 @@ public class ApontamentoPontoTableModel extends AbstractTableModel {
     private ApontamentoService apontamentoService;
 
     public ApontamentoPontoTableModel() {
-        
+
         this.aDAO = DAOFactory.getAPONTAMENTODAO();
         this.apontamentoService = new ApontamentoService();
         this.notificacaoService = new NotificacaoService();
@@ -86,7 +86,7 @@ public class ApontamentoPontoTableModel extends AbstractTableModel {
 
     @Override
     public boolean isCellEditable(int linha, int coluna) {
-        
+
         Apontamento apontamento = getApontamento(linha);
         if (coluna == COLUNA_JUSTIFICATIVA && Menu.logado.isPermApontamentoPontoJustificativa() && getApontamento(linha).isProblema()) {
             return true;
@@ -121,24 +121,22 @@ public class ApontamentoPontoTableModel extends AbstractTableModel {
         }
         if (coluna == COLUNA_JUSTIFICATIVA) {
             String justificativa = (String) valor;
-            if (!justificativa.isBlank()) {
-                apontamento.setJustificativa(justificativa);
-                String data = FormatarData.formatarDataEHoraEmTexto(apontamento.getData(), "dd/MM/yyyy");
-                try {
-                    notificacaoService.notificar(new Notificacao(
-                            Menu.logado.getLogin()
-                            + " adicionou uma justificativa no ponto: "
-                            + apontamento.getFuncionario().getNome()
-                            + " - "
-                            + data)
-                    );
-                } catch (SQLException ex) {
-                    JOptionPane.showMessageDialog(null, ex.getMessage(),
-                            "Erro ao enviar notificação",
-                            JOptionPane.ERROR_MESSAGE);
-                    Logger.getLogger(ApontamentoPontoTableModel.class.getName())
-                            .log(Level.SEVERE, null, ex);
-                }
+            apontamento.setJustificativa(justificativa);
+            String data = FormatarData.formatarDataEHoraEmTexto(apontamento.getData(), "dd/MM/yyyy");
+            try {
+                notificacaoService.notificar(new Notificacao(
+                        Menu.logado.getLogin()
+                        + " adicionou uma justificativa no ponto: "
+                        + apontamento.getFuncionario().getNome()
+                        + " - "
+                        + data)
+                );
+            } catch (SQLException ex) {
+                JOptionPane.showMessageDialog(null, ex.getMessage(),
+                        "Erro ao enviar notificação",
+                        JOptionPane.ERROR_MESSAGE);
+                Logger.getLogger(ApontamentoPontoTableModel.class.getName())
+                        .log(Level.SEVERE, null, ex);
             }
         }
         apontamentoService.verificar(apontamento);
