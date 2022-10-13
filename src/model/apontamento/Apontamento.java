@@ -44,6 +44,8 @@ public class Apontamento {
     private int competencia;
     private boolean assiduidade;
     private boolean pontoAviso;
+    private LocalDateTime dataHoraMotivo;
+    private LocalDateTime dataHoraJustificativa;
 
     public Apontamento() {
     }
@@ -230,5 +232,21 @@ public class Apontamento {
 
     public void setPontoAviso(boolean pontoAviso) {
         this.pontoAviso = pontoAviso;
+    }
+
+    public LocalDateTime getDataHoraMotivo() {
+        return dataHoraMotivo;
+    }
+
+    public void setDataHoraMotivo(LocalDateTime dataHoraMotivo) {
+        this.dataHoraMotivo = dataHoraMotivo;
+    }
+
+    public LocalDateTime getDataHoraJustificativa() {
+        return dataHoraJustificativa;
+    }
+
+    public void setDataHoraJustificativa(LocalDateTime dataHoraJustificativa) {
+        this.dataHoraJustificativa = dataHoraJustificativa;
     }
 }

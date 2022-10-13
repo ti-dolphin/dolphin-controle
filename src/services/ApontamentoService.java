@@ -65,4 +65,13 @@ public class ApontamentoService {
             }
         }.start();
     }
+    
+    public Apontamento registrarDataEHoraMotivo(int codApont) throws SQLException {
+        dao.registrarDataEHoraMotivo(codApont);
+        return dao.buscarPontoPorId(codApont);
+    }
+    public Apontamento registrarDataEHoraJustificativa(int codApont) throws SQLException {
+        dao.registrarDataEHoraJustificativa(codApont);
+        return dao.buscarPontoPorId(codApont);
+    }
 }

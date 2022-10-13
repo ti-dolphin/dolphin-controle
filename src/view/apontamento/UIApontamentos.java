@@ -647,14 +647,16 @@ public class UIApontamentos extends javax.swing.JInternalFrame {
         jtPonto.getColumnModel().getColumn(apTableModel.COLUNA_STATUS).setPreferredWidth(100);
         jtPonto.getColumnModel().getColumn(apTableModel.COLUNA_VERIFICADO).setPreferredWidth(100);
         jtPonto.getColumnModel().getColumn(apTableModel.COLUNA_PROBLEMA).setPreferredWidth(100);
+        jtPonto.getColumnModel().getColumn(apTableModel.COLUNA_DATA_HORA_MOTIVO).setPreferredWidth(120);
         jtPonto.getColumnModel().getColumn(apTableModel.COLUNA_MOTIVO).setPreferredWidth(350);
+        jtPonto.getColumnModel().getColumn(apTableModel.COLUNA_DATA_HORA_JUSTIFICATIVA).setPreferredWidth(120);
         jtPonto.getColumnModel().getColumn(apTableModel.COLUNA_JUSTIFICATIVA).setPreferredWidth(350);
         jtPonto.getColumnModel().getColumn(apTableModel.COLUNA_CENTRO_CUSTO).setPreferredWidth(350);
         jtPonto.getColumnModel().getColumn(apTableModel.COLUNA_LIDER).setPreferredWidth(150);
         apTableCellRender = new ApontamentosPontoTableCellRender(apTableModel);
         jtPonto.setDefaultRenderer(Object.class, apTableCellRender);
         jtPonto.putClientProperty("terminateEditOnFocusLost", Boolean.TRUE);
-    }
+    } 
 
     public void carregarTabelaApontamentos() {
 

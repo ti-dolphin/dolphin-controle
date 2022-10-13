@@ -9,6 +9,7 @@ import dao.DAOFactory;
 import dao.apontamento.ApontamentoDAO;
 import java.sql.SQLException;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -31,8 +32,8 @@ import view.Menu;
 public class ApontamentoPontoTableModel extends AbstractTableModel {
 
     private List<Apontamento> apontamentos = new ArrayList<>();
-    private String[] colunas = {"Chapa", "Nome", "Data", "Status", "Verificado", "Problema",
-        "Motivo", "Justificativa", "Centro de Custo", "Líder"};
+    private String[] colunas = {"Chapa", "Nome", "Data", "Status", "Verificado", "Problema", "Data Motivo",
+        "Motivo", "Data Justificativa", "Justificativa", "Centro de Custo", "Líder"};
     private ApontamentoDAO aDAO;
     private NotificacaoService notificacaoService;
 
@@ -42,10 +43,12 @@ public class ApontamentoPontoTableModel extends AbstractTableModel {
     public final int COLUNA_STATUS = 3;
     public final int COLUNA_VERIFICADO = 4;
     public final int COLUNA_PROBLEMA = 5;
-    public final int COLUNA_MOTIVO = 6;
-    public final int COLUNA_JUSTIFICATIVA = 7;
-    public final int COLUNA_CENTRO_CUSTO = 8;
-    public final int COLUNA_LIDER = 9;
+    public final int COLUNA_DATA_HORA_MOTIVO = 6;
+    public final int COLUNA_MOTIVO = 7;
+    public final int COLUNA_DATA_HORA_JUSTIFICATIVA = 8;
+    public final int COLUNA_JUSTIFICATIVA = 9;
+    public final int COLUNA_CENTRO_CUSTO = 10;
+    public final int COLUNA_LIDER = 11;
     private ApontamentoService apontamentoService;
 
     public ApontamentoPontoTableModel() {
@@ -79,6 +82,10 @@ public class ApontamentoPontoTableModel extends AbstractTableModel {
                 return Boolean.class;
             case COLUNA_DATA:
                 return LocalDate.class;
+            case COLUNA_DATA_HORA_MOTIVO:
+                return LocalDateTime.class;
+            case COLUNA_DATA_HORA_JUSTIFICATIVA:
+                return LocalDateTime.class;
             default:
                 return String.class;
         }
@@ -118,11 +125,22 @@ public class ApontamentoPontoTableModel extends AbstractTableModel {
         }
         if (coluna == COLUNA_MOTIVO) {
             apontamento.setMotivo((String) valor);
+            try {
+                Apontamento apontamentoAtualizado = apontamentoService.registrarDataEHoraMotivo(apontamento.getCodApont());
+                apontamento.setDataHoraMotivo(apontamentoAtualizado.getDataHoraMotivo());
+            } catch (SQLException ex) {
+                Logger.getLogger(ApontamentoPontoTableModel.class.getName()).log(Level.SEVERE, null, ex);
+            }
         }
         if (coluna == COLUNA_JUSTIFICATIVA) {
-            String justificativa = (String) valor;
-            apontamento.setJustificativa(justificativa);
+            apontamento.setJustificativa((String) valor);
             String data = FormatarData.formatarDataEHoraEmTexto(apontamento.getData(), "dd/MM/yyyy");
+            try {
+                Apontamento apontamentoAtualizado = apontamentoService.registrarDataEHoraJustificativa(apontamento.getCodApont());
+                apontamento.setDataHoraJustificativa(apontamentoAtualizado.getDataHoraJustificativa());
+            } catch (SQLException ex) {
+                Logger.getLogger(ApontamentoPontoTableModel.class.getName()).log(Level.SEVERE, null, ex);
+            }
             try {
                 notificacaoService.notificar(new Notificacao(
                         Menu.logado.getLogin()
@@ -140,6 +158,7 @@ public class ApontamentoPontoTableModel extends AbstractTableModel {
             }
         }
         apontamentoService.verificar(apontamento);
+        
         fireTableRowsUpdated(linha, linha);
     }
 
@@ -166,8 +185,12 @@ public class ApontamentoPontoTableModel extends AbstractTableModel {
                 return apontamento.isVerificado();
             case COLUNA_PROBLEMA:
                 return apontamento.isProblema();
+            case COLUNA_DATA_HORA_MOTIVO:
+                return apontamento.getDataHoraMotivo();
             case COLUNA_MOTIVO:
                 return apontamento.getMotivo();
+            case COLUNA_DATA_HORA_JUSTIFICATIVA:
+                return apontamento.getDataHoraJustificativa();
             case COLUNA_JUSTIFICATIVA:
                 return apontamento.getJustificativa();
             case COLUNA_CENTRO_CUSTO:
