@@ -11,7 +11,6 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.time.LocalDateTime;
-import java.time.ZoneId;
 import java.util.ArrayList;
 import java.util.List;
 import model.Funcao;
@@ -717,7 +716,7 @@ public class ApontamentoDAO {
         }
     }
 
-    public boolean buscarApontamentosComProblemaESemJustificativa(Apontamento apont) throws SQLException {
+    public List<Apontamento> buscarApontamentosComProblemaESemJustificativa(Apontamento apont) throws SQLException {
         Connection con = ConexaoBanco.getConexao();
 
         try {
@@ -725,13 +724,25 @@ public class ApontamentoDAO {
                     + " WHERE CHAPA = ?"
                     + " AND COMPETENCIA = ?"
                     + " AND PROBLEMA = TRUE"
-                    + " AND JUSTIFICATIVA IS NULL OR JUSTIFICATIVA = ''";
+                    + " AND JUSTIFICATIVA IS NULL";
             PreparedStatement preparedStatement = con.prepareStatement(sql);
             preparedStatement.setString(1, apont.getFuncionario().getChapa());
             preparedStatement.setInt(2, apont.getCompetencia());
             ResultSet rs = preparedStatement.executeQuery();
 
-            return rs.next();
+            ArrayList<Apontamento> apontamentos = new ArrayList<>();
+
+            while (rs.next()) {
+
+                Apontamento apontamento = new Apontamento();
+
+                apontamento.setCodApont(rs.getInt("CODAPONT"));
+
+                apontamentos.add(apontamento);
+
+            }
+
+            return apontamentos;
 
         } catch (SQLException e) {
             throw new SQLException("Erro ao buscar dados do apontamento! " + e.getMessage());
@@ -782,7 +793,7 @@ public class ApontamentoDAO {
         }
     }
 
-    public void verificarPontoAviso(Apontamento apontamento, boolean assiduidade) throws SQLException {
+    public void verificarPontoAviso(Apontamento apontamento, boolean ponto) throws SQLException {
         Connection con = ConexaoBanco.getConexao();
 
         try {
@@ -790,7 +801,7 @@ public class ApontamentoDAO {
                     + " WHERE CHAPA = ?"
                     + " AND COMPETENCIA = ?";
             PreparedStatement preparedStatement = con.prepareStatement(sql);
-            preparedStatement.setBoolean(1, assiduidade);
+            preparedStatement.setBoolean(1, ponto);
             preparedStatement.setString(2, apontamento.getFuncionario().getChapa());
             preparedStatement.setInt(3, apontamento.getCompetencia());
             preparedStatement.executeUpdate();

@@ -147,7 +147,13 @@ public class ApontamentoPontoTableModel extends AbstractTableModel {
             }
         }
         if (coluna == COLUNA_JUSTIFICATIVA) {
-            apontamento.setJustificativa((String) valor);
+            String justificativa = (String) valor;
+            if (justificativa.isBlank()) {
+                apontamento.setJustificativa(null);
+            } else {
+                apontamento.setJustificativa(justificativa);
+                
+            }
             String data = FormatarData.formatarDataEHoraEmTexto(apontamento.getData(), "dd/MM/yyyy");
             try {
                 Apontamento apontamentoAtualizado = apontamentoService.registrarDataEHoraJustificativa(apontamento.getCodApont());
@@ -172,7 +178,7 @@ public class ApontamentoPontoTableModel extends AbstractTableModel {
             }
         }
         apontamentoService.verificar(apontamento);
-        
+
         fireTableRowsUpdated(linha, linha);
     }
 

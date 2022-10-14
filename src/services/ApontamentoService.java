@@ -49,13 +49,17 @@ public class ApontamentoService {
                 try {
                     dao.verificar(apontamento);
                     List<Apontamento> apontamentosComProblema = dao.buscarApontamentosComProblema(apontamento);
-                    boolean seTemProblemaSemJustificativa = dao.buscarApontamentosComProblemaESemJustificativa(apontamento);
+                    List<Apontamento> apontamentosComProblemaESemJustificativa = dao.buscarApontamentosComProblemaESemJustificativa(apontamento);
                     if (apontamentosComProblema.isEmpty()) {
                         dao.verificarAssiduidade(apontamento, true);
                     } else {
                         dao.verificarAssiduidade(apontamento, false);
                     }
-                    dao.verificarPontoAviso(apontamento, seTemProblemaSemJustificativa);
+                    if (apontamentosComProblemaESemJustificativa.isEmpty()) {
+                        dao.verificarPontoAviso(apontamento, false);
+                    } else {
+                        dao.verificarPontoAviso(apontamento, true);
+                    }
                 } catch (SQLException ex) {
                     JOptionPane.showMessageDialog(null, ex.getMessage(), "Erro ao verificar!", JOptionPane.ERROR_MESSAGE);
                     Logger.getLogger(UIApontamentos.class.getName()).log(Level.SEVERE, null, ex);
