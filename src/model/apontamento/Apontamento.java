@@ -46,6 +46,7 @@ public class Apontamento {
     private boolean pontoAviso;
     private LocalDateTime dataHoraMotivo;
     private LocalDateTime dataHoraJustificativa;
+    private boolean ajustado;
 
     public Apontamento() {
     }
@@ -248,5 +249,13 @@ public class Apontamento {
 
     public void setDataHoraJustificativa(LocalDateTime dataHoraJustificativa) {
         this.dataHoraJustificativa = dataHoraJustificativa;
+    }
+
+    public boolean isAjustado() {
+        return ajustado;
+    }
+
+    public void setAjustado(boolean ajustado) {
+        this.ajustado = ajustado;
     }
 }

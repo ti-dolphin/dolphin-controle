@@ -513,7 +513,7 @@ public class ApontamentoDAO {
                     + " APONTAMENTOS.VERIFICADO, APONTAMENTOS.PROBLEMA, APONTAMENTOS.MOTIVO_PROBLEMA,"
                     + " APONTAMENTOS.JUSTIFICATIVA, APONTAMENTOS.COMPETENCIA, APONTAMENTOS.CODSTATUSAPONT, STATUSAPONT.DESCRICAO,"
                     + " APONTAMENTOS.CODCCUSTO, GCCUSTO.NOME, APONTAMENTOS.CODLIDER, PESSOA.NOME, APONTAMENTOS.DATA_HORA_MOTIVO,"
-                    + " APONTAMENTOS.DATA_HORA_JUSTIFICATIVA"
+                    + " APONTAMENTOS.DATA_HORA_JUSTIFICATIVA, APONTAMENTOS.AJUSTADO"
                     + " FROM APONTAMENTOS"
                     + " INNER JOIN PFUNC ON APONTAMENTOS.CHAPA = PFUNC.CHAPA"
                     + " INNER JOIN GCCUSTO ON APONTAMENTOS.CODCCUSTO = GCCUSTO.CODCUSTO"
@@ -540,6 +540,7 @@ public class ApontamentoDAO {
                 apontamento.setData(rs.getTimestamp("APONTAMENTOS.DATA").toLocalDateTime());
                 apontamento.setVerificado(rs.getBoolean("APONTAMENTOS.VERIFICADO"));
                 apontamento.setProblema(rs.getBoolean("APONTAMENTOS.PROBLEMA"));
+                apontamento.setAjustado(rs.getBoolean("APONTAMENTOS.AJUSTADO"));
                 apontamento.setDataHoraMotivo((LocalDateTime) rs.getObject("APONTAMENTOS.DATA_HORA_MOTIVO"));
                 apontamento.setMotivo(rs.getString("APONTAMENTOS.MOTIVO_PROBLEMA"));
                 apontamento.setDataHoraJustificativa((LocalDateTime) rs.getObject("APONTAMENTOS.DATA_HORA_JUSTIFICATIVA"));
@@ -883,6 +884,25 @@ public class ApontamentoDAO {
 
         } catch (SQLException e) {
             throw new SQLException("Erro ao buscar dados do apontamento! " + e.getMessage());
+        } finally {
+            con.close();
+        }
+    }
+
+    public void editarApontamentoPonto(Apontamento apontamento) throws SQLException {
+        Connection con = ConexaoBanco.getConexao();
+
+        try {
+            String sql = "UPDATE APONTAMENTOS SET AJUSTADO = ?"
+                    + " WHERE CODAPONT = ?";
+            PreparedStatement preparedStatement = con.prepareStatement(sql);
+            preparedStatement.setBoolean(1, apontamento.isAjustado());
+            System.out.println(apontamento.isAjustado());
+            preparedStatement.setInt(2, apontamento.getCodApont());
+            preparedStatement.executeUpdate();
+            preparedStatement.close();
+        } catch (SQLException se) {
+            throw new SQLException("Erro ao editar apontamento ponto! " + se.getMessage());
         } finally {
             con.close();
         }

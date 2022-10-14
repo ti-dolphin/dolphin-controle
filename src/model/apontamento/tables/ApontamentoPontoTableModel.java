@@ -32,7 +32,7 @@ import view.Menu;
 public class ApontamentoPontoTableModel extends AbstractTableModel {
 
     private List<Apontamento> apontamentos = new ArrayList<>();
-    private String[] colunas = {"Chapa", "Nome", "Data", "Status", "Verificado", "Problema", "Data Motivo",
+    private String[] colunas = {"Chapa", "Nome", "Data", "Status", "Verificado", "Problema", "Ajustado", "Data Motivo",
         "Motivo", "Data Justificativa", "Justificativa", "Centro de Custo", "Líder"};
     private ApontamentoDAO aDAO;
     private NotificacaoService notificacaoService;
@@ -43,12 +43,13 @@ public class ApontamentoPontoTableModel extends AbstractTableModel {
     public final int COLUNA_STATUS = 3;
     public final int COLUNA_VERIFICADO = 4;
     public final int COLUNA_PROBLEMA = 5;
-    public final int COLUNA_DATA_HORA_MOTIVO = 6;
-    public final int COLUNA_MOTIVO = 7;
-    public final int COLUNA_DATA_HORA_JUSTIFICATIVA = 8;
-    public final int COLUNA_JUSTIFICATIVA = 9;
-    public final int COLUNA_CENTRO_CUSTO = 10;
-    public final int COLUNA_LIDER = 11;
+    public final int COLUNA_AJUSTADO = 6;
+    public final int COLUNA_DATA_HORA_MOTIVO = 7;
+    public final int COLUNA_MOTIVO = 8;
+    public final int COLUNA_DATA_HORA_JUSTIFICATIVA = 9;
+    public final int COLUNA_JUSTIFICATIVA = 10;
+    public final int COLUNA_CENTRO_CUSTO = 11;
+    public final int COLUNA_LIDER = 12;
     private ApontamentoService apontamentoService;
 
     public ApontamentoPontoTableModel() {
@@ -80,6 +81,8 @@ public class ApontamentoPontoTableModel extends AbstractTableModel {
                 return Boolean.class;
             case COLUNA_PROBLEMA:
                 return Boolean.class;
+            case COLUNA_AJUSTADO:
+                return Boolean.class;
             case COLUNA_DATA:
                 return LocalDate.class;
             case COLUNA_DATA_HORA_MOTIVO:
@@ -107,6 +110,9 @@ public class ApontamentoPontoTableModel extends AbstractTableModel {
         if (coluna == COLUNA_PROBLEMA && Menu.logado.isPermApontamentoPonto() && apontamento.isVerificado()) {
             return true;
         }
+        if (coluna == COLUNA_AJUSTADO && Menu.logado.isPermApontamentoPonto() && apontamento.isVerificado()) {
+            return true;
+        }
         if (coluna == COLUNA_MOTIVO && Menu.logado.isPermApontamentoPonto() && apontamento.isProblema()) {
             return true;
         }
@@ -122,6 +128,14 @@ public class ApontamentoPontoTableModel extends AbstractTableModel {
         }
         if (coluna == COLUNA_PROBLEMA) {
             apontamento.setProblema((boolean) valor);
+        }
+        if (coluna == COLUNA_AJUSTADO) {
+            apontamento.setAjustado((boolean) valor);
+            try {
+                apontamentoService.editarApontamentoPonto(apontamento);
+            } catch (SQLException ex) {
+                Logger.getLogger(ApontamentoPontoTableModel.class.getName()).log(Level.SEVERE, null, ex);
+            }
         }
         if (coluna == COLUNA_MOTIVO) {
             apontamento.setMotivo((String) valor);
@@ -185,6 +199,8 @@ public class ApontamentoPontoTableModel extends AbstractTableModel {
                 return apontamento.isVerificado();
             case COLUNA_PROBLEMA:
                 return apontamento.isProblema();
+            case COLUNA_AJUSTADO:
+                return apontamento.isAjustado();
             case COLUNA_DATA_HORA_MOTIVO:
                 return apontamento.getDataHoraMotivo();
             case COLUNA_MOTIVO:

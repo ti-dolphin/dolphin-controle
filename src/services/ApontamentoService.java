@@ -74,4 +74,9 @@ public class ApontamentoService {
         dao.registrarDataEHoraJustificativa(codApont);
         return dao.buscarPontoPorId(codApont);
     }
+    
+    public Apontamento editarApontamentoPonto(Apontamento apontamento) throws SQLException {
+        dao.editarApontamentoPonto(apontamento);
+        return dao.buscarPontoPorId(apontamento.getCodApont());
+    }
 }
