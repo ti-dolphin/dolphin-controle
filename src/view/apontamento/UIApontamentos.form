@@ -68,7 +68,9 @@
                               <Component id="jbExportarExcel" min="-2" max="-2" attributes="0"/>
                               <EmptySpace type="unrelated" max="-2" attributes="0"/>
                               <Component id="btnAvisos" min="-2" max="-2" attributes="0"/>
-                              <EmptySpace pref="153" max="32767" attributes="0"/>
+                              <EmptySpace max="32767" attributes="0"/>
+                              <Component id="jcbSemJustificativa" min="-2" max="-2" attributes="0"/>
+                              <EmptySpace max="-2" attributes="0"/>
                               <Component id="cbxAssiduidade" min="-2" max="-2" attributes="0"/>
                               <EmptySpace type="unrelated" max="-2" attributes="0"/>
                               <Component id="jchComentados" min="-2" max="-2" attributes="0"/>
@@ -138,7 +140,7 @@
                               <Component id="jlContador" min="-2" max="-2" attributes="0"/>
                               <EmptySpace min="0" pref="0" max="32767" attributes="0"/>
                           </Group>
-                          <Component id="jtpPainelApontamentos" max="32767" attributes="0"/>
+                          <Component id="jtpPainelApontamentos" pref="1193" max="32767" attributes="0"/>
                       </Group>
                       <EmptySpace max="-2" attributes="0"/>
                   </Group>
@@ -185,6 +187,7 @@
                   <Component id="jbExportarExcel" alignment="3" min="-2" max="-2" attributes="0"/>
                   <Component id="btnAvisos" alignment="3" min="-2" max="-2" attributes="0"/>
                   <Component id="cbxAssiduidade" alignment="3" min="-2" max="-2" attributes="0"/>
+                  <Component id="jcbSemJustificativa" alignment="3" min="-2" max="-2" attributes="0"/>
               </Group>
               <EmptySpace min="-2" max="-2" attributes="0"/>
               <Component id="jtpPainelApontamentos" pref="510" max="32767" attributes="0"/>
@@ -534,6 +537,11 @@
     <Component class="javax.swing.JCheckBox" name="cbxAssiduidade">
       <Properties>
         <Property name="text" type="java.lang.String" value="Sem Assiduidade"/>
+      </Properties>
+    </Component>
+    <Component class="javax.swing.JCheckBox" name="jcbSemJustificativa">
+      <Properties>
+        <Property name="text" type="java.lang.String" value="Sem Justificativa"/>
       </Properties>
     </Component>
   </SubComponents>

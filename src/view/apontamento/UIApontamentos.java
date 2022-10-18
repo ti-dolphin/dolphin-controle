@@ -134,6 +134,7 @@ public class UIApontamentos extends javax.swing.JInternalFrame {
         jtPonto = new javax.swing.JTable();
         btnAvisos = new javax.swing.JButton();
         cbxAssiduidade = new javax.swing.JCheckBox();
+        jcbSemJustificativa = new javax.swing.JCheckBox();
         jMenuBar1 = new javax.swing.JMenuBar();
         jmRelatorios = new javax.swing.JMenu();
         jmiTomadores = new javax.swing.JMenuItem();
@@ -356,6 +357,8 @@ public class UIApontamentos extends javax.swing.JInternalFrame {
 
         cbxAssiduidade.setText("Sem Assiduidade");
 
+        jcbSemJustificativa.setText("Sem Justificativa");
+
         jmRelatorios.setText("Relatórios");
 
         jmiTomadores.setText("Tomadores");
@@ -392,7 +395,9 @@ public class UIApontamentos extends javax.swing.JInternalFrame {
                                 .addComponent(jbExportarExcel)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                                 .addComponent(btnAvisos)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 153, Short.MAX_VALUE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                .addComponent(jcbSemJustificativa)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                                 .addComponent(cbxAssiduidade)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                                 .addComponent(jchComentados)
@@ -446,7 +451,7 @@ public class UIApontamentos extends javax.swing.JInternalFrame {
                             .addGroup(layout.createSequentialGroup()
                                 .addComponent(jlContador)
                                 .addGap(0, 0, Short.MAX_VALUE))
-                            .addComponent(jtpPainelApontamentos))
+                            .addComponent(jtpPainelApontamentos, javax.swing.GroupLayout.DEFAULT_SIZE, 1193, Short.MAX_VALUE))
                         .addContainerGap())))
         );
         layout.setVerticalGroup(
@@ -485,7 +490,8 @@ public class UIApontamentos extends javax.swing.JInternalFrame {
                     .addComponent(jchComentados)
                     .addComponent(jbExportarExcel)
                     .addComponent(btnAvisos)
-                    .addComponent(cbxAssiduidade))
+                    .addComponent(cbxAssiduidade)
+                    .addComponent(jcbSemJustificativa))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jtpPainelApontamentos, javax.swing.GroupLayout.DEFAULT_SIZE, 510, Short.MAX_VALUE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
@@ -552,6 +558,7 @@ public class UIApontamentos extends javax.swing.JInternalFrame {
                     String txtDataDe = FormatarData.formatarData(jftfDataInicio.getText());
                     String txtDataAte = FormatarData.formatarData(jftfDataTermino.getText());
                     Pessoa lider = (Pessoa) jcbLider.getSelectedItem();
+                    boolean cbxSemJustificativa = jcbSemJustificativa.isSelected();
 
                     if (!txtChapa.isBlank()) {
                         query += " AND APONTAMENTOS.CHAPA = '" + txtChapa + "'";
@@ -567,6 +574,10 @@ public class UIApontamentos extends javax.swing.JInternalFrame {
                     }
                     if (jcbLider.getSelectedIndex() != 0) {
                         query = query + " and APONTAMENTOS.CODLIDER = " + lider.getCodPessoa();
+                    }
+                    
+                    if (jcbSemJustificativa.isSelected()) {
+                        query += "AND APONTAMENTOS.PROBLEMA = TRUE AND JUSTIFICATIVA IS NULL";
                     }
 
                     apontamentosPonto = (ArrayList<Apontamento>) apontamentoService.filtrarApontamentosPonto(query);
@@ -1123,6 +1134,7 @@ public class UIApontamentos extends javax.swing.JInternalFrame {
     private javax.swing.JButton jbPesquisar;
     private javax.swing.JComboBox<Pessoa> jcbGerente;
     private javax.swing.JComboBox<Object> jcbLider;
+    private javax.swing.JCheckBox jcbSemJustificativa;
     private javax.swing.JComboBox<StatusApont> jcbStatusApont;
     private javax.swing.JCheckBox jchAtivos;
     private javax.swing.JCheckBox jchComentados;
