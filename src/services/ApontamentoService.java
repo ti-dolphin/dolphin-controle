@@ -74,9 +74,9 @@ public class ApontamentoService {
         dao.registrarDataEHoraMotivo(codApont);
         return dao.buscarPontoPorId(codApont);
     }
-    public Apontamento registrarDataEHoraJustificativa(int codApont) throws SQLException {
-        dao.registrarDataEHoraJustificativa(codApont);
-        return dao.buscarPontoPorId(codApont);
+    public Apontamento registrarJustificativa(Apontamento apontamento) throws SQLException {
+        dao.registrarJustificativa(apontamento);
+        return dao.buscarPontoPorId(apontamento.getCodApont());
     }
     
     public Apontamento editarApontamentoPonto(Apontamento apontamento) throws SQLException {

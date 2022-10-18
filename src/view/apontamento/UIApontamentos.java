@@ -651,6 +651,7 @@ public class UIApontamentos extends javax.swing.JInternalFrame {
         jtPonto.getColumnModel().getColumn(apTableModel.COLUNA_DATA_HORA_MOTIVO).setPreferredWidth(120);
         jtPonto.getColumnModel().getColumn(apTableModel.COLUNA_MOTIVO).setPreferredWidth(250);
         jtPonto.getColumnModel().getColumn(apTableModel.COLUNA_DATA_HORA_JUSTIFICATIVA).setPreferredWidth(120);
+        jtPonto.getColumnModel().getColumn(apTableModel.COLUNA_JUSTIFICADO_POR).setPreferredWidth(100);
         jtPonto.getColumnModel().getColumn(apTableModel.COLUNA_JUSTIFICATIVA).setPreferredWidth(250);
         jtPonto.getColumnModel().getColumn(apTableModel.COLUNA_CENTRO_CUSTO).setPreferredWidth(350);
         jtPonto.getColumnModel().getColumn(apTableModel.COLUNA_LIDER).setPreferredWidth(150);

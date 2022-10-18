@@ -33,7 +33,7 @@ public class ApontamentoPontoTableModel extends AbstractTableModel {
 
     private List<Apontamento> apontamentos = new ArrayList<>();
     private String[] colunas = {"Chapa", "Nome", "Data", "Status", "Verificado", "Problema", "Ajustado", "Data Motivo",
-        "Motivo", "Data Justificativa", "Justificativa", "Centro de Custo", "Líder"};
+        "Motivo", "Data Justificativa", "Justificado por", "Justificativa", "Centro de Custo", "Líder"};
     private ApontamentoDAO aDAO;
     private NotificacaoService notificacaoService;
 
@@ -47,9 +47,11 @@ public class ApontamentoPontoTableModel extends AbstractTableModel {
     public final int COLUNA_DATA_HORA_MOTIVO = 7;
     public final int COLUNA_MOTIVO = 8;
     public final int COLUNA_DATA_HORA_JUSTIFICATIVA = 9;
-    public final int COLUNA_JUSTIFICATIVA = 10;
-    public final int COLUNA_CENTRO_CUSTO = 11;
-    public final int COLUNA_LIDER = 12;
+    public final int COLUNA_JUSTIFICADO_POR = 10;
+    public final int COLUNA_JUSTIFICATIVA = 11;
+    public final int COLUNA_CENTRO_CUSTO = 12;
+    public final int COLUNA_LIDER = 13;
+    
     private ApontamentoService apontamentoService;
 
     public ApontamentoPontoTableModel() {
@@ -156,8 +158,9 @@ public class ApontamentoPontoTableModel extends AbstractTableModel {
             }
             String data = FormatarData.formatarDataEHoraEmTexto(apontamento.getData(), "dd/MM/yyyy");
             try {
-                Apontamento apontamentoAtualizado = apontamentoService.registrarDataEHoraJustificativa(apontamento.getCodApont());
+                Apontamento apontamentoAtualizado = apontamentoService.registrarJustificativa(apontamento);
                 apontamento.setDataHoraJustificativa(apontamentoAtualizado.getDataHoraJustificativa());
+                apontamento.setJustificadoPor(apontamentoAtualizado.getJustificadoPor());
             } catch (SQLException ex) {
                 Logger.getLogger(ApontamentoPontoTableModel.class.getName()).log(Level.SEVERE, null, ex);
             }
@@ -213,6 +216,8 @@ public class ApontamentoPontoTableModel extends AbstractTableModel {
                 return apontamento.getMotivo();
             case COLUNA_DATA_HORA_JUSTIFICATIVA:
                 return apontamento.getDataHoraJustificativa();
+            case COLUNA_JUSTIFICADO_POR:
+                return apontamento.getJustificadoPor();
             case COLUNA_JUSTIFICATIVA:
                 return apontamento.getJustificativa();
             case COLUNA_CENTRO_CUSTO:

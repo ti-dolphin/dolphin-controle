@@ -47,6 +47,7 @@ public class Apontamento {
     private LocalDateTime dataHoraMotivo;
     private LocalDateTime dataHoraJustificativa;
     private boolean ajustado;
+    private String justificadoPor;
 
     public Apontamento() {
     }
@@ -258,4 +259,13 @@ public class Apontamento {
     public void setAjustado(boolean ajustado) {
         this.ajustado = ajustado;
     }
+
+    public String getJustificadoPor() {
+        return justificadoPor;
+    }
+
+    public void setJustificadoPor(String justificadoPor) {
+        this.justificadoPor = justificadoPor;
+    }
+
 }

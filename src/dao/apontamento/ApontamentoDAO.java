@@ -512,7 +512,7 @@ public class ApontamentoDAO {
                     + " APONTAMENTOS.VERIFICADO, APONTAMENTOS.PROBLEMA, APONTAMENTOS.MOTIVO_PROBLEMA,"
                     + " APONTAMENTOS.JUSTIFICATIVA, APONTAMENTOS.COMPETENCIA, APONTAMENTOS.CODSTATUSAPONT, STATUSAPONT.DESCRICAO,"
                     + " APONTAMENTOS.CODCCUSTO, GCCUSTO.NOME, APONTAMENTOS.CODLIDER, PESSOA.NOME, APONTAMENTOS.DATA_HORA_MOTIVO,"
-                    + " APONTAMENTOS.DATA_HORA_JUSTIFICATIVA, APONTAMENTOS.AJUSTADO"
+                    + " APONTAMENTOS.DATA_HORA_JUSTIFICATIVA, APONTAMENTOS.AJUSTADO, APONTAMENTOS.JUSTIFICADO_POR"
                     + " FROM APONTAMENTOS"
                     + " INNER JOIN PFUNC ON APONTAMENTOS.CHAPA = PFUNC.CHAPA"
                     + " INNER JOIN GCCUSTO ON APONTAMENTOS.CODCCUSTO = GCCUSTO.CODCUSTO"
@@ -543,6 +543,7 @@ public class ApontamentoDAO {
                 apontamento.setDataHoraMotivo((LocalDateTime) rs.getObject("APONTAMENTOS.DATA_HORA_MOTIVO"));
                 apontamento.setMotivo(rs.getString("APONTAMENTOS.MOTIVO_PROBLEMA"));
                 apontamento.setDataHoraJustificativa((LocalDateTime) rs.getObject("APONTAMENTOS.DATA_HORA_JUSTIFICATIVA"));
+                apontamento.setJustificadoPor(rs.getString("APONTAMENTOS.JUSTIFICADO_POR"));
                 apontamento.setJustificativa(rs.getString("APONTAMENTOS.JUSTIFICATIVA"));
                 apontamento.setCompetencia(rs.getInt("APONTAMENTOS.COMPETENCIA"));
                 centroCusto.setCodCusto(rs.getString("APONTAMENTOS.CODCCUSTO"));
@@ -756,14 +757,13 @@ public class ApontamentoDAO {
 
         try {
             String sql = "UPDATE APONTAMENTOS SET VERIFICADO = ?, PROBLEMA = ?,"
-                    + " MOTIVO_PROBLEMA = ?, JUSTIFICATIVA = ?"
+                    + " MOTIVO_PROBLEMA = ?"
                     + " WHERE CODAPONT = ?";
             PreparedStatement preparedStatement = con.prepareStatement(sql);
             preparedStatement.setBoolean(1, apontamento.isVerificado());
             preparedStatement.setBoolean(2, apontamento.isProblema());
             preparedStatement.setString(3, apontamento.getMotivo());
-            preparedStatement.setString(4, apontamento.getJustificativa());
-            preparedStatement.setInt(5, apontamento.getCodApont());
+            preparedStatement.setInt(4, apontamento.getCodApont());
             preparedStatement.executeUpdate();
             preparedStatement.close();
         } catch (SQLException se) {
@@ -829,13 +829,15 @@ public class ApontamentoDAO {
         }
     }
 
-    public void registrarDataEHoraJustificativa(int codApont) throws SQLException {
+    public void registrarJustificativa(Apontamento apontamento) throws SQLException {
         Connection con = ConexaoBanco.getConexao();
 
         try {
-            String sql = "UPDATE APONTAMENTOS SET DATA_HORA_JUSTIFICATIVA = NOW() WHERE CODAPONT = ?";
+            String sql = "UPDATE APONTAMENTOS SET JUSTIFICATIVA = ?, DATA_HORA_JUSTIFICATIVA = NOW(), JUSTIFICADO_POR = ? WHERE CODAPONT = ?";
             PreparedStatement preparedStatement = con.prepareStatement(sql);
-            preparedStatement.setInt(1, codApont);
+            preparedStatement.setString(1, apontamento.getJustificativa());
+            preparedStatement.setString(2, Menu.logado.getLogin());
+            preparedStatement.setInt(3, apontamento.getCodApont());
             preparedStatement.executeUpdate();
             preparedStatement.close();
         } catch (SQLException se) {
@@ -852,7 +854,7 @@ public class ApontamentoDAO {
             String sql = "SELECT APONTAMENTOS.CODAPONT, PFUNC.CHAPA, PFUNC.NOME, APONTAMENTOS.DATA,"
                     + " APONTAMENTOS.VERIFICADO, APONTAMENTOS.PROBLEMA, APONTAMENTOS.MOTIVO_PROBLEMA,"
                     + " APONTAMENTOS.JUSTIFICATIVA, APONTAMENTOS.COMPETENCIA,"
-                    + " APONTAMENTOS.DATA_HORA_MOTIVO, APONTAMENTOS.DATA_HORA_JUSTIFICATIVA,"
+                    + " APONTAMENTOS.DATA_HORA_MOTIVO, APONTAMENTOS.DATA_HORA_JUSTIFICATIVA, APONTAMENTOS.JUSTIFICADO_POR,"
                     + " APONTAMENTOS.CODCCUSTO, GCCUSTO.NOME, APONTAMENTOS.CODLIDER, PESSOA.NOME"
                     + " FROM APONTAMENTOS"
                     + " INNER JOIN PFUNC ON APONTAMENTOS.CHAPA = PFUNC.CHAPA"
@@ -877,6 +879,7 @@ public class ApontamentoDAO {
                 apontamento.setVerificado(rs.getBoolean("APONTAMENTOS.VERIFICADO"));
                 apontamento.setProblema(rs.getBoolean("APONTAMENTOS.PROBLEMA"));
                 apontamento.setMotivo(rs.getString("APONTAMENTOS.MOTIVO_PROBLEMA"));
+                apontamento.setJustificadoPor(rs.getString("APONTAMENTOS.JUSTIFICADO_POR"));
                 apontamento.setJustificativa(rs.getString("APONTAMENTOS.JUSTIFICATIVA"));
                 apontamento.setCompetencia(rs.getInt("APONTAMENTOS.COMPETENCIA"));
                 apontamento.setDataHoraMotivo((LocalDateTime) rs.getObject("APONTAMENTOS.DATA_HORA_MOTIVO"));
