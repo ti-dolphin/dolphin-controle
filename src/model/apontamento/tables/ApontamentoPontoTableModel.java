@@ -51,7 +51,7 @@ public class ApontamentoPontoTableModel extends AbstractTableModel {
     public final int COLUNA_JUSTIFICATIVA = 11;
     public final int COLUNA_CENTRO_CUSTO = 12;
     public final int COLUNA_LIDER = 13;
-    
+
     private ApontamentoService apontamentoService;
 
     public ApontamentoPontoTableModel() {
@@ -140,12 +140,19 @@ public class ApontamentoPontoTableModel extends AbstractTableModel {
             }
         }
         if (coluna == COLUNA_MOTIVO) {
-            apontamento.setMotivo((String) valor);
-            try {
-                Apontamento apontamentoAtualizado = apontamentoService.registrarDataEHoraMotivo(apontamento.getCodApont());
-                apontamento.setDataHoraMotivo(apontamentoAtualizado.getDataHoraMotivo());
-            } catch (SQLException ex) {
-                Logger.getLogger(ApontamentoPontoTableModel.class.getName()).log(Level.SEVERE, null, ex);
+            String motivo = (String) valor;
+            
+            if (!motivo.isBlank()) {
+                
+                apontamento.setMotivo(motivo);
+                
+                try {
+                    Apontamento apontamentoAtualizado = apontamentoService.registrarDataEHoraMotivo(apontamento.getCodApont());
+                    apontamento.setDataHoraMotivo(apontamentoAtualizado.getDataHoraMotivo());
+                } catch (SQLException ex) {
+                    Logger.getLogger(ApontamentoPontoTableModel.class.getName()).log(Level.SEVERE, null, ex);
+                }
+                
             }
         }
         if (coluna == COLUNA_JUSTIFICATIVA) {
@@ -154,7 +161,7 @@ public class ApontamentoPontoTableModel extends AbstractTableModel {
                 apontamento.setJustificativa(null);
             } else {
                 apontamento.setJustificativa(justificativa);
-                
+
             }
             String data = FormatarData.formatarDataEHoraEmTexto(apontamento.getData(), "dd/MM/yyyy");
             try {

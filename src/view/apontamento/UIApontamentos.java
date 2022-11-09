@@ -284,11 +284,6 @@ public class UIApontamentos extends javax.swing.JInternalFrame {
             }
         ));
         jtaApontamentos.setAutoResizeMode(javax.swing.JTable.AUTO_RESIZE_OFF);
-        jtaApontamentos.addFocusListener(new java.awt.event.FocusAdapter() {
-            public void focusLost(java.awt.event.FocusEvent evt) {
-                jtaApontamentosFocusLost(evt);
-            }
-        });
         jtaApontamentos.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
                 jtaApontamentosMouseClicked(evt);
@@ -327,6 +322,11 @@ public class UIApontamentos extends javax.swing.JInternalFrame {
             }
         ));
         jtPonto.setAutoResizeMode(javax.swing.JTable.AUTO_RESIZE_OFF);
+        jtPonto.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                jtPontoMouseClicked(evt);
+            }
+        });
         jScrollPane2.setViewportView(jtPonto);
 
         javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
@@ -575,7 +575,7 @@ public class UIApontamentos extends javax.swing.JInternalFrame {
                     if (jcbLider.getSelectedIndex() != 0) {
                         query = query + " and APONTAMENTOS.CODLIDER = " + lider.getCodPessoa();
                     }
-                    
+
                     if (jcbSemJustificativa.isSelected()) {
                         query += "AND APONTAMENTOS.PROBLEMA = TRUE AND JUSTIFICATIVA IS NULL";
                     }
@@ -669,7 +669,7 @@ public class UIApontamentos extends javax.swing.JInternalFrame {
         apTableCellRender = new ApontamentosPontoTableCellRender(apTableModel);
         jtPonto.setDefaultRenderer(Object.class, apTableCellRender);
         jtPonto.putClientProperty("terminateEditOnFocusLost", Boolean.TRUE);
-    } 
+    }
 
     public void carregarTabelaApontamentos() {
 
@@ -804,6 +804,7 @@ public class UIApontamentos extends javax.swing.JInternalFrame {
         jcbGerente.setSelectedIndex(0);
         jchComentados.setSelected(false);
         jchAtivos.setSelected(true);
+        jcbSemJustificativa.setSelected(false);
         preencherData();
     }
 
@@ -949,7 +950,7 @@ public class UIApontamentos extends javax.swing.JInternalFrame {
     }
 
     private void jbPesquisarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jbPesquisarActionPerformed
-        
+
         pesquisar();
     }//GEN-LAST:event_jbPesquisarActionPerformed
 
@@ -1112,9 +1113,20 @@ public class UIApontamentos extends javax.swing.JInternalFrame {
         carregarTabelaApontamentosPontoPorNotificacoesNaoLidas();
     }//GEN-LAST:event_btnAvisosActionPerformed
 
-    private void jtaApontamentosFocusLost(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_jtaApontamentosFocusLost
-        
-    }//GEN-LAST:event_jtaApontamentosFocusLost
+    private void jtPontoMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jtPontoMouseClicked
+        int linhaSelecionada = jtPonto.getSelectedRow();
+
+        Apontamento apontamento = apTableModel.getApontamento(linhaSelecionada);
+        String motivo = (String) jtPonto.getValueAt(linhaSelecionada, apTableModel.COLUNA_MOTIVO);
+
+        if (apontamento.isProblema() && motivo == null) {
+            jtPonto.editCellAt(linhaSelecionada, apTableModel.COLUNA_MOTIVO);
+            JOptionPane.showMessageDialog(null,         
+                    "Campo motivo deve ser preenchido", 
+                    "Aviso", 
+                    JOptionPane.WARNING_MESSAGE);
+        }
+    }//GEN-LAST:event_jtPontoMouseClicked
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnAvisos;
