@@ -44,6 +44,7 @@ public class Pessoa {
     private String email;
     private boolean permApontamentoPonto;
     private boolean permApontamentoPontoJustificativa;
+    private boolean permBancoHoras;
 
     public Pessoa() {
         this.codPessoa = 1;
@@ -303,6 +304,14 @@ public class Pessoa {
 
     public void setPermApontamentoPontoJustificativa(boolean permApontamentoPontoMotivo) {
         this.permApontamentoPontoJustificativa = permApontamentoPontoMotivo;
+    }
+
+    public boolean isPermBancoHoras() {
+        return permBancoHoras;
+    }
+
+    public void setPermBancoHoras(boolean permBancoHoras) {
+        this.permBancoHoras = permBancoHoras;
     }
     
     @Override

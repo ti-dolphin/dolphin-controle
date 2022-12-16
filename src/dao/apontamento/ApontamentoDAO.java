@@ -35,7 +35,7 @@ public class ApontamentoDAO {
         Statement stat = con.createStatement();
 
         try {
-            String sql = "SELECT A.CODOS, A.INTEGRA, A.CODAPONT, A.CHAPA, F.NOME, FUN.CODFUNCAO,"
+            String sql = "SELECT A.CODOS, A.INTEGRA, A.CODAPONT, A.CHAPA, F.NOME, F.BANCO_HORAS, FUN.CODFUNCAO,"
                     + " FUN.NOME, A.DATA, C.CODCUSTO, C.NOME, C.ATIVO, C.CODREDUZIDO, A.CODSTATUSAPONT, SA.DESCRICAO,"
                     + " P.CODPESSOA, P.NOME, PG.CODPESSOA, PG.NOME, A.ATIVIDADE, A.CODSITUACAO, A.COMENTADO, A.MODIFICADOPOR,"
                     + " A.COMPETENCIA, A.ASSIDUIDADE, A.PONTO"
@@ -88,6 +88,7 @@ public class ApontamentoDAO {
                 apontamento.setIntegra(rs.getBoolean("A.INTEGRA"));
                 funcionario.setChapa(rs.getString("A.CHAPA"));
                 funcionario.setNome(rs.getString("F.NOME"));
+                funcionario.setBancoHoras(rs.getDouble("F.BANCO_HORAS"));
                 funcao.setCodigo(rs.getString("FUN.CODFUNCAO"));
                 funcao.setNome(rs.getString("FUN.NOME"));
                 apontamento.setData(rs.getTimestamp("A.DATA").toLocalDateTime());

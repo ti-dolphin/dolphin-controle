@@ -5,7 +5,6 @@
  */
 package view.apontamento;
 
-
 import dao.DAOFactory;
 import dao.apontamento.ApontamentoDAO;
 import dao.apontamento.ComentarioDAO;
@@ -18,6 +17,7 @@ import javax.swing.JTextArea;
 import model.apontamento.Apontamento;
 import model.apontamento.Comentario;
 import model.apontamento.ComentarioApontTableModel;
+import services.ComentarioService;
 import view.Menu;
 
 /**
@@ -30,18 +30,20 @@ public class UIComentariosApontamentos extends javax.swing.JDialog {
     private boolean flagUIComentar;
     private ComentarioApontTableModel cAptTableModel = new ComentarioApontTableModel();
     private Apontamento apontamentoSelecionado;
+    private ComentarioService comentarioService;
 
     public UIComentariosApontamentos() {
     }
-    
+
     public UIComentariosApontamentos(UIApontamentos uiApontamentos, Apontamento apontamentoSelecionado) {
         initComponents();
         this.uiApontamentos = uiApontamentos;
         this.apontamentoSelecionado = apontamentoSelecionado;
+        this.comentarioService = new ComentarioService();
         preencherComentarios();
         redimensionarColunas();
     }
-    
+
     public ComentarioApontTableModel getcAptTableModel() {
         return cAptTableModel;
     }
@@ -76,12 +78,11 @@ public class UIComentariosApontamentos extends javax.swing.JDialog {
 
     private void preencherCampos() {
         jtaComentarios.setText(getComentario().getDescricao());
-    }//preencherCampos
+    }
 
     public void preencherComentarios() {
         try {
-            ComentarioDAO dao = DAOFactory.getCOMENTARIODAO();
-            ArrayList<Comentario> comentarios = dao.buscarComentApont(apontamentoSelecionado.getCodApont());
+            ArrayList<Comentario> comentarios = (ArrayList<Comentario>) comentarioService.buscarComentariosDosApontamentos(apontamentoSelecionado.getCodApont());
 
             for (int i = 0; i < comentarios.size(); i++) {
                 cAptTableModel.addRow(comentarios.get(i));
@@ -92,8 +93,8 @@ public class UIComentariosApontamentos extends javax.swing.JDialog {
         } catch (SQLException se) {
             JOptionPane.showMessageDialog(this, se.getMessage(),
                     "Erro ao buscar comentários", JOptionPane.ERROR_MESSAGE);
-        }//catch
-    }//preencherComentarios
+        }
+    }
 
     public Comentario getComentario() {
         if (jtComentarios.getSelectedRow() == -1) {
@@ -101,15 +102,14 @@ public class UIComentariosApontamentos extends javax.swing.JDialog {
         }
 
         return cAptTableModel.getComentarios().get(jtComentarios.getSelectedRow());
-    }//getComentario
+    }
 
     private void limpar() {
         jtaComentarios.setText("");
-    }//limpar
+    }
 
     private void salvar() {
         try {
-            ComentarioDAO dao = DAOFactory.getCOMENTARIODAO();
             Comentario comentario = new Comentario();
 
             comentario.setApontamento(apontamentoSelecionado);
@@ -121,8 +121,8 @@ public class UIComentariosApontamentos extends javax.swing.JDialog {
             comentario.setCreatedBy(Menu.logado.getLogin());
 
             comentario.setLider(apontamentoSelecionado.getLider().getNome());
-            
-            dao.salvar(comentario);
+
+            comentarioService.inserir(comentario);
 
             atualizaTblComentarios();
             limpar();
@@ -135,19 +135,15 @@ public class UIComentariosApontamentos extends javax.swing.JDialog {
         } catch (NumberFormatException ne) {
             JOptionPane.showMessageDialog(this, ne.getMessage());
         }
-    }//salvar
+    }
 
-    /**
-     * Método usado para remover comentário do apontamento
-     */
     public void excluir() {
         try {
             Comentario comentario = getComentario();
-            ComentarioDAO dao = DAOFactory.getCOMENTARIODAO();
 
             int codComentario = comentario.getCodComentario();
 
-            dao.deletar(codComentario);
+            comentarioService.excluir(codComentario);
 
             cAptTableModel.removeRow(comentario);
 
@@ -158,8 +154,8 @@ public class UIComentariosApontamentos extends javax.swing.JDialog {
         } catch (SQLException se) {
             JOptionPane.showMessageDialog(this, se.getMessage(),
                     "Erro ao excluir", JOptionPane.ERROR_MESSAGE);
-        }//catch
-    }//remover
+        }
+    }
 
     private void atualizaTblComentarios() {
         cAptTableModel.clear();
@@ -174,7 +170,7 @@ public class UIComentariosApontamentos extends javax.swing.JDialog {
 
         } catch (SQLException ex) {
             Logger.getLogger(UIComentariosApontamentos.class.getName()).log(Level.SEVERE, null, ex);
-            JOptionPane.showMessageDialog(null, ex.getMessage(), 
+            JOptionPane.showMessageDialog(null, ex.getMessage(),
                     "Erro", JOptionPane.ERROR_MESSAGE);
         }
     }
@@ -196,6 +192,7 @@ public class UIComentariosApontamentos extends javax.swing.JDialog {
         jbComentar = new javax.swing.JButton();
         jScrollPane1 = new javax.swing.JScrollPane();
         jtComentarios = new javax.swing.JTable();
+        btnProgramarFolga = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
         setTitle("Comentários do Apontamento");
@@ -249,6 +246,13 @@ public class UIComentariosApontamentos extends javax.swing.JDialog {
         });
         jScrollPane1.setViewportView(jtComentarios);
 
+        btnProgramarFolga.setText("Programar folga");
+        btnProgramarFolga.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnProgramarFolgaActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
@@ -261,7 +265,8 @@ public class UIComentariosApontamentos extends javax.swing.JDialog {
                         .addComponent(jlComentario)
                         .addGap(0, 0, Short.MAX_VALUE))
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                        .addGap(0, 0, Short.MAX_VALUE)
+                        .addComponent(btnProgramarFolga)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                         .addComponent(jbComentariosPadrao)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(jbExcluir)
@@ -279,7 +284,9 @@ public class UIComentariosApontamentos extends javax.swing.JDialog {
                 .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 114, Short.MAX_VALUE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jbComentariosPadrao, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                        .addComponent(jbComentariosPadrao, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(btnProgramarFolga))
                     .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                         .addComponent(jbComentar)
                         .addComponent(jbExcluir)))
@@ -306,17 +313,17 @@ public class UIComentariosApontamentos extends javax.swing.JDialog {
             if (comentario.getCreatedBy().equals(logado) || logado.equals("adm")) {
                 Object[] options = {"Sim", "Não"};
                 int i = JOptionPane.showOptionDialog(null,
-                    "Tem certeza que deseja excluir?", "Excluir",
-                    JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE, null,
-                    options, options[0]);
+                        "Tem certeza que deseja excluir?", "Excluir",
+                        JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE, null,
+                        options, options[0]);
                 if (i == JOptionPane.YES_OPTION) {
                     excluir();
 
                 }
             } else {
                 JOptionPane.showMessageDialog(this,
-                    "Você não tem autorização para excluir esse comentário",
-                    "Aviso ao tentar excluir comentário", JOptionPane.WARNING_MESSAGE);
+                        "Você não tem autorização para excluir esse comentário",
+                        "Aviso ao tentar excluir comentário", JOptionPane.WARNING_MESSAGE);
             }//else
         }
     }//GEN-LAST:event_jbExcluirActionPerformed
@@ -330,6 +337,18 @@ public class UIComentariosApontamentos extends javax.swing.JDialog {
             preencherCampos();
         }
     }//GEN-LAST:event_jtComentariosMouseClicked
+
+    private void btnProgramarFolgaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnProgramarFolgaActionPerformed
+        Object[] options = {"Sim", "Não"};
+        int i = JOptionPane.showOptionDialog(null,
+                "Deseja programar folga?",
+                "Programação de folga", JOptionPane.YES_NO_OPTION,
+                JOptionPane.QUESTION_MESSAGE, null, options, options[0]);
+        if (i == JOptionPane.YES_OPTION) {
+            jtaComentarios.setText("Folga programada - abater do banco de horas");
+            salvar();
+        }
+    }//GEN-LAST:event_btnProgramarFolgaActionPerformed
 
     /**
      * @param args the command line arguments
@@ -374,6 +393,7 @@ public class UIComentariosApontamentos extends javax.swing.JDialog {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JButton btnProgramarFolga;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JScrollPane jScrollPane2;
     private javax.swing.JButton jbComentar;

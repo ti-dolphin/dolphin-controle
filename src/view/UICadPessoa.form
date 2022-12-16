@@ -130,7 +130,7 @@
                       <Component id="jchResponsavel" min="-2" max="-2" attributes="0"/>
                       <EmptySpace max="-2" attributes="0"/>
                       <Component id="jchLider" min="-2" max="-2" attributes="0"/>
-                      <EmptySpace pref="214" max="32767" attributes="0"/>
+                      <EmptySpace pref="249" max="32767" attributes="0"/>
                   </Group>
               </Group>
             </DimensionLayout>
@@ -204,7 +204,7 @@
           <Layout>
             <DimensionLayout dim="0">
               <Group type="103" groupAlignment="0" attributes="0">
-                  <Group type="102" alignment="0" attributes="0">
+                  <Group type="102" alignment="1" attributes="0">
                       <EmptySpace max="-2" attributes="0"/>
                       <Group type="103" groupAlignment="0" attributes="0">
                           <Component id="jlLogin" min="-2" max="-2" attributes="0"/>
@@ -228,6 +228,7 @@
                       </Group>
                       <EmptySpace type="unrelated" max="32767" attributes="0"/>
                       <Group type="103" groupAlignment="0" attributes="0">
+                          <Component id="cbxPermBancoHoras" min="-2" max="-2" attributes="0"/>
                           <Component id="jlSenha" min="-2" max="-2" attributes="0"/>
                           <Component id="jpfSenha" min="-2" pref="272" max="-2" attributes="0"/>
                           <Component id="jchApontamentos" min="-2" max="-2" attributes="0"/>
@@ -321,7 +322,9 @@
                               <Component id="chProspeccao" min="-2" max="-2" attributes="0"/>
                           </Group>
                       </Group>
-                      <EmptySpace pref="20" max="32767" attributes="0"/>
+                      <EmptySpace type="unrelated" max="-2" attributes="0"/>
+                      <Component id="cbxPermBancoHoras" min="-2" max="-2" attributes="0"/>
+                      <EmptySpace pref="15" max="32767" attributes="0"/>
                   </Group>
               </Group>
             </DimensionLayout>
@@ -468,6 +471,11 @@
                 <Property name="text" type="java.lang.String" value="Ponto Justificativa"/>
               </Properties>
             </Component>
+            <Component class="javax.swing.JCheckBox" name="cbxPermBancoHoras">
+              <Properties>
+                <Property name="text" type="java.lang.String" value="Banco de horas"/>
+              </Properties>
+            </Component>
           </SubComponents>
         </Container>
         <Container class="javax.swing.JPanel" name="jPanel3">
@@ -501,7 +509,7 @@
               <Group type="103" groupAlignment="0" attributes="0">
                   <Group type="102" alignment="0" attributes="0">
                       <EmptySpace max="-2" attributes="0"/>
-                      <Component id="jScrollPane1" pref="415" max="32767" attributes="0"/>
+                      <Component id="jScrollPane1" pref="459" max="32767" attributes="0"/>
                       <EmptySpace max="-2" attributes="0"/>
                       <Group type="103" groupAlignment="3" attributes="0">
                           <Component id="jbRemover" alignment="3" min="-2" max="-2" attributes="0"/>
@@ -605,7 +613,7 @@
               <Group type="103" groupAlignment="0" attributes="0">
                   <Group type="102" alignment="1" attributes="0">
                       <EmptySpace max="-2" attributes="0"/>
-                      <Component id="jScrollPane2" pref="415" max="32767" attributes="0"/>
+                      <Component id="jScrollPane2" pref="459" max="32767" attributes="0"/>
                       <EmptySpace max="-2" attributes="0"/>
                       <Group type="103" groupAlignment="3" attributes="0">
                           <Component id="jbRemover1" alignment="3" min="-2" max="-2" attributes="0"/>

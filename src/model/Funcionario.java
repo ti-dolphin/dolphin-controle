@@ -24,6 +24,7 @@ public class Funcionario {
     private String email;
     private Situacao situacao;
     private Funcao funcao;
+    private double bancoHoras;
 
     public Funcionario() {
     }
@@ -177,6 +178,15 @@ public class Funcionario {
 
     public void setFuncao(Funcao funcao) {
         this.funcao = funcao;
+    }
+
+    
+    public double getBancoHoras() {
+        return bancoHoras;
+    }
+
+    public void setBancoHoras(double bancoHoras) {
+        this.bancoHoras = bancoHoras;
     }
 
     @Override

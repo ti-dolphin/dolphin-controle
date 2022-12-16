@@ -759,7 +759,8 @@ public class UIApontamentos extends javax.swing.JInternalFrame {
         jtaApontamentos.setModel(aTableModel);
         jtaApontamentos.setRowSorter(new TableRowSorter<>(aTableModel));
         jtaApontamentos.getColumnModel().getColumn(ApontamentosTableModel.COLUNA_COMENTADO).setPreferredWidth(100);
-        jtaApontamentos.getColumnModel().getColumn(ApontamentosTableModel.COLUNA_CHAPA).setPreferredWidth(100);
+        jtaApontamentos.getColumnModel().getColumn(ApontamentosTableModel.COLUNA_BANCO_HORAS).setPreferredWidth(100);
+        jtaApontamentos.getColumnModel().getColumn(ApontamentosTableModel.COLUNA_CHAPA).setPreferredWidth(50);
         jtaApontamentos.getColumnModel().getColumn(ApontamentosTableModel.COLUNA_FUNCIONARIO).setPreferredWidth(300);
         jtaApontamentos.getColumnModel().getColumn(ApontamentosTableModel.COLUNA_FUNCAO).setPreferredWidth(350);
         jtaApontamentos.getColumnModel().getColumn(ApontamentosTableModel.COLUNA_DATA).setPreferredWidth(150);
