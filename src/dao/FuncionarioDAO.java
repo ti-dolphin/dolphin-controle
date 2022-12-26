@@ -14,115 +14,6 @@ import model.Situacao;
 
 public class FuncionarioDAO {
 
-    public ArrayList<Funcionario> buscarFuncionario() throws SQLException {
-        Connection con = ConexaoBanco.getConexao();
-        Statement stat = con.createStatement();
-        try {
-            String sql = "select \n"
-                    + "	f.CODCOLIGADA, f.CHAPA, f.NOME, f.CODSITUACAO, fun.NOME,"
-                    + " f.DATAADMISSAO, f.CODFILIAL, f.CPF, f.FINGER1, f.FINGER2,"
-                    + " f.FINGER3, f.FINGER4,\n"
-                    + "	f.FINGER5, f.FINGER6, f.SENHA, f.EMAIL \n"
-                    + "from \n"
-                    + "	PFUNC f \n"
-                    + "inner join \n"
-                    + "	PFUNCAO fun \n"
-                    + "on \n"
-                    + "	f.CODFUNCAO = fun.CODFUNCAO AND f.CODCOLIGADA = fun.CODCOLIGADA "
-                    + "ORDER BY f.NOME LIMIT 1000";
-            ResultSet rs = stat.executeQuery(sql);
-            ArrayList<Funcionario> fa = new ArrayList<>();
-            while (rs.next()) {
-                Funcionario f = new Funcionario();
-                Funcao funcao = new Funcao();
-                Situacao situacao = new Situacao();
-                f.setCodColigada(rs.getShort("f.CODCOLIGADA"));
-                f.setChapa(rs.getString("f.CHAPA"));
-                f.setNome(rs.getString("f.NOME"));
-                situacao.setCodSituacao(rs.getString("f.CODSITUACAO").charAt(0));
-
-                f.setSituacao(situacao);
-
-                funcao.setNome(rs.getString("fun.NOME"));
-                f.setFuncao(funcao);
-                f.setDataAdmissao(rs.getDate("f.DATAADMISSAO").toLocalDate());
-                f.setCodFilial(rs.getShort("f.CODFILIAL"));
-                f.setFinger1(rs.getBytes("f.FINGER1"));
-                f.setFinger2(rs.getBytes("f.FINGER2"));
-                f.setFinger3(rs.getBytes("f.FINGER3"));
-                f.setFinger4(rs.getBytes("f.FINGER4"));
-                f.setFinger5(rs.getBytes("f.FINGER5"));
-                f.setFinger6(rs.getBytes("f.FINGER6"));
-                f.setCpf(rs.getString("f.CPF"));
-                f.setSenha(rs.getInt("f.SENHA"));
-                f.setEmail(rs.getString("f.EMAIL"));
-
-                fa.add(f);
-            }
-
-            return fa;
-
-        } catch (SQLException e) {
-            throw new SQLException("Erro ao buscar funcionários! " + e.getMessage());
-        } finally {
-            con.close();
-            stat.close();
-        }//fecha finally
-    }//fecha buscarFuncionario
-    public ArrayList<Funcionario> buscarFuncionariosAtivos() throws SQLException {
-        Connection con = ConexaoBanco.getConexao();
-        Statement stat = con.createStatement();
-        try {
-            String sql = "select \n"
-                    + "	f.CODCOLIGADA, f.CHAPA, f.NOME, f.CODSITUACAO, fun.NOME, f.DATAADMISSAO, f.CODFILIAL, f.CPF, f.FINGER1, f.FINGER2, f.FINGER3, f.FINGER4,\n"
-                    + "	f.FINGER5, f.FINGER6, f.SENHA, f.EMAIL \n"
-                    + "from \n"
-                    + "	PFUNC f \n"
-                    + "inner join \n"
-                    + "	PFUNCAO fun \n"
-                    + "on \n"
-                    + "	f.CODFUNCAO = fun.CODFUNCAO AND f.CODCOLIGADA = fun.CODCOLIGADA WHERE f.CODSITUACAO <> 'D'"
-                    + "ORDER BY f.NOME LIMIT 1000";
-            ResultSet rs = stat.executeQuery(sql);
-            ArrayList<Funcionario> fa = new ArrayList<>();
-            while (rs.next()) {
-                Funcionario f = new Funcionario();
-                Funcao funcao = new Funcao();
-                Situacao situacao = new Situacao();
-                f.setCodColigada(rs.getShort("f.CODCOLIGADA"));
-                f.setChapa(rs.getString("f.CHAPA"));
-                f.setNome(rs.getString("f.NOME"));
-                situacao.setCodSituacao(rs.getString("f.CODSITUACAO").charAt(0));
-
-                f.setSituacao(situacao);
-
-                funcao.setNome(rs.getString("fun.NOME"));
-                f.setFuncao(funcao);
-                f.setDataAdmissao(rs.getDate("f.DATAADMISSAO").toLocalDate());
-                f.setCodFilial(rs.getShort("f.CODFILIAL"));
-                f.setFinger1(rs.getBytes("f.FINGER1"));
-                f.setFinger2(rs.getBytes("f.FINGER2"));
-                f.setFinger3(rs.getBytes("f.FINGER3"));
-                f.setFinger4(rs.getBytes("f.FINGER4"));
-                f.setFinger5(rs.getBytes("f.FINGER5"));
-                f.setFinger6(rs.getBytes("f.FINGER6"));
-                f.setCpf(rs.getString("f.CPF"));
-                f.setSenha(rs.getInt("f.SENHA"));
-                f.setEmail(rs.getString("f.EMAIL"));
-
-                fa.add(f);
-            }
-
-            return fa;
-
-        } catch (SQLException e) {
-            throw new SQLException("Erro ao buscar funcionários! " + e.getMessage());
-        } finally {
-            con.close();
-            stat.close();
-        }//fecha finally
-    }//fecha buscar Funcionarios ativos
-
     public void cadastrarAutenticacao(Funcionario f) throws SQLException {
         Connection con = ConexaoBanco.getConexao();
         PreparedStatement pstmt = null;
@@ -152,7 +43,7 @@ public class FuncionarioDAO {
         }//fecha finally
     }//fecha cadastrarAutenticacao
 
-    public ArrayList<Funcionario> filtarFuncionario(String query) throws SQLException {
+    public ArrayList<Funcionario> filtrarFuncionarios(String query) throws SQLException {
         Connection con = ConexaoBanco.getConexao();
         Statement stat = con.createStatement();
 
@@ -173,31 +64,31 @@ public class FuncionarioDAO {
 
             while (rs.next()) {
 
-                Funcionario f = new Funcionario();
+                Funcionario funcionario = new Funcionario();
                 Funcao funcao = new Funcao();
                 Situacao situacao = new Situacao();
-                f.setCodColigada(rs.getShort("f.CODCOLIGADA"));
-                f.setChapa(rs.getString("f.CHAPA"));
-                f.setNome(rs.getString("f.NOME"));
+                funcionario.setCodColigada(rs.getShort("f.CODCOLIGADA"));
+                funcionario.setChapa(rs.getString("f.CHAPA"));
+                funcionario.setNome(rs.getString("f.NOME"));
                 situacao.setCodSituacao(rs.getString("f.CODSITUACAO").charAt(0));
 
-                f.setSituacao(situacao);
+                funcionario.setSituacao(situacao);
 
                 funcao.setNome(rs.getString("fun.NOME"));
-                f.setFuncao(funcao);
-                f.setDataAdmissao(rs.getDate("f.DATAADMISSAO").toLocalDate());
-                f.setCodFilial(rs.getShort("f.CODFILIAL"));
-                f.setFinger1(rs.getBytes("f.FINGER1"));
-                f.setFinger2(rs.getBytes("f.FINGER2"));
-                f.setFinger3(rs.getBytes("f.FINGER3"));
-                f.setFinger4(rs.getBytes("f.FINGER4"));
-                f.setFinger5(rs.getBytes("f.FINGER5"));
-                f.setFinger6(rs.getBytes("f.FINGER6"));
-                f.setCpf(rs.getString("f.CPF"));
-                f.setSenha(rs.getInt("f.SENHA"));
-                f.setEmail(rs.getString("f.EMAIL"));
+                funcionario.setFuncao(funcao);
+                funcionario.setDataAdmissao(rs.getDate("f.DATAADMISSAO").toLocalDate());
+                funcionario.setCodFilial(rs.getShort("f.CODFILIAL"));
+                funcionario.setFinger1(rs.getBytes("f.FINGER1"));
+                funcionario.setFinger2(rs.getBytes("f.FINGER2"));
+                funcionario.setFinger3(rs.getBytes("f.FINGER3"));
+                funcionario.setFinger4(rs.getBytes("f.FINGER4"));
+                funcionario.setFinger5(rs.getBytes("f.FINGER5"));
+                funcionario.setFinger6(rs.getBytes("f.FINGER6"));
+                funcionario.setCpf(rs.getString("f.CPF"));
+                funcionario.setSenha(rs.getInt("f.SENHA"));
+                funcionario.setEmail(rs.getString("f.EMAIL"));
 
-                fun.add(f);
+                fun.add(funcionario);
             }
             return fun;
         } catch (SQLException e) {

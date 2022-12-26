@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package view;
+package view.epi;
 
 import dao.DAOFactory;
 import java.awt.Desktop;
@@ -16,18 +16,19 @@ import java.util.ArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.JOptionPane;
-import model.Epi;
-import model.EpiFuncionario;
-import model.EpiFuncionarioTableModel;
-import model.EpiTableModel;
+import model.epi.Epi;
+import model.epi.EpiFuncionario;
+import model.epi.tables.EpiFuncionarioTableModel;
 import model.Funcionario;
-import model.FuncionarioTableModel;
-import services.EpiFuncionarioServicos;
-import services.EpiServicos;
-import services.FuncionarioServicos;
+import model.epi.tables.EpiTableModel;
+import model.epi.tables.FuncionarioTableModel;
+import services.epi.EpiFuncionarioService;
+import services.epi.EpiService;
+import services.funcionario.FuncionarioService;
 import services.ServicosFactory;
 import utilitarios.FormatarData;
 import utilitarios.os.CurrencyTableCellRenderer;
+import view.Menu;
 
 /**
  *
@@ -35,11 +36,12 @@ import utilitarios.os.CurrencyTableCellRenderer;
  */
 public class UIControleEpi extends javax.swing.JInternalFrame {
 
+    private EpiService epiService;
+    private EpiFuncionarioService epiFuncionarioService;
+    private FuncionarioService funcionarioService;
     private FuncionarioTableModel fTableModel = new FuncionarioTableModel();
     private EpiFuncionarioTableModel efTableModel = new EpiFuncionarioTableModel();
     private EpiTableModel eTableModel = new EpiTableModel();
-    private UIFuncionario uiFuncionario;
-    private boolean flagFuncionario = false;
     private boolean flagNavegador = false;
     private Menu menu;
     private CurrencyTableCellRenderer cRenderer = new CurrencyTableCellRenderer();
@@ -49,6 +51,9 @@ public class UIControleEpi extends javax.swing.JInternalFrame {
      */
     public UIControleEpi(Menu menu) {
         this.menu = menu;
+        this.epiService = new EpiService();
+        this.epiFuncionarioService = new EpiFuncionarioService();
+        this.funcionarioService = new FuncionarioService();
         initComponents();
         darPermissoes();
         jchAtivos.setSelected(true);
@@ -77,10 +82,6 @@ public class UIControleEpi extends javax.swing.JInternalFrame {
         } else {
             jchDescontar.setVisible(false);
         }
-    }
-
-    public void setFlagFuncionario(boolean flagFuncionario) {
-        this.flagFuncionario = flagFuncionario;
     }
 
     private void redimensionarColunasFunc() {
@@ -186,8 +187,6 @@ public class UIControleEpi extends javax.swing.JInternalFrame {
         jtfCodEpiFiltro = new javax.swing.JTextField();
         jlNomeEpiFiltro = new javax.swing.JLabel();
         jtfNomeEpiFiltro = new javax.swing.JTextField();
-        jlDescricaoFiltro = new javax.swing.JLabel();
-        jtfDescricaoFiltro = new javax.swing.JTextField();
         jbCPesquisar = new javax.swing.JButton();
         jbAtualizarEpis = new javax.swing.JButton();
 
@@ -530,14 +529,6 @@ public class UIControleEpi extends javax.swing.JInternalFrame {
             }
         });
 
-        jlDescricaoFiltro.setText("Descrição");
-
-        jtfDescricaoFiltro.addKeyListener(new java.awt.event.KeyAdapter() {
-            public void keyPressed(java.awt.event.KeyEvent evt) {
-                jtfDescricaoFiltroKeyPressed(evt);
-            }
-        });
-
         jbCPesquisar.setText("Pesquisar");
         jbCPesquisar.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -568,11 +559,7 @@ public class UIControleEpi extends javax.swing.JInternalFrame {
                         .addGroup(jpCadEpiLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(jtfNomeEpiFiltro, javax.swing.GroupLayout.PREFERRED_SIZE, 300, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addComponent(jlNomeEpiFiltro))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addGroup(jpCadEpiLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(jtfDescricaoFiltro, javax.swing.GroupLayout.PREFERRED_SIZE, 268, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(jlDescricaoFiltro))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 261, Short.MAX_VALUE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 552, Short.MAX_VALUE)
                         .addComponent(jbAtualizarEpis)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(jbCPesquisar)))
@@ -584,17 +571,15 @@ public class UIControleEpi extends javax.swing.JInternalFrame {
                 .addContainerGap()
                 .addGroup(jpCadEpiLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jlCodEpiFiltro)
-                    .addComponent(jlNomeEpiFiltro)
-                    .addComponent(jlDescricaoFiltro))
+                    .addComponent(jlNomeEpiFiltro))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(jpCadEpiLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jtfCodEpiFiltro, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jtfNomeEpiFiltro, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jtfDescricaoFiltro, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jbAtualizarEpis)
                     .addComponent(jbCPesquisar))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jScrollPane3, javax.swing.GroupLayout.DEFAULT_SIZE, 433, Short.MAX_VALUE)
+                .addComponent(jScrollPane3, javax.swing.GroupLayout.DEFAULT_SIZE, 441, Short.MAX_VALUE)
                 .addContainerGap())
         );
 
@@ -620,46 +605,22 @@ public class UIControleEpi extends javax.swing.JInternalFrame {
         setBounds(0, 0, 1144, 584);
     }// </editor-fold>//GEN-END:initComponents
 
-    /**
-     * Método usado para abrir tela de funcionário ao clicar na tabela de
-     * funcionários
-     *
-     * @param evt
-     */
     private void jtblFuncionarioMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jtblFuncionarioMouseClicked
         if (evt.getClickCount() == 2) {
-            if (!flagFuncionario) {
-                Funcionario f = getFuncionarioDaLinhaSelecionada();
-                if (f.getFinger1() != null || f.getFinger2() != null
-                        || f.getFinger3() != null || f.getFinger4() != null
-                        || f.getFinger5() != null || f.getFinger6() != null
-                        || f.getSenha() != 0) {
+            Funcionario f = getFuncionarioDaLinhaSelecionada();
+            if (f.getFinger1() != null || f.getFinger2() != null
+                    || f.getFinger3() != null || f.getFinger4() != null
+                    || f.getFinger5() != null || f.getFinger6() != null
+                    || f.getSenha() != 0) {
 
-                    UICarregando carregando = new UICarregando(null, false);
-                    carregando.setVisible(true);
-                    Thread t = new Thread() {
-                        @Override
-                        public void run() {
-                            abrirNavegador();
-                            uiFuncionario = new UIFuncionario(UIControleEpi.this);
-                            menu.getJdpAreaTrabalho().add(uiFuncionario);
-                            uiFuncionario.setLocation(menu.getJdpAreaTrabalho().getWidth() / 2 - uiFuncionario.getWidth() / 2,
-                                    menu.getJdpAreaTrabalho().getHeight() / 2 - uiFuncionario.getHeight() / 2);
-                            uiFuncionario.setVisible(true);
-                            flagFuncionario = true;
-
-                            carregando.dispose();
-                        }
-                    };
-                    t.start();
-                } else {
-                    JOptionPane.showMessageDialog(
-                            null,
-                            "Digitais e senha não cadastradas!",
-                            "Aviso",
-                            JOptionPane.WARNING_MESSAGE
-                    );
-                }
+                new UIFuncionarioEPI(UIControleEpi.this).setVisible(true);
+            } else {
+                JOptionPane.showMessageDialog(
+                        null,
+                        "Digitais e senha não cadastradas!",
+                        "Aviso",
+                        JOptionPane.WARNING_MESSAGE
+                );
             }
         }
     }//GEN-LAST:event_jtblFuncionarioMouseClicked
@@ -725,18 +686,6 @@ public class UIControleEpi extends javax.swing.JInternalFrame {
             pesquisarEpis();
         }
     }//GEN-LAST:event_jtfNomeEpiFiltroKeyPressed
-
-    /**
-     * Método usado para filtrar tabela de EPI's pela descrição ao pressionar a
-     * tecla ENTER do teclado
-     *
-     * @param evt
-     */
-    private void jtfDescricaoFiltroKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_jtfDescricaoFiltroKeyPressed
-        if (evt.getKeyCode() == KeyEvent.VK_ENTER) {
-            pesquisarEpis();
-        }
-    }//GEN-LAST:event_jtfDescricaoFiltroKeyPressed
 
     /**
      * Método usado para pesquisar dados da tabela de histórico
@@ -940,7 +889,6 @@ public class UIControleEpi extends javax.swing.JInternalFrame {
     private void limparCamposEpis() {
         jtfCodEpiFiltro.setText("");
         jtfNomeEpiFiltro.setText("");
-        jtfDescricaoFiltro.setText("");
     }//limparCamposEpis
 
     /**
@@ -948,8 +896,6 @@ public class UIControleEpi extends javax.swing.JInternalFrame {
      */
     public void filtrarFuncionario() {
         try {
-            FuncionarioServicos fs = ServicosFactory.getFUNCIONARIOSERVICOS();
-
             String query = " where f.CHAPA > 0";
 
             if (!jtfColigada.getText().isEmpty()) {
@@ -972,7 +918,7 @@ public class UIControleEpi extends javax.swing.JInternalFrame {
                 query += " and f.CODSITUACAO <> 'D'";
             }
 
-            ArrayList<Funcionario> funcionarios = fs.filtarFuncionario(query);
+            ArrayList<Funcionario> funcionarios = funcionarioService.filtarFuncionarios(query);
 
             for (Funcionario funcionario : funcionarios) {
 
@@ -992,8 +938,6 @@ public class UIControleEpi extends javax.swing.JInternalFrame {
      */
     public void filtrarEpiFuncionario() {
         try {
-            EpiFuncionarioServicos efs = ServicosFactory.getEPIFUNCIONARIOSERVICOS();
-
             String query = " where ef.CHAPA > 0";
 
             if (!jtfHColigada.getText().isEmpty()) {
@@ -1029,7 +973,7 @@ public class UIControleEpi extends javax.swing.JInternalFrame {
                 query += " and ef.DESCONTAR = TRUE and ef.DESCONTADO = FALSE";
             }
 
-            ArrayList<EpiFuncionario> registrosDeEntrega = efs.filtarEpiFuncionario(query);
+            ArrayList<EpiFuncionario> registrosDeEntrega = epiFuncionarioService.filtrarEpiFuncionario(query);
 
             for (EpiFuncionario registroDeEntrega : registrosDeEntrega) {
                 efTableModel.addRow(registroDeEntrega);
@@ -1051,35 +995,31 @@ public class UIControleEpi extends javax.swing.JInternalFrame {
     public void filtrarEpi() {
         try {
 
-            EpiServicos es = ServicosFactory.getEPISERVICOS();
-            String query = " where CODEPI IS NOT NULL";
+            String query = "";
 
             if (!jtfCodEpiFiltro.getText().isEmpty()) {
-                query += " and CODEPI like '%" + jtfCodEpiFiltro.getText() + "%'";
+                query += " AND CODEPI like '%" + jtfCodEpiFiltro.getText() + "%'";
             }
 
             if (!jtfNomeEpiFiltro.getText().isEmpty()) {
-                query += " and NOME like '%" + jtfNomeEpiFiltro.getText() + "%'";
+                query += " AND NOME like '%" + jtfNomeEpiFiltro.getText() + "%'";
             }
 
-            if (!jtfDescricaoFiltro.getText().isEmpty()) {
-                query += " and DESCRICAO like '%" + jtfDescricaoFiltro.getText() + "%'";
+            ArrayList<Epi> epis = epiService.filtrarEpi(query);
+
+            for (int i = 0; i < epis.size(); i++) {
+                eTableModel.addRow(epis.get(i));
             }
-
-            ArrayList<Epi> epis = es.filtrarEpi(query);
-
-            for (Epi epi : epis) {
-                eTableModel.addRow(epi);
-            }//fecha for
 
             jtblEpi.setModel(eTableModel);
 
         } catch (SQLException e) {
-            JOptionPane.showMessageDialog(this, 
-                    e.getMessage(), 
-                    "Erro ao buscar EPI's", 
-                    JOptionPane.ERROR_MESSAGE);
-        }//fecha catch
+            JOptionPane.showMessageDialog(this,
+                    e.getMessage(),
+                    "Erro buscar EPI's",
+                    JOptionPane.ERROR_MESSAGE
+            );
+        }
     }//fecha filtrarEpi
 
     /**
@@ -1192,7 +1132,6 @@ public class UIControleEpi extends javax.swing.JInternalFrame {
     private javax.swing.JLabel jlCodEpiFiltro;
     private javax.swing.JLabel jlColigada;
     private javax.swing.JLabel jlDe;
-    private javax.swing.JLabel jlDescricaoFiltro;
     private javax.swing.JLabel jlHCa;
     private javax.swing.JLabel jlHChapa;
     private javax.swing.JLabel jlHColigada;
@@ -1209,7 +1148,6 @@ public class UIControleEpi extends javax.swing.JInternalFrame {
     private javax.swing.JTextField jtfChapa;
     private javax.swing.JTextField jtfCodEpiFiltro;
     private javax.swing.JTextField jtfColigada;
-    private javax.swing.JTextField jtfDescricaoFiltro;
     private javax.swing.JTextField jtfHCa;
     private javax.swing.JTextField jtfHChapa;
     private javax.swing.JTextField jtfHColigada;

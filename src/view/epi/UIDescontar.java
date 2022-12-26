@@ -3,14 +3,14 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package view;
+package view.epi;
 
 import dao.DAOFactory;
 import dao.EpiFuncionarioDAO;
 import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 import javax.swing.JOptionPane;
-import model.EpiFuncionario;
+import model.epi.EpiFuncionario;
+import services.epi.EpiFuncionarioService;
 import utilitarios.FormatarData;
 
 /**
@@ -19,16 +19,16 @@ import utilitarios.FormatarData;
  */
 public class UIDescontar extends javax.swing.JDialog {
 
-    private EpiFuncionario historico;
-    private EpiFuncionarioDAO dao;
+    private EpiFuncionario epiFuncionario;
+    private EpiFuncionarioService epiFuncionarioService;
 
     public UIDescontar() {
     }
 
-    public UIDescontar(EpiFuncionario historico) {
+    public UIDescontar(EpiFuncionario epiFuncionario) {
+        this.epiFuncionario = epiFuncionario;
+        this.epiFuncionarioService = new EpiFuncionarioService();
         initComponents();
-        this.historico = historico;
-        this.dao = DAOFactory.getEpifuncionariodao();
         preencherDataDevolucao();
     }
 
@@ -130,9 +130,9 @@ public class UIDescontar extends javax.swing.JDialog {
         if (jcbDescontar.isSelected()) {
             try {
 
-                historico.setDescontar(jcbDescontar.isSelected());
+                epiFuncionario.setDescontar(jcbDescontar.isSelected());
 
-                dao.alterarDescontar(historico);
+                epiFuncionarioService.alterarDescontar(epiFuncionario);
 
             } catch (Exception e) {
                 JOptionPane.showMessageDialog(null,

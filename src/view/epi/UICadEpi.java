@@ -3,15 +3,15 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package view;
+package view.epi;
 
 import java.awt.event.KeyEvent;
 import java.text.DecimalFormat;
 import java.text.DecimalFormatSymbols;
 import java.util.Locale;
 import javax.swing.JOptionPane;
-import model.Epi;
-import services.EpiServicos;
+import model.epi.Epi;
+import services.epi.EpiService;
 import services.ServicosFactory;
 
 /**
@@ -21,7 +21,7 @@ import services.ServicosFactory;
 public class UICadEpi extends javax.swing.JDialog {
 
     private Epi epi;
-    private EpiServicos es;
+    private EpiService es;
 
     /**
      * Creates new form UICadEpi
@@ -89,7 +89,7 @@ public class UICadEpi extends javax.swing.JDialog {
         jLabel2 = new javax.swing.JLabel();
         jtfNome = new javax.swing.JTextField();
         jLabel3 = new javax.swing.JLabel();
-        jcbPeriodicidade = new javax.swing.JComboBox<String>();
+        jcbPeriodicidade = new javax.swing.JComboBox<>();
         jLabel4 = new javax.swing.JLabel();
         jtfPreco = new utilitarios.JMoneyFieldValor();
         jbCancelar = new javax.swing.JButton();
@@ -114,7 +114,7 @@ public class UICadEpi extends javax.swing.JDialog {
 
         jLabel3.setText("Periodicidade em dias: ");
 
-        jcbPeriodicidade.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12", "13", "14", "15", "16", "17", "18", "19", "20", "21", "22", "23", "24", "25", "26", "27", "28", "29", "30", "60", "90", "120", "150", "180", "365" }));
+        jcbPeriodicidade.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12", "13", "14", "15", "16", "17", "18", "19", "20", "21", "22", "23", "24", "25", "26", "27", "28", "29", "30", "60", "90", "120", "150", "180", "365" }));
 
         jLabel4.setText("Preço:");
 

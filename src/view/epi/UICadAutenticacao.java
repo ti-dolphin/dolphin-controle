@@ -1,5 +1,6 @@
-package view;
+package view.epi;
 
+import view.epi.UIControleEpi;
 import cis.sdk.CisBiox;
 import exceptions.RetornosException;
 import java.awt.Color;
@@ -9,7 +10,7 @@ import java.sql.SQLException;
 import java.util.regex.Pattern;
 import javax.swing.JOptionPane;
 import model.Funcionario;
-import services.FuncionarioServicos;
+import services.funcionario.FuncionarioService;
 import services.ServicosFactory;
 
 /**
@@ -480,7 +481,7 @@ public class UICadAutenticacao extends javax.swing.JDialog {
      */
     public void cadastrarSenha() {
         try {
-            FuncionarioServicos fs = ServicosFactory.getFUNCIONARIOSERVICOS();
+            FuncionarioService fs = ServicosFactory.getFUNCIONARIOSERVICOS();
             Funcionario f = uiCE.getFuncionarioDaLinhaSelecionada();
             if (validaSenha() == true) {
                 String senha = new String(jpfCadSenha.getPassword());
@@ -520,7 +521,7 @@ public class UICadAutenticacao extends javax.swing.JDialog {
                 jlCadOk.setText("Leitura OK!");
                 jlCadOk.setForeground(Color.green);
 
-                FuncionarioServicos fs = ServicosFactory.getFUNCIONARIOSERVICOS();
+                FuncionarioService fs = ServicosFactory.getFUNCIONARIOSERVICOS();
                 Funcionario f = uiCE.getFuncionarioDaLinhaSelecionada();
                 f.setFinger1(digital1);
 
@@ -560,7 +561,7 @@ public class UICadAutenticacao extends javax.swing.JDialog {
                 jlCadOk.setText("Leitura OK!");
                 jlCadOk.setForeground(Color.green);
 
-                FuncionarioServicos fs = ServicosFactory.getFUNCIONARIOSERVICOS();
+                FuncionarioService fs = ServicosFactory.getFUNCIONARIOSERVICOS();
                 Funcionario f = uiCE.getFuncionarioDaLinhaSelecionada();
                 f.setFinger2(digital2);
 
@@ -601,7 +602,7 @@ public class UICadAutenticacao extends javax.swing.JDialog {
                 jlCadOk.setText("Leitura OK!");
                 jlCadOk.setForeground(Color.green);
 
-                FuncionarioServicos fs = ServicosFactory.getFUNCIONARIOSERVICOS();
+                FuncionarioService fs = ServicosFactory.getFUNCIONARIOSERVICOS();
                 Funcionario f = uiCE.getFuncionarioDaLinhaSelecionada();
                 f.setFinger3(digital3);
 
@@ -643,7 +644,7 @@ public class UICadAutenticacao extends javax.swing.JDialog {
                 jlCadOk.setText("Leitura OK!");
                 jlCadOk.setForeground(Color.green);
 
-                FuncionarioServicos fs = ServicosFactory.getFUNCIONARIOSERVICOS();
+                FuncionarioService fs = ServicosFactory.getFUNCIONARIOSERVICOS();
                 Funcionario f = uiCE.getFuncionarioDaLinhaSelecionada();
                 f.setFinger4(digital4);
 
@@ -684,7 +685,7 @@ public class UICadAutenticacao extends javax.swing.JDialog {
                 jlCadOk.setText("Leitura OK!");
                 jlCadOk.setForeground(Color.green);
 
-                FuncionarioServicos fs = ServicosFactory.getFUNCIONARIOSERVICOS();
+                FuncionarioService fs = ServicosFactory.getFUNCIONARIOSERVICOS();
                 Funcionario f = uiCE.getFuncionarioDaLinhaSelecionada();
                 f.setFinger5(digital5);
 
@@ -725,7 +726,7 @@ public class UICadAutenticacao extends javax.swing.JDialog {
                 jlCadOk.setText("Leitura OK!");
                 jlCadOk.setForeground(Color.green);
 
-                FuncionarioServicos fs = ServicosFactory.getFUNCIONARIOSERVICOS();
+                FuncionarioService fs = ServicosFactory.getFUNCIONARIOSERVICOS();
                 Funcionario f = uiCE.getFuncionarioDaLinhaSelecionada();
                 f.setFinger6(digital6);
 

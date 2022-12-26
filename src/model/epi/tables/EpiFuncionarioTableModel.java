@@ -3,13 +3,14 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package model;
+package model.epi.tables;
 
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import javax.swing.table.AbstractTableModel;
+import model.epi.EpiFuncionario;
 
 /**
  *
@@ -62,9 +63,9 @@ public class EpiFuncionarioTableModel extends AbstractTableModel {
             case 0:
                 return lista.get(linha).getCodRegistro();
             case 1:
-                return lista.get(linha).getCodColigada();
+                return lista.get(linha).getFuncionario().getCodColigada();
             case 2:
-                return lista.get(linha).getChapa();
+                return lista.get(linha).getFuncionario().getChapa();
             case 3:
                 return lista.get(linha).getFuncionario().getNome();
             case 4:

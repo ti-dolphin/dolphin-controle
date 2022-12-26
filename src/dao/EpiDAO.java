@@ -8,7 +8,7 @@ import java.sql.Statement;
 import java.util.ArrayList;
 
 import persistencia.ConexaoBanco;
-import model.Epi;
+import model.epi.Epi;
 
 public class EpiDAO {
 
@@ -50,11 +50,9 @@ public class EpiDAO {
 
         try {
             String sql;
-            sql = "select * from VCATALOGEPI" + query;
-
+            sql = "SELECT * FROM VCATALOGEPI WHERE NOME IS NOT NULL " + query;
             ResultSet rs = stat.executeQuery(sql);
             ArrayList<Epi> ea = new ArrayList<>();
-
             while (rs.next()) {
                 Epi e = new Epi();
 
@@ -73,8 +71,8 @@ public class EpiDAO {
         } finally {
             con.close();
             stat.close();
-        }//fecha finally
-    }//fecha buscarEpi
+        }
+    }
     
     public void alterar(Epi epi) throws SQLException {
         Connection con = ConexaoBanco.getConexao();

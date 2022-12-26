@@ -8,7 +8,7 @@ package view;
 import dao.DAOFactory;
 import dao.EpiFuncionarioDAO;
 import javax.swing.JOptionPane;
-import model.EpiFuncionario;
+import model.epi.EpiFuncionario;
 
 /**
  *

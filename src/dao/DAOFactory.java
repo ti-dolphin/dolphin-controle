@@ -40,7 +40,6 @@ public class DAOFactory {
     private static final ApontamentoDAO APONTAMENTODAO = new ApontamentoDAO();
     private static final ComentarioDAO COMENTARIODAO = new ComentarioDAO();
     private static final SistemaDAO SISTEMADAO = new SistemaDAO();
-    private static final FichaEpiDAO FICHAEPIDAO = new FichaEpiDAO();
     private static final SeguidoresDAO SEGUIDORESDAO = new SeguidoresDAO();
     private static final AlteracoesOsDAO ALTERACOESOSDAO = new AlteracoesOsDAO();
     private static final HistoricoStatusDAO HISTORICOSTATUSDAO = new HistoricoStatusDAO();
@@ -60,10 +59,6 @@ public class DAOFactory {
     private static final ClienteComentarioDAO CLIENTECOMENTARIODAO = new ClienteComentarioDAO();
     private static final MotivoPerdaDAO MOTIVOPERDADAO = new MotivoPerdaDAO();
 
-    public static FichaEpiDAO getFICHAEPIDAO() {
-        return FICHAEPIDAO;
-    }
-    
     public static SistemaDAO getSISTEMADAO() {
         return SISTEMADAO;
     }

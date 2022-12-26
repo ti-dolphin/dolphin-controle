@@ -5,6 +5,7 @@
  */
 package view;
 
+import view.epi.UIControleEpi;
 import dao.SistemaDAO;
 import javax.swing.ImageIcon;
 import javax.swing.event.InternalFrameEvent;

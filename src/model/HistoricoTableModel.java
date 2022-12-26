@@ -10,7 +10,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import javax.swing.table.AbstractTableModel;
-import model.EpiFuncionario;
+import model.epi.EpiFuncionario;
 
 /**
  *
@@ -19,7 +19,7 @@ import model.EpiFuncionario;
 public class HistoricoTableModel extends AbstractTableModel {
 
     private List<EpiFuncionario> registros = new ArrayList<>();
-    private String[] colunas = {"Id", "Coligada", "Funcionário", "EPI", "Data Retirada", "Data Devolução", "CA", "Latitude", "Longitude"};
+    private String[] colunas = {"Id", "Coligada", "Funcionário", "EPI", "Data Retirada", "Data Devolução", "CA"};
 
     @Override
     public String getColumnName(int column) {
@@ -42,7 +42,7 @@ public class HistoricoTableModel extends AbstractTableModel {
             case 0:
                 return registros.get(linha).getCodRegistro();
             case 1:
-                return registros.get(linha).getCodColigada();
+                return registros.get(linha).getFuncionario().getCodColigada();
             case 2:
                 return registros.get(linha).getFuncionario().getNome();
             case 3:
@@ -61,10 +61,6 @@ public class HistoricoTableModel extends AbstractTableModel {
                 }
             case 6:
                 return registros.get(linha).getCa();
-            case 7:
-                return registros.get(linha).getLatitude();
-            case 8:
-                return registros.get(linha).getLongitude();
         }
         return null;
     }

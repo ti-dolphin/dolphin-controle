@@ -1,6 +1,8 @@
-package model;
+package model.epi;
 
 import java.time.LocalDateTime;
+import model.Funcionario;
+import model.Ticket;
 
 /**
  *
@@ -9,22 +11,16 @@ import java.time.LocalDateTime;
 public class EpiFuncionario {
 
     private int codRegistro;
-    private short codColigada;
-    private String chapa;
-    private String codEpi;
     private LocalDateTime dataRetirada;
     private LocalDateTime dataDevolucao;
     private String ca;
     private boolean emailEnviado;
     private Funcionario funcionario;
-    private double latitude;
-    private double longitude;
     private Epi epi;
     private int codTkt;
     private int tktEntrega;
     private int tktDevolucao;
     private Ticket ticket;
-    private FichaEpi fichaEpi;
     private String createdBy;
     private String modifiedBy;
     private String motivo;
@@ -34,10 +30,6 @@ public class EpiFuncionario {
 
     public EpiFuncionario() {
     
-    }
-
-    public EpiFuncionario(FichaEpi fichaEpi) {
-        this.fichaEpi = fichaEpi;
     }
     
     public int getCodTkt() {
@@ -64,52 +56,12 @@ public class EpiFuncionario {
         this.tktDevolucao = tktDevolucao;
     }
 
-    public double getLatitude() {
-        return latitude;
-    }
-
-    public void setLatitude(double latitude) {
-        this.latitude = latitude;
-    }
-
-    public double getLongitude() {
-        return longitude;
-    }
-
-    public void setLongitude(double longitude) {
-        this.longitude = longitude;
-    }
-
     public int getCodRegistro() {
         return codRegistro;
     }
 
     public void setCodRegistro(int codRegistro) {
         this.codRegistro = codRegistro;
-    }
-
-    public short getCodColigada() {
-        return codColigada;
-    }
-
-    public void setCodColigada(short codColigada) {
-        this.codColigada = codColigada;
-    }
-
-    public String getChapa() {
-        return chapa;
-    }
-
-    public void setChapa(String chapa) {
-        this.chapa = chapa;
-    }
-
-    public String getCodEpi() {
-        return codEpi;
-    }
-
-    public void setCodEpi(String codEpi) {
-        this.codEpi = codEpi;
     }
 
     public LocalDateTime getDataRetirada() {
@@ -184,14 +136,6 @@ public class EpiFuncionario {
         this.modifiedBy = modifiedBy;
     }
 
-    public FichaEpi getFichaEpi() {
-        return fichaEpi;
-    }
-
-    public void setFichaEpi(FichaEpi fichaEpi) {
-        this.fichaEpi = fichaEpi;
-    }
-
     public String getMotivo() {
         return motivo;
     }
@@ -227,8 +171,8 @@ public class EpiFuncionario {
     @Override
     public String toString() {
         return "\nCódigo do registro: " + codRegistro
-                + "\nCódigo coligada: " + codColigada
-                + "\nChapa: " + chapa + "Código de EPI: " + codEpi
+                + "\nCódigo coligada: " + funcionario.getCodColigada()
+                + "\nChapa: " + funcionario.getChapa() + "Código de EPI: " + epi.getCodEpi()
                 + "\nData da retirada: " + dataRetirada
                 + "\nData da devolucao: " + dataDevolucao
                 + "\nCA: " + ca

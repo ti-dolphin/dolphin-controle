@@ -1,34 +1,26 @@
 /*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
+ * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
+ * Click nbfs://nbhost/SystemFileSystem/Templates/GUIForms/JDialog.java to edit this template
  */
-package view;
+package view.epi;
 
 import java.awt.event.KeyEvent;
-import java.sql.SQLException;
 import javax.swing.JOptionPane;
+import model.epi.EpiFuncionario;
 
 /**
  *
- * @author guilherme.oliveira
+ * @author ti
  */
-public class UIC extends javax.swing.JInternalFrame {
+public class UICa extends javax.swing.JDialog {
 
-    private UIFuncionario parent;
+    private final EpiFuncionario epiFuncionario;
+    private final UIFuncionarioEPI uiFuncionarioEpi;
 
-    /**
-     * Creates new form UIC
-     *
-     * @param parent
-     */
-    public UIC(UIFuncionario parent) {
-        this.parent = parent;
+    public UICa(UIFuncionarioEPI uiFuncionarioEpi, EpiFuncionario epiFuncionario) {
+        this.epiFuncionario = epiFuncionario;
+        this.uiFuncionarioEpi = uiFuncionarioEpi;
         initComponents();
-    }
-
-    public UIFuncionario getUiFuncionario() {
-        return parent;
     }
 
     /**
@@ -43,8 +35,8 @@ public class UIC extends javax.swing.JInternalFrame {
         jlCCa = new javax.swing.JLabel();
         jtfCCA = new javax.swing.JTextField();
 
-        setClosable(true);
-        setTitle("CA");
+        setDefaultCloseOperation(javax.swing.WindowConstants.DO_NOTHING_ON_CLOSE);
+        setModal(true);
 
         jlCCa.setText("Digite o CA do EPI");
 
@@ -59,47 +51,38 @@ public class UIC extends javax.swing.JInternalFrame {
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addGap(54, 54, 54)
-                .addComponent(jlCCa)
-                .addGap(18, 18, 18)
-                .addComponent(jtfCCA, javax.swing.GroupLayout.PREFERRED_SIZE, 200, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(62, Short.MAX_VALUE))
+                .addContainerGap()
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jlCCa)
+                    .addComponent(jtfCCA, javax.swing.GroupLayout.PREFERRED_SIZE, 263, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addGap(27, 27, 27)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jlCCa)
-                    .addComponent(jtfCCA, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addContainerGap(31, Short.MAX_VALUE))
+                .addContainerGap()
+                .addComponent(jlCCa)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jtfCCA, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
         pack();
+        setLocationRelativeTo(null);
     }// </editor-fold>//GEN-END:initComponents
 
     private void jtfCCAKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_jtfCCAKeyPressed
         if (evt.getKeyCode() == KeyEvent.VK_ENTER) {
             if (!jtfCCA.getText().isEmpty()) {
-                parent.setCa(jtfCCA.getText());
-                if (parent.getCodFichaEpi() == 0) {
-                    UIEntregar uiEntregar = new UIEntregar(this);
-                    Menu menu = parent.getUiControleEpi().getMenu();
-                    uiEntregar.setLocation(
-                            menu.getJdpAreaTrabalho().getWidth() / 2 - uiEntregar.getWidth() / 2,
-                            menu.getJdpAreaTrabalho().getHeight() / 2 - uiEntregar.getHeight() / 2);
-                    menu.getJdpAreaTrabalho().add(uiEntregar);
-                    uiEntregar.setVisible(true);
-                    this.dispose();
-                } else {
-                    parent.inserirHistorico();
-                }
+                epiFuncionario.setCa(jtfCCA.getText());
+                new UIEntregarEPI(uiFuncionarioEpi, epiFuncionario, true).setVisible(true);
                 this.dispose();
             } else {
                 JOptionPane.showMessageDialog(this, "Campo CA obrigatório!");
             }
         }
     }//GEN-LAST:event_jtfCCAKeyPressed
+
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JLabel jlCCa;
     private javax.swing.JTextField jtfCCA;

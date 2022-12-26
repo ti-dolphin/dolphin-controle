@@ -551,12 +551,7 @@
                                   <Component id="jtfNomeEpiFiltro" alignment="0" min="-2" pref="300" max="-2" attributes="0"/>
                                   <Component id="jlNomeEpiFiltro" alignment="0" min="-2" max="-2" attributes="0"/>
                               </Group>
-                              <EmptySpace max="-2" attributes="0"/>
-                              <Group type="103" groupAlignment="0" attributes="0">
-                                  <Component id="jtfDescricaoFiltro" alignment="0" min="-2" pref="268" max="-2" attributes="0"/>
-                                  <Component id="jlDescricaoFiltro" alignment="0" min="-2" max="-2" attributes="0"/>
-                              </Group>
-                              <EmptySpace pref="261" max="32767" attributes="0"/>
+                              <EmptySpace pref="552" max="32767" attributes="0"/>
                               <Component id="jbAtualizarEpis" min="-2" max="-2" attributes="0"/>
                               <EmptySpace max="-2" attributes="0"/>
                               <Component id="jbCPesquisar" min="-2" max="-2" attributes="0"/>
@@ -573,18 +568,16 @@
                       <Group type="103" groupAlignment="3" attributes="0">
                           <Component id="jlCodEpiFiltro" alignment="3" min="-2" max="-2" attributes="0"/>
                           <Component id="jlNomeEpiFiltro" alignment="3" min="-2" max="-2" attributes="0"/>
-                          <Component id="jlDescricaoFiltro" alignment="3" min="-2" max="-2" attributes="0"/>
                       </Group>
                       <EmptySpace max="-2" attributes="0"/>
                       <Group type="103" groupAlignment="3" attributes="0">
                           <Component id="jtfCodEpiFiltro" alignment="3" min="-2" max="-2" attributes="0"/>
                           <Component id="jtfNomeEpiFiltro" alignment="3" min="-2" max="-2" attributes="0"/>
-                          <Component id="jtfDescricaoFiltro" alignment="3" min="-2" max="-2" attributes="0"/>
                           <Component id="jbAtualizarEpis" alignment="3" min="-2" max="-2" attributes="0"/>
                           <Component id="jbCPesquisar" alignment="3" min="-2" max="-2" attributes="0"/>
                       </Group>
                       <EmptySpace max="-2" attributes="0"/>
-                      <Component id="jScrollPane3" pref="433" max="32767" attributes="0"/>
+                      <Component id="jScrollPane3" pref="441" max="32767" attributes="0"/>
                       <EmptySpace max="-2" attributes="0"/>
                   </Group>
               </Group>
@@ -633,16 +626,6 @@
             <Component class="javax.swing.JTextField" name="jtfNomeEpiFiltro">
               <Events>
                 <EventHandler event="keyPressed" listener="java.awt.event.KeyListener" parameters="java.awt.event.KeyEvent" handler="jtfNomeEpiFiltroKeyPressed"/>
-              </Events>
-            </Component>
-            <Component class="javax.swing.JLabel" name="jlDescricaoFiltro">
-              <Properties>
-                <Property name="text" type="java.lang.String" value="Descri&#xe7;&#xe3;o"/>
-              </Properties>
-            </Component>
-            <Component class="javax.swing.JTextField" name="jtfDescricaoFiltro">
-              <Events>
-                <EventHandler event="keyPressed" listener="java.awt.event.KeyListener" parameters="java.awt.event.KeyEvent" handler="jtfDescricaoFiltroKeyPressed"/>
               </Events>
             </Component>
             <Component class="javax.swing.JButton" name="jbCPesquisar">

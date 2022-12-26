@@ -11,8 +11,8 @@ import javax.swing.JOptionPane;
 import javax.swing.RowFilter;
 import javax.swing.table.TableRowSorter;
 import model.Funcionario;
-import model.FuncionariosTableModel;
-import services.FuncionarioServicos;
+import model.epi.tables.FuncionariosTableModel;
+import services.funcionario.FuncionarioService;
 import services.ServicosFactory;
 
 /**
@@ -22,7 +22,7 @@ import services.ServicosFactory;
 public class UIBuscarFuncionariosPJ extends javax.swing.JDialog {
 
     private UICadFeriasFuncionarioPJ uiCadFerias;
-    private FuncionarioServicos fs;
+    private FuncionarioService fs;
     private FuncionariosTableModel funcionariosPJTableModel;
     private TableRowSorter<FuncionariosTableModel> sorter;
 

@@ -1,12 +1,16 @@
 package services;
 
+import services.funcionario.FuncionarioService;
+import services.epi.EpiService;
+import services.epi.EpiFuncionarioService;
+
 public class ServicosFactory {
 
     private static final SituacaoServicos psituacaoServicos = new SituacaoServicos();
     private static final FuncaoServicos FUNCAOSERVICOS = new FuncaoServicos();
-    private static final FuncionarioServicos FUNCIONARIOSERVICOS = new FuncionarioServicos();
-    private static final EpiServicos EPISERVICOS = new EpiServicos();
-    private static final EpiFuncionarioServicos EPIFUNCIONARIOSERVICOS = new EpiFuncionarioServicos();
+    private static final FuncionarioService FUNCIONARIOSERVICOS = new FuncionarioService();
+    private static final EpiService EPISERVICOS = new EpiService();
+    private static final EpiFuncionarioService EPIFUNCIONARIOSERVICOS = new EpiFuncionarioService();
     private static final TicketServicos TICKETSERVICOS = new TicketServicos();
     private static final LocalServicos LOCALSERVICOS = new LocalServicos();
     private static final RelogioPontoServicos RELOGIOPONTOSERVICOS = new RelogioPontoServicos();
@@ -19,15 +23,15 @@ public class ServicosFactory {
         return FUNCAOSERVICOS;
     }
 
-    public static FuncionarioServicos getFUNCIONARIOSERVICOS() {
+    public static FuncionarioService getFUNCIONARIOSERVICOS() {
         return FUNCIONARIOSERVICOS;
     }
 
-    public static EpiServicos getEPISERVICOS() {
+    public static EpiService getEPISERVICOS() {
         return EPISERVICOS;
     }
 
-    public static EpiFuncionarioServicos getEPIFUNCIONARIOSERVICOS() {
+    public static EpiFuncionarioService getEPIFUNCIONARIOSERVICOS() {
         return EPIFUNCIONARIOSERVICOS;
     }
 

@@ -3,21 +3,26 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package model;
+package model.epi.tables;
 
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import javax.swing.table.AbstractTableModel;
+import model.epi.Epi;
 
 /**
  *
  * @author guilherme.oliveira
  */
-public class EpiTableModel extends AbstractTableModel{
+public class EpiEntregaTableModel extends AbstractTableModel{
 
     private List<Epi> epis = new ArrayList<>();
-    private String[] colunas = {"Código", "Nome", "Preço", "Descrição"};
+    private String[] colunas = {"Código", "Nome", "Descrição"};
+    
+    public final int COLUNA_CODIGO = 0;
+    public final int COLUNA_NOME = 1;
+    public final int COLUNA_DESCRICAO = 2;
 
     @Override
     public String getColumnName(int column) {
@@ -37,8 +42,6 @@ public class EpiTableModel extends AbstractTableModel{
     @Override
     public Class<?> getColumnClass(int columnIndex) {
         switch(columnIndex) {
-            case 2:
-                return Double.class;
             default:
                 return String.class;
         }
@@ -47,13 +50,11 @@ public class EpiTableModel extends AbstractTableModel{
     @Override
     public Object getValueAt(int linha, int coluna) {
         switch(coluna){
-            case 0:
+            case COLUNA_CODIGO:
                 return epis.get(linha).getCodEpi();
-            case 1:
+            case COLUNA_NOME:
                 return epis.get(linha).getNome();
-            case 2:
-                return epis.get(linha).getPreco();
-            case 3:
+            case COLUNA_DESCRICAO:
                 return epis.get(linha).getDescricao();
             
         }
