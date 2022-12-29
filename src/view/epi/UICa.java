@@ -16,10 +16,12 @@ public class UICa extends javax.swing.JDialog {
 
     private final EpiFuncionario epiFuncionario;
     private final UIFuncionarioEPI uiFuncionarioEpi;
+    private final UIControleEpi uiControleEpi;
 
-    public UICa(UIFuncionarioEPI uiFuncionarioEpi, EpiFuncionario epiFuncionario) {
-        this.epiFuncionario = epiFuncionario;
-        this.uiFuncionarioEpi = uiFuncionarioEpi;
+    public UICa(UIControleEpi uiControleEpi) {
+        this.uiControleEpi = uiControleEpi;
+        this.epiFuncionario = uiControleEpi.getUiFuncionarioEpi().getEpiFuncionario();
+        this.uiFuncionarioEpi = uiControleEpi.getUiFuncionarioEpi();
         initComponents();
     }
 
@@ -75,7 +77,7 @@ public class UICa extends javax.swing.JDialog {
         if (evt.getKeyCode() == KeyEvent.VK_ENTER) {
             if (!jtfCCA.getText().isEmpty()) {
                 epiFuncionario.setCa(jtfCCA.getText());
-                new UIEntregarEPI(uiFuncionarioEpi, epiFuncionario, true).setVisible(true);
+                new UIEntregarEPI(uiControleEpi, epiFuncionario, true).setVisible(true);
                 this.dispose();
             } else {
                 JOptionPane.showMessageDialog(this, "Campo CA obrigatório!");

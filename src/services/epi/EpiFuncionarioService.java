@@ -4,30 +4,45 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 
 import model.epi.EpiFuncionario;
-import dao.DAOFactory;
 import dao.EpiFuncionarioDAO;
-import model.Funcionario;
-import model.epi.Epi;
+import org.apache.commons.mail.EmailException;
+import services.email.EmailService;
+import view.Menu;
 
 public class EpiFuncionarioService {
 
-    EpiFuncionarioDAO dao = new EpiFuncionarioDAO();
+    private final EpiFuncionarioDAO dao;
+    private final EmailService emailService;
 
-    public void cadastrarEpiFuncionario(EpiFuncionario ef) throws SQLException {
-        dao.cadastrarEpiFuncionario(ef);
-    }//fecha cadastrarEpiFuncionario
+    public EpiFuncionarioService() {
+        this.dao = new EpiFuncionarioDAO();
+        this.emailService = new EmailService();
+    }
 
-    public void alterarEpiFuncionario(EpiFuncionario ef) throws SQLException {
-        dao.alterarEpiFuncionario(ef);
-    }//fecha alterarEpiFuncionario
+    public EpiFuncionario entregarEpi(EpiFuncionario epiFuncionario) throws SQLException, EmailException {
+        epiFuncionario.setCreatedBy(Menu.logado.getLogin());
+        dao.cadastrarEpiFuncionario(epiFuncionario);
+        EpiFuncionario ef = dao.buscarEpiFuncionario(epiFuncionario.getFuncionario().getChapa(), 
+                epiFuncionario.getFuncionario().getCodColigada(), 
+                epiFuncionario.getEpi().getCodEpi());
+        return ef;
+    }
+
+    public EpiFuncionario devolverEpi(EpiFuncionario epiFuncionario) throws SQLException, EmailException {
+        epiFuncionario.setModifiedBy(Menu.logado.getLogin());
+        dao.alterarEpiFuncionario(epiFuncionario);
+        return dao.buscarEpiFuncionario(epiFuncionario.getFuncionario().getChapa(), 
+                epiFuncionario.getFuncionario().getCodColigada(), 
+                epiFuncionario.getEpi().getCodEpi());
+    }
 
     public ArrayList<EpiFuncionario> filtrarEpiFuncionario(String query) throws SQLException {
         return dao.filtrarEpiFuncionario(query);
-    }//fecha filtarFuncionario
+    }
 
     public ArrayList<EpiFuncionario> buscarHistoricoEpisNaoEnviados(short coligada, String chapa) throws SQLException {
         return dao.buscarHistoricoEpisNaoEnviados(coligada, chapa);
-    }//fecha buscarEpisNaoEntregue
+    }
 
     public ArrayList<EpiFuncionario> buscarEpisPendentes(EpiFuncionario epiFuncionario) throws SQLException {
         return dao.buscarEpisPendentes(epiFuncionario);
@@ -36,4 +51,6 @@ public class EpiFuncionarioService {
     public void alterarDescontar(EpiFuncionario epiFuncionario) throws SQLException {
         dao.alterarDescontar(epiFuncionario);
     }
+
+    
 }

@@ -6,6 +6,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.sql.Timestamp;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import model.epi.Epi;
 
@@ -16,35 +17,69 @@ import model.Ticket;
 
 public class EpiFuncionarioDAO {
 
+    public EpiFuncionario buscarEpiFuncionario(String chapa, short coligada, String codEpi) throws SQLException {
+        Connection con = ConexaoBanco.getConexao();
+        PreparedStatement pstmt = null;
+        try {
+            String sql = "SELECT"
+                    + " PFUNC.CHAPA, PFUNC.CODCOLIGADA, PFUNC.NOME, PFUNC.EMAIL,"
+                    + " VCATALOGEPI.CODEPI, VCATALOGEPI.NOME, VCATALOGEPI_PFUNC.DATARETIRADA,"
+                    + " VCATALOGEPI_PFUNC.DATADEVOLUCAO, VCATALOGEPI_PFUNC.CA"
+                    + " from VCATALOGEPI_PFUNC"
+                    + " INNER JOIN PFUNC ON VCATALOGEPI_PFUNC.CHAPA = PFUNC.CHAPA"
+                    + " AND VCATALOGEPI_PFUNC.CODCOLIGADA = PFUNC.CODCOLIGADA"
+                    + " INNER JOIN VCATALOGEPI ON VCATALOGEPI_PFUNC.CODEPI = VCATALOGEPI.CODEPI"
+                    + " WHERE PFUNC.CHAPA = '" + chapa
+                    + "' AND PFUNC.CODCOLIGADA = " + coligada
+                    + " AND VCATALOGEPI.CODEPI = '" + codEpi + "'";
+
+            pstmt = con.prepareStatement(sql);
+            ResultSet rs = pstmt.executeQuery(sql);
+            EpiFuncionario epiFuncionario = new EpiFuncionario();
+            if (rs.next()) {
+                Funcionario funcionario = new Funcionario();
+                Epi epi = new Epi();
+                funcionario.setChapa(rs.getString("PFUNC.CHAPA"));
+                funcionario.setCodColigada(rs.getShort("PFUNC.CODCOLIGADA"));
+                funcionario.setNome(rs.getString("PFUNC.NOME"));
+                funcionario.setEmail(rs.getString("PFUNC.EMAIL"));
+                epi.setCodEpi(rs.getString("VCATALOGEPI.CODEPI"));
+                epi.setNome(rs.getString("VCATALOGEPI.NOME"));
+                epiFuncionario.setDataRetirada((LocalDateTime) rs.getObject("VCATALOGEPI_PFUNC.DATARETIRADA"));
+                if (rs.getObject("VCATALOGEPI_PFUNC.DATARETIRADA") != null) {
+                    epiFuncionario.setDataDevolucao((LocalDateTime) rs.getObject("VCATALOGEPI_PFUNC.DATARETIRADA"));
+                }
+                epiFuncionario.setCa(rs.getString("VCATALOGEPI_PFUNC.CA"));
+                epiFuncionario.setFuncionario(funcionario);
+                epiFuncionario.setEpi(epi);
+            }
+
+            return epiFuncionario;
+        } catch (SQLException e) {
+            throw new SQLException("Erro ao buscar epi do colaborador! " + e.getMessage());
+        } finally {
+            con.close();
+            pstmt.close();
+        }
+    }
+
     public void cadastrarEpiFuncionario(EpiFuncionario ef) throws SQLException {
         Connection con = ConexaoBanco.getConexao();
         PreparedStatement pstmt = null;
 
         try {
             String sql;
-            sql = "insert into VCATALOGEPI_PFUNC(CODREGISTRO, CODCOLIGADA, CHAPA,"
-                    + " CODEPI, DATARETIRADA, DATADEVOLUCAO, CA,"
-                    + " EMAILENVIADO, CODTKT, TKTENTREGA,"
-                    + " TKTDEVOLUCAO, RECCREATEDBY)"
-                    + " values(?, ?, ?, ?, NOW(),"
-                    + " ?, ?, ?, ?, ?,"
-                    + " ?, ?)";
+            sql = "insert into VCATALOGEPI_PFUNC(CODCOLIGADA, CHAPA,"
+                    + " CODEPI, DATARETIRADA, CA, RECCREATEDBY)"
+                    + " values(?, ?, ?, NOW(), ?, ?)";
 
             pstmt = con.prepareStatement(sql);
-            
-            pstmt.setInt(1, ef.getCodRegistro());
-            pstmt.setShort(2, ef.getFuncionario().getCodColigada());
-            pstmt.setString(3, ef.getFuncionario().getChapa());
-            pstmt.setString(4, ef.getEpi().getCodEpi());
-            
-            pstmt.setObject(5, ef.getDataDevolucao());
-            pstmt.setString(6, ef.getCa());
-            pstmt.setBoolean(7, ef.isEmailEnviado());
-            pstmt.setInt(8, ef.getCodTkt());
-            pstmt.setInt(9, ef.getTktEntrega());
-            
-            pstmt.setInt(10, ef.getTktDevolucao());
-            pstmt.setString(11, ef.getCreatedBy());
+
+            pstmt.setShort(1, ef.getFuncionario().getCodColigada());
+            pstmt.setString(2, ef.getFuncionario().getChapa());
+            pstmt.setString(3, ef.getEpi().getCodEpi());
+            pstmt.setString(4, ef.getCa());
+            pstmt.setString(5, ef.getCreatedBy());
 
             pstmt.execute();
 
@@ -65,7 +100,7 @@ public class EpiFuncionarioDAO {
                     + " AND CODCOLIGADA = " + epiFuncionario.getFuncionario().getCodColigada()
                     + " AND CODEPI = '" + epiFuncionario.getEpi().getCodEpi()
                     + "' AND DATADEVOLUCAO IS NULL";
-            
+
             pstmt = con.prepareStatement(sql);
             ResultSet rs = pstmt.executeQuery(sql);
             ArrayList<EpiFuncionario> episFuncionario = new ArrayList<>();
@@ -81,7 +116,7 @@ public class EpiFuncionarioDAO {
                 episFuncionario.add(epiFuncionario);
             }
             return episFuncionario;
-            
+
         } catch (SQLException se) {
             throw new SQLException("Erro ao buscar epis pendentes! " + se.getMessage());
         } finally {
@@ -95,7 +130,8 @@ public class EpiFuncionarioDAO {
         Statement stat = con.createStatement();
         try {
             String sql = "select  \n"
-                    + "	ef.CODREGISTRO, ef.CODCOLIGADA, ef.CHAPA, f.NOME, f.SENHA, e.NOME, e.CODEPI, e.PRECO, e.PERIODICIDADE,"
+                    + "	ef.CODREGISTRO, ef.CODCOLIGADA, ef.CHAPA, f.NOME, f.SENHA, f.EMAIL,"
+                    + " e.NOME, e.CODEPI, e.PRECO, e.PERIODICIDADE,"
                     + " ef.DATARETIRADA, ef.DATADEVOLUCAO, ef.CA, ef.LATITUDE,"
                     + " ef.LONGITUDE, ef.RECCREATEDBY, ef.RECMODIFIEDBY, ef.PRECOADESCONTAR, ef.DESCONTADO\n"
                     + "from \n"
@@ -107,7 +143,7 @@ public class EpiFuncionarioDAO {
                     + "inner join \n"
                     + "	VCATALOGEPI e\n"
                     + "on\n"
-                    + "	ef.CODEPI = e.CODEPI" 
+                    + "	ef.CODEPI = e.CODEPI"
                     + query
                     + " order by ef.CODREGISTRO desc";
 
@@ -123,6 +159,7 @@ public class EpiFuncionarioDAO {
                 funcionario.setChapa(rs.getString("ef.CHAPA"));
                 funcionario.setNome(rs.getString("f.NOME"));
                 funcionario.setSenha(rs.getInt("f.SENHA"));
+                funcionario.setEmail(rs.getString("f.EMAIL"));
                 epi.setCodEpi(rs.getString("e.CODEPI"));
                 epi.setPreco(rs.getDouble("e.PRECO"));
                 epi.setNome(rs.getString("e.NOME"));
@@ -132,11 +169,11 @@ public class EpiFuncionarioDAO {
                 }
                 epiFuncionario.setFuncionario(funcionario);
                 epiFuncionario.setEpi(epi);
-                
+
                 if (rs.getTimestamp("ef.DATADEVOLUCAO") != null) {
                     epiFuncionario.setDataDevolucao(rs.getTimestamp("ef.DATADEVOLUCAO").toLocalDateTime());
                 }
-                
+
                 epiFuncionario.setCa(rs.getString("ef.CA"));
                 epiFuncionario.setCreatedBy(rs.getString("ef.RECCREATEDBY"));
                 epiFuncionario.setModifiedBy(rs.getString("ef.RECMODIFIEDBY"));
@@ -175,7 +212,7 @@ public class EpiFuncionarioDAO {
             pstmt.close();
         }//fecha finally
     }//fecha alterarEpiFuncionario
-    
+
     public void alterarMotivo(EpiFuncionario ef) throws SQLException {
         Connection con = ConexaoBanco.getConexao();
         PreparedStatement pstmt = null;
@@ -197,7 +234,7 @@ public class EpiFuncionarioDAO {
             pstmt.close();
         }//fecha finally
     }//fecha alterarMotivo
-    
+
     public void alterarDescontar(EpiFuncionario ef) throws SQLException {
         Connection con = ConexaoBanco.getConexao();
         PreparedStatement pstmt = null;
@@ -219,7 +256,7 @@ public class EpiFuncionarioDAO {
             pstmt.close();
         }//fecha finally
     }//fecha alterarEpiFuncionario
-    
+
     public void alterarDescontado(EpiFuncionario ef) throws SQLException {
         Connection con = ConexaoBanco.getConexao();
         PreparedStatement pstmt = null;
@@ -242,7 +279,7 @@ public class EpiFuncionarioDAO {
             pstmt.close();
         }//fecha finally
     }//fecha alterarEpiFuncionario
-    
+
     public void atualizaEpiEmail(int tkt, int coligada, String chapa) throws SQLException {
         Connection con = ConexaoBanco.getConexao();
         PreparedStatement pstmt = null;
@@ -251,15 +288,15 @@ public class EpiFuncionarioDAO {
             String sqlDevolucao;
             sqlEntrega = "update VCATALOGEPI_PFUNC set"
                     + " TKTENTREGA = " + tkt
-                    + " where CODCOLIGADA="+coligada
-                    + " and CHAPA="+chapa
+                    + " where CODCOLIGADA=" + coligada
+                    + " and CHAPA=" + chapa
                     + " and TKTENTREGA = 0";
             pstmt = con.prepareStatement(sqlEntrega);
             pstmt.executeUpdate();
             sqlDevolucao = "update VCATALOGEPI_PFUNC set"
                     + " TKTDEVOLUCAO = " + tkt
-                    + " where CODCOLIGADA="+coligada
-                    + " and CHAPA="+chapa
+                    + " where CODCOLIGADA=" + coligada
+                    + " and CHAPA=" + chapa
                     + " and TKTDEVOLUCAO = 0 AND DATADEVOLUCAO IS NOT NULL";
             pstmt = con.prepareStatement(sqlDevolucao);
             pstmt.executeUpdate();
@@ -280,14 +317,14 @@ public class EpiFuncionarioDAO {
                     + " ef.DATADEVOLUCAO, ef.CA, ef.CODTKT, ef.TKTENTREGA,"
                     + " ef.LATITUDE, ef.LONGITUDE, ef.TKTDEVOLUCAO"
                     + " from VCATALOGEPI_PFUNC ef inner join VCATALOGEPI e on ef.CODEPI = e.CODEPI"
-                    + " where ef.CODCOLIGADA="+coligada+" and ef.CHAPA="+chapa+" and ef.TKTENTREGA = 0 AND ef.DATARETIRADA IS NOT NULL AND ef.DATADEVOLUCAO IS NULL"
+                    + " where ef.CODCOLIGADA=" + coligada + " and ef.CHAPA=" + chapa + " and ef.TKTENTREGA = 0 AND ef.DATARETIRADA IS NOT NULL AND ef.DATADEVOLUCAO IS NULL"
                     + " UNION"
                     + " select ef.CODREGISTRO, e.CODEPI, e.NOME, ef.DATARETIRADA,"
                     + " ef.DATADEVOLUCAO, ef.CA, ef.CODTKT, ef.TKTENTREGA,"
                     + " ef.LATITUDE, ef.LONGITUDE, ef.TKTDEVOLUCAO"
                     + " from VCATALOGEPI_PFUNC ef inner join VCATALOGEPI e on ef.CODEPI = e.CODEPI"
-                    + " where ef.CODCOLIGADA="+coligada+" and ef.CHAPA="+chapa+" and ef.TKTDEVOLUCAO = 0 AND ef.DATADEVOLUCAO IS NOT NULL) as tab";
-            
+                    + " where ef.CODCOLIGADA=" + coligada + " and ef.CHAPA=" + chapa + " and ef.TKTDEVOLUCAO = 0 AND ef.DATADEVOLUCAO IS NOT NULL) as tab";
+
             pstmt = con.prepareStatement(sql);
             ResultSet rs = pstmt.executeQuery(sql);
             ArrayList<EpiFuncionario> efa = new ArrayList<>();
@@ -314,7 +351,7 @@ public class EpiFuncionarioDAO {
             }
             return efa;
         } catch (SQLException se) {
-            throw new SQLException("Erro ao buscar historico! "+se.getMessage());
+            throw new SQLException("Erro ao buscar historico! " + se.getMessage());
         }
     }
 }//fecha classe

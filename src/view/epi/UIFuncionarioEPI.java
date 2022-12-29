@@ -14,10 +14,8 @@ import java.util.HashMap;
 import javax.swing.JOptionPane;
 import model.epi.Epi;
 import model.epi.EpiFuncionario;
-import model.epi.tables.EpiFuncionarioTableModel;
 import model.epi.tables.EpiEntregaTableModel;
 import model.Funcionario;
-import model.epi.tables.FuncionarioTableModel;
 import model.HistoricoTableModel;
 import net.sf.jasperreports.engine.JRException;
 import net.sf.jasperreports.engine.JasperFillManager;
@@ -35,29 +33,33 @@ import view.UIMotivo;
  */
 public class UIFuncionarioEPI extends javax.swing.JDialog {
 
-    private EpiService epiService;
-    private EpiFuncionarioService epiFuncionarioService;
-    private UIControleEpi uiControleEpi;
-    private Funcionario funcionario;
-    private EpiEntregaTableModel epiTableModel;
-    private final HistoricoTableModel hTableModel = new HistoricoTableModel();
-    private final FuncionarioTableModel fTableModel = new FuncionarioTableModel();
-    private final EpiFuncionarioTableModel efTableModel = new EpiFuncionarioTableModel();
+    private final EpiFuncionario epiFuncionario;
+    private final EpiService epiService;
+    private final EpiFuncionarioService epiFuncionarioService;
+    private final UIControleEpi uiControleEpi;
+    private final Funcionario funcionario;
+    private final EpiEntregaTableModel epiTableModel;
+    private final HistoricoTableModel hTableModel;
     private boolean flagRelatorio;
-    private int tkt = 0;
 
-    public UIFuncionarioEPI(UIControleEpi telaControleEPI) {
+    public UIFuncionarioEPI(UIControleEpi uiControleEPI) {
         initComponents();
+        this.epiFuncionario = new EpiFuncionario();
         this.epiTableModel = new EpiEntregaTableModel();
-        this.jtblEpi.setModel(epiTableModel);
+        this.hTableModel = new HistoricoTableModel();
         this.epiService = new EpiService();
         this.epiFuncionarioService = new EpiFuncionarioService();
-        this.uiControleEpi = telaControleEPI;
+        this.uiControleEpi = uiControleEPI;
         this.funcionario = uiControleEpi.getFuncionarioDaLinhaSelecionada();
         carregarFuncionario();
         filtrarHistoricoDoFunc();
         filtrarEpis();
         configTabelaEpi();
+        configTabelaEpiFuncionario();
+    }
+
+    public EpiFuncionario getEpiFuncionario() {
+        return epiFuncionario;
     }
 
     public UIControleEpi getUiControleEpi() {
@@ -65,19 +67,25 @@ public class UIFuncionarioEPI extends javax.swing.JDialog {
     }
 
     private void configTabelaEpi() {
-
         jtblEpi.setAutoResizeMode(jtblEpi.AUTO_RESIZE_OFF);
-
         jtblEpi.getColumnModel().getColumn(epiTableModel.COLUNA_CODIGO).setPreferredWidth(200);
         jtblEpi.getColumnModel().getColumn(epiTableModel.COLUNA_NOME).setPreferredWidth(300);
         jtblEpi.getColumnModel().getColumn(epiTableModel.COLUNA_DESCRICAO).setPreferredWidth(300);
-
+    }
+    
+    private void configTabelaEpiFuncionario() {
+        jtEpisDoFunc.setAutoResizeMode(jtEpisDoFunc.AUTO_RESIZE_OFF);
+        jtEpisDoFunc.getColumnModel().getColumn(hTableModel.COLUNA_FUNCIONARIO).setPreferredWidth(300);
+        jtEpisDoFunc.getColumnModel().getColumn(hTableModel.COLUNA_EPI).setPreferredWidth(200);
+        jtEpisDoFunc.getColumnModel().getColumn(hTableModel.COLUNA_DATA_RETIRADA).setPreferredWidth(150);
+        jtEpisDoFunc.getColumnModel().getColumn(hTableModel.COLUNA_DATA_DEVOLUCAO).setPreferredWidth(150);
+        jtEpisDoFunc.getColumnModel().getColumn(hTableModel.COLUNA_CA).setPreferredWidth(50);
     }
 
     public void carregarFuncionario() {
         jtfColigada.setText(String.valueOf(funcionario.getCodColigada()));
         jtfNome.setText(funcionario.getNome());
-    }//fecha carregarFuncionario
+    }
 
     public void filtrarHistoricoDoFunc() {
         try {
@@ -528,7 +536,6 @@ public class UIFuncionarioEPI extends javax.swing.JDialog {
     private void jtblEpiMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jtblEpiMouseClicked
         if (evt.getClickCount() == 2) {
             try {
-                EpiFuncionario epiFuncionario = new EpiFuncionario();
                 epiFuncionario.setFuncionario(funcionario);
                 Epi epi = getLinhaEpi();
                 epiFuncionario.setEpi(epi);
@@ -546,11 +553,8 @@ public class UIFuncionarioEPI extends javax.swing.JDialog {
                                 JOptionPane.WARNING_MESSAGE
                         );
                     } else {
-
                         atualizarTblHis();
-
-                        new UICa(this, epiFuncionario).setVisible(true);
-
+                        new UICa(uiControleEpi).setVisible(true);
                     }
                 } else {
                     JOptionPane.showMessageDialog(
@@ -639,12 +643,12 @@ public class UIFuncionarioEPI extends javax.swing.JDialog {
 
     private void jtEpisDoFuncMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jtEpisDoFuncMouseClicked
         if (evt.getClickCount() == 2) {
-            EpiFuncionario epiFuncionario = getLinhaHistorico();
-            if (epiFuncionario != null) {
-                if (epiFuncionario.getDataDevolucao() == null) {
-                    abreTelaMotivo(epiFuncionario);
-                    new UIDescontar(epiFuncionario).setVisible(true);
-                    new UIEntregarEPI(this, epiFuncionario, false).setVisible(true);
+            EpiFuncionario ef = getLinhaHistorico();
+            if (ef != null) {
+                if (ef.getDataDevolucao() == null) {
+                    abreTelaMotivo(ef);
+                    new UIDescontar(ef).setVisible(true);
+                    new UIEntregarEPI(uiControleEpi, ef, false).setVisible(true);
                 } else {
                     JOptionPane.showMessageDialog(null,
                             "EPI já foi entregue!",

@@ -1,61 +1,38 @@
-package utilitarios;
+package services.email;
 
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
-
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import org.apache.commons.mail.DefaultAuthenticator;
 import org.apache.commons.mail.EmailException;
 import org.apache.commons.mail.HtmlEmail;
 
-/**
- *
- * @author guilherme.oliveira
- */
-public class EmailJava {
+public class EmailService {
 
     HtmlEmail email;
 
-    public EmailJava() {
-        email = new HtmlEmail ();
+    public EmailService() {
+        this.email = new HtmlEmail();
         configurar();
     }
-
-    public void configurar() {
-        email.setHostName("email-ssl.com.br");
-        email.setSmtpPort(465);
-        email.setDebug(true);
-        email.setAuthentication("epi@dse.com.br", "Ed@Dse1707");
-        email.setSSLOnConnect(true);
-    }
-
-    public void enviarEmail(String from, String subject, String msg, String to ) throws EmailException {
-        try {
-            email.setFrom(from);
-            email.setSubject(subject);
-            email.setHtmlMsg(msg);
-            email.addTo(to);
-            email.addReplyTo(from);
-            email.send();
-            System.out.println("Email sent successfully!!!");
-        } catch (EmailException e) {
-            throw new EmailException("Erro ao enviar email");
-        }
-    }
     
-    public static boolean validar(String email) {
-        boolean isEmailIdValid = false;
-        if (email != null && email.length() > 0) {
-            String expression = "^[\\w\\.-]+@([\\w\\-]+\\.)+[A-Z]{2,4}$";
-            Pattern pattern = Pattern.compile(expression, Pattern.CASE_INSENSITIVE);
-            Matcher matcher = pattern.matcher(email);
-            if (matcher.matches()) {
-                isEmailIdValid = true;
-            }
+    private void configurar() {
+        try {
+            email.setHostName("smtp.gmail.com");
+            email.setSmtpPort(465);
+            email.setAuthenticator(new DefaultAuthenticator("ti.dse01@gmail.com", "zhhveekbsqgpovos"));
+            email.setSSLOnConnect(true);
+            email.setFrom("ti@dse.com.br");
+        } catch (EmailException ex) {
+            Logger.getLogger(EmailService.class.getName()).log(Level.SEVERE, null, ex);
         }
-        return isEmailIdValid;
+    }
+        
+    public void enviarEmail(String assunto, String destinatario, String mensagem) throws EmailException {
+
+        email.setSubject(assunto);
+        email.setHtmlMsg(mensagem);
+        email.addTo(destinatario);
+        email.setDebug(true);
+        email.send();
     }
 }

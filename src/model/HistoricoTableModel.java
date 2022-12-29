@@ -19,7 +19,13 @@ import model.epi.EpiFuncionario;
 public class HistoricoTableModel extends AbstractTableModel {
 
     private List<EpiFuncionario> registros = new ArrayList<>();
-    private String[] colunas = {"Id", "Coligada", "Funcionário", "EPI", "Data Retirada", "Data Devolução", "CA"};
+    private String[] colunas = {"Funcionário", "EPI", "Data Retirada", "Data Devolução", "CA"};
+    
+    public final int COLUNA_FUNCIONARIO = 0;
+    public final int COLUNA_EPI = 1;
+    public final int COLUNA_DATA_RETIRADA = 2;
+    public final int COLUNA_DATA_DEVOLUCAO = 3;
+    public final int COLUNA_CA = 4;
 
     @Override
     public String getColumnName(int column) {
@@ -39,27 +45,23 @@ public class HistoricoTableModel extends AbstractTableModel {
     @Override
     public Object getValueAt(int linha, int coluna) {
         switch (coluna) {
-            case 0:
-                return registros.get(linha).getCodRegistro();
-            case 1:
-                return registros.get(linha).getFuncionario().getCodColigada();
-            case 2:
+            case COLUNA_FUNCIONARIO:
                 return registros.get(linha).getFuncionario().getNome();
-            case 3:
+            case COLUNA_EPI:
                 return registros.get(linha).getEpi().getNome();    
-            case 4:
+            case COLUNA_DATA_RETIRADA:
                 if (registros.get(linha).getDataRetirada() != null) {
                     return registros.get(linha).getDataRetirada().format(DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm"));
                 } else {
                     return registros.get(linha).getDataRetirada();
                 }
-            case 5:
+            case COLUNA_DATA_DEVOLUCAO:
                 if (registros.get(linha).getDataDevolucao() != null) {
                     return registros.get(linha).getDataDevolucao().format(DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm"));
                 } else {
                     return registros.get(linha).getDataDevolucao();
                 }
-            case 6:
+            case COLUNA_CA:
                 return registros.get(linha).getCa();
         }
         return null;

@@ -22,10 +22,12 @@ import model.epi.tables.EpiFuncionarioTableModel;
 import model.Funcionario;
 import model.epi.tables.EpiTableModel;
 import model.epi.tables.FuncionarioTableModel;
+import org.apache.commons.mail.EmailException;
 import services.epi.EpiFuncionarioService;
 import services.epi.EpiService;
 import services.funcionario.FuncionarioService;
 import services.ServicosFactory;
+import services.email.EmailEpiFuncionarioService;
 import utilitarios.FormatarData;
 import utilitarios.os.CurrencyTableCellRenderer;
 import view.Menu;
@@ -42,18 +44,18 @@ public class UIControleEpi extends javax.swing.JInternalFrame {
     private FuncionarioTableModel fTableModel = new FuncionarioTableModel();
     private EpiFuncionarioTableModel efTableModel = new EpiFuncionarioTableModel();
     private EpiTableModel eTableModel = new EpiTableModel();
+    private UIFuncionarioEPI uiFuncionarioEpi;
+    private ArrayList<EpiFuncionario> episFuncionario;
     private boolean flagNavegador = false;
     private Menu menu;
     private CurrencyTableCellRenderer cRenderer = new CurrencyTableCellRenderer();
 
-    /**
-     * Creates new form ControleEpi
-     */
     public UIControleEpi(Menu menu) {
         this.menu = menu;
         this.epiService = new EpiService();
         this.epiFuncionarioService = new EpiFuncionarioService();
         this.funcionarioService = new FuncionarioService();
+        this.episFuncionario = new ArrayList<>();
         initComponents();
         darPermissoes();
         jchAtivos.setSelected(true);
@@ -72,6 +74,14 @@ public class UIControleEpi extends javax.swing.JInternalFrame {
         return menu;
     }
 
+    public UIFuncionarioEPI getUiFuncionarioEpi() {
+        return uiFuncionarioEpi;
+    }
+
+    public ArrayList<EpiFuncionario> getEpisFuncionario() {
+        return episFuncionario;
+    }
+    
     public void darPermissoes() {
         if (menu.getUiLogin().getPessoa().isPermAutenticacao()) {
             jbCadAutenticacao.setEnabled(true);
@@ -607,21 +617,30 @@ public class UIControleEpi extends javax.swing.JInternalFrame {
 
     private void jtblFuncionarioMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jtblFuncionarioMouseClicked
         if (evt.getClickCount() == 2) {
-            Funcionario f = getFuncionarioDaLinhaSelecionada();
-            if (f.getFinger1() != null || f.getFinger2() != null
-                    || f.getFinger3() != null || f.getFinger4() != null
-                    || f.getFinger5() != null || f.getFinger6() != null
-                    || f.getSenha() != 0) {
-
-                new UIFuncionarioEPI(UIControleEpi.this).setVisible(true);
-            } else {
-                JOptionPane.showMessageDialog(
-                        null,
-                        "Digitais e senha não cadastradas!",
-                        "Aviso",
-                        JOptionPane.WARNING_MESSAGE
-                );
-            }
+            uiFuncionarioEpi = new UIFuncionarioEPI(UIControleEpi.this);
+            uiFuncionarioEpi.setVisible(true);
+            Menu.carregamento(true);
+            new Thread(() -> {
+                try {
+                    EmailEpiFuncionarioService emailService = new EmailEpiFuncionarioService();
+                    emailService.enviarComprovanteDeEntregaDeEpiPorEmail(episFuncionario);
+                    episFuncionario.clear();
+                } catch (EmailException ex) {
+                    Logger.getLogger(UIFuncionarioEPI.class.getName()).log(Level.SEVERE, null, ex);
+                    JOptionPane.showMessageDialog(null,
+                            ex.getMessage(),
+                            "Erro ao enviar e-mail",
+                            JOptionPane.ERROR_MESSAGE);
+                } catch (SQLException ex) {
+                    Logger.getLogger(UIFuncionarioEPI.class.getName()).log(Level.SEVERE, null, ex);
+                    JOptionPane.showMessageDialog(null,
+                            ex.getMessage(),
+                            "Erro ao enviar e-mail",
+                            JOptionPane.ERROR_MESSAGE);
+                } finally {
+                    Menu.carregamento(false);
+                }
+            }).start();
         }
     }//GEN-LAST:event_jtblFuncionarioMouseClicked
 
@@ -861,24 +880,6 @@ public class UIControleEpi extends javax.swing.JInternalFrame {
             );
         }
     }//GEN-LAST:event_jtblEpiFuncionarioMouseClicked
-
-    /**
-     * Método usado para abrir navegador para pegar latitude e longitude de onde
-     * foi entregue o EPI
-     */
-    public void abrirNavegador() {
-        Desktop d = Desktop.getDesktop();
-        try {
-            if (!flagNavegador) {
-
-                d.browse(new URI("https://dse.com.br/controle"));
-                flagNavegador = true;
-
-            }
-        } catch (IOException | URISyntaxException e) {
-            System.out.println(e);
-        }
-    }
 
     private void limparCamposFuncionarios() {
         jtfColigada.setText("");
