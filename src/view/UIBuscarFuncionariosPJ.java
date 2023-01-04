@@ -12,7 +12,7 @@ import javax.swing.RowFilter;
 import javax.swing.table.TableRowSorter;
 import model.Funcionario;
 import model.epi.tables.FuncionariosTableModel;
-import services.funcionario.FuncionarioService;
+import services.FuncionarioService;
 import services.ServicosFactory;
 
 /**

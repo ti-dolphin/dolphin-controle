@@ -1,6 +1,5 @@
 package services;
 
-import services.funcionario.FuncionarioService;
 import services.epi.EpiService;
 import services.epi.EpiFuncionarioService;
 

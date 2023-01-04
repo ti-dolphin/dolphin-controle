@@ -6,11 +6,7 @@
 package view.epi;
 
 import dao.DAOFactory;
-import java.awt.Desktop;
 import java.awt.event.KeyEvent;
-import java.io.IOException;
-import java.net.URI;
-import java.net.URISyntaxException;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.logging.Level;
@@ -22,12 +18,12 @@ import model.epi.tables.EpiFuncionarioTableModel;
 import model.Funcionario;
 import model.epi.tables.EpiTableModel;
 import model.epi.tables.FuncionarioTableModel;
+import net.sf.jasperreports.engine.JRException;
 import org.apache.commons.mail.EmailException;
 import services.epi.EpiFuncionarioService;
 import services.epi.EpiService;
-import services.funcionario.FuncionarioService;
-import services.ServicosFactory;
-import services.email.EmailEpiFuncionarioService;
+import services.FuncionarioService;
+import services.epi.EmailEpiFuncionarioService;
 import utilitarios.FormatarData;
 import utilitarios.os.CurrencyTableCellRenderer;
 import view.Menu;
@@ -81,7 +77,7 @@ public class UIControleEpi extends javax.swing.JInternalFrame {
     public ArrayList<EpiFuncionario> getEpisFuncionario() {
         return episFuncionario;
     }
-    
+
     public void darPermissoes() {
         if (menu.getUiLogin().getPessoa().isPermAutenticacao()) {
             jbCadAutenticacao.setEnabled(true);
@@ -170,6 +166,7 @@ public class UIControleEpi extends javax.swing.JInternalFrame {
         jbFPesquisar = new javax.swing.JButton();
         jbAtualizarFuncionarios = new javax.swing.JButton();
         jchAtivos = new javax.swing.JCheckBox();
+        btnGerarRelatorio = new javax.swing.JButton();
         jpHistorico = new javax.swing.JPanel();
         jlHColigada = new javax.swing.JLabel();
         jtfHColigada = new javax.swing.JTextField();
@@ -269,6 +266,13 @@ public class UIControleEpi extends javax.swing.JInternalFrame {
 
         jchAtivos.setText("Ativos");
 
+        btnGerarRelatorio.setText("Gerar Relatório");
+        btnGerarRelatorio.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnGerarRelatorioActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout jpFuncionariosLayout = new javax.swing.GroupLayout(jpFuncionarios);
         jpFuncionarios.setLayout(jpFuncionariosLayout);
         jpFuncionariosLayout.setHorizontalGroup(
@@ -288,13 +292,15 @@ public class UIControleEpi extends javax.swing.JInternalFrame {
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addGroup(jpFuncionariosLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addGroup(jpFuncionariosLayout.createSequentialGroup()
-                                .addComponent(jtfNome, javax.swing.GroupLayout.DEFAULT_SIZE, 547, Short.MAX_VALUE)
+                                .addComponent(jtfNome, javax.swing.GroupLayout.DEFAULT_SIZE, 431, Short.MAX_VALUE)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                                 .addComponent(jchAtivos))
                             .addGroup(jpFuncionariosLayout.createSequentialGroup()
                                 .addComponent(jlNome)
                                 .addGap(0, 0, Short.MAX_VALUE)))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addGap(12, 12, 12)
+                        .addComponent(btnGerarRelatorio)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(jbCadAutenticacao)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(jbAtualizarFuncionarios)
@@ -318,7 +324,8 @@ public class UIControleEpi extends javax.swing.JInternalFrame {
                     .addComponent(jbFPesquisar)
                     .addComponent(jbAtualizarFuncionarios)
                     .addComponent(jbCadAutenticacao)
-                    .addComponent(jchAtivos))
+                    .addComponent(jchAtivos)
+                    .addComponent(btnGerarRelatorio))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 433, Short.MAX_VALUE)
                 .addContainerGap())
@@ -441,7 +448,7 @@ public class UIControleEpi extends javax.swing.JInternalFrame {
                         .addGroup(jpHistoricoLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addGroup(jpHistoricoLayout.createSequentialGroup()
                                 .addComponent(jlHFuncionario)
-                                .addGap(0, 186, Short.MAX_VALUE))
+                                .addGap(0, 182, Short.MAX_VALUE))
                             .addComponent(jtfHNome))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addGroup(jpHistoricoLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -644,11 +651,6 @@ public class UIControleEpi extends javax.swing.JInternalFrame {
         }
     }//GEN-LAST:event_jtblFuncionarioMouseClicked
 
-    /**
-     * Método usado para abrir tela de cadastro de autenticação
-     *
-     * @param evt
-     */
     private void jbCadAutenticacaoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jbCadAutenticacaoActionPerformed
         if (getFuncionarioDaLinhaSelecionada() != null) {
             new UICadAutenticacao(this).setVisible(true);
@@ -662,178 +664,88 @@ public class UIControleEpi extends javax.swing.JInternalFrame {
         }
     }//GEN-LAST:event_jbCadAutenticacaoActionPerformed
 
-    /**
-     * Método usado para pesquisar EPI's
-     *
-     * @param evt
-     */
     private void jbCPesquisarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jbCPesquisarActionPerformed
         pesquisarEpis();
     }//GEN-LAST:event_jbCPesquisarActionPerformed
 
-    /**
-     * Método usado para atualizar tabela de EPI's
-     *
-     * @param evt
-     */
     private void jbAtualizarEpisActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jbAtualizarEpisActionPerformed
         eTableModel.clear();
         limparCamposEpis();
         filtrarEpi();
     }//GEN-LAST:event_jbAtualizarEpisActionPerformed
 
-    /**
-     * Método usado para filtrar tabela de EPI's pelo código ao pressionar a
-     * tecla ENTER do teclado
-     *
-     * @param evt
-     */
     private void jtfCodEpiFiltroKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_jtfCodEpiFiltroKeyPressed
         if (evt.getKeyCode() == KeyEvent.VK_ENTER) {
             pesquisarEpis();
         }
     }//GEN-LAST:event_jtfCodEpiFiltroKeyPressed
 
-    /**
-     * Método usado para filtrar tabela de EPI's pelo nome ao pressionar a tecla
-     * ENTER do teclado
-     *
-     * @param evt
-     */
     private void jtfNomeEpiFiltroKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_jtfNomeEpiFiltroKeyPressed
         if (evt.getKeyCode() == KeyEvent.VK_ENTER) {
             pesquisarEpis();
         }
     }//GEN-LAST:event_jtfNomeEpiFiltroKeyPressed
 
-    /**
-     * Método usado para pesquisar dados da tabela de histórico
-     *
-     * @param evt
-     */
     private void jbHPesquisarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jbHPesquisarActionPerformed
         pesquisarHistorico();
     }//GEN-LAST:event_jbHPesquisarActionPerformed
 
-    /**
-     * Método usado para atualizar a tabela de histórico
-     *
-     * @param evt
-     */
     private void jbAtualizarHistoricoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jbAtualizarHistoricoActionPerformed
         atualizarTblHistorico();
     }//GEN-LAST:event_jbAtualizarHistoricoActionPerformed
 
-    /**
-     * Método usado para filtrar a tabela de histórico pela coligada ao
-     * pressionar tecla ENTER do teclado
-     *
-     * @param evt
-     */
     private void jtfHColigadaKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_jtfHColigadaKeyPressed
         if (evt.getKeyCode() == KeyEvent.VK_ENTER) {
             pesquisarHistorico();
         }
     }//GEN-LAST:event_jtfHColigadaKeyPressed
 
-    /**
-     * Método usado para filtrar a tabela de histórico pelo nome do funcionário
-     * ao pressionar tecla ENTER do teclado
-     *
-     * @param evt
-     */
     private void jtfHNomeKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_jtfHNomeKeyPressed
         if (evt.getKeyCode() == KeyEvent.VK_ENTER) {
             pesquisarHistorico();
         }
     }//GEN-LAST:event_jtfHNomeKeyPressed
 
-    /**
-     * Método usado para filtrar a tabela de histórico pelo nome do EPI ao
-     * pressionar tecla ENTER do teclado
-     *
-     * @param evt
-     */
     private void jtfHNomeEpiKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_jtfHNomeEpiKeyPressed
         if (evt.getKeyCode() == KeyEvent.VK_ENTER) {
             pesquisarHistorico();
         }
     }//GEN-LAST:event_jtfHNomeEpiKeyPressed
 
-    /**
-     * Método usado para filtrar a tabela de histórico pelo CA ao pressionar
-     * tecla ENTER do teclado
-     *
-     * @param evt
-     */
     private void jtfHCaKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_jtfHCaKeyPressed
         if (evt.getKeyCode() == KeyEvent.VK_ENTER) {
             pesquisarHistorico();
         }
     }//GEN-LAST:event_jtfHCaKeyPressed
 
-    /**
-     * Método usado para pesquisar funcionários
-     *
-     * @param evt
-     */
     private void jbFPesquisarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jbFPesquisarActionPerformed
         pesquisarFuncionario();
     }//GEN-LAST:event_jbFPesquisarActionPerformed
 
-    /**
-     * Método usado para atualizar funcionários
-     *
-     * @param evt
-     */
     private void jbAtualizarFuncionariosActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jbAtualizarFuncionariosActionPerformed
         fTableModel.clear();
         limparCamposFuncionarios();
         filtrarFuncionario();
     }//GEN-LAST:event_jbAtualizarFuncionariosActionPerformed
 
-    /**
-     * Método usado para filtrar funcionários pela coligada ao pressionar tecla
-     * ENTER do teclado
-     *
-     * @param evt
-     */
     private void jtfColigadaKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_jtfColigadaKeyPressed
         if (evt.getKeyCode() == KeyEvent.VK_ENTER) {
             pesquisarFuncionario();
         }
     }//GEN-LAST:event_jtfColigadaKeyPressed
 
-    /**
-     * Método usado para filtrar funcionários pela chapa ao pressionar tecla
-     * ENTER do teclado
-     *
-     * @param evt
-     */
     private void jtfChapaKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_jtfChapaKeyPressed
         if (evt.getKeyCode() == KeyEvent.VK_ENTER) {
             pesquisarFuncionario();
         }
     }//GEN-LAST:event_jtfChapaKeyPressed
 
-    /**
-     * Método usado para filtrar funcionários pelo nome ao pressionar tecla
-     * ENTER do teclado
-     *
-     * @param evt
-     */
     private void jtfNomeKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_jtfNomeKeyPressed
         if (evt.getKeyCode() == KeyEvent.VK_ENTER) {
             pesquisarFuncionario();
         }
     }//GEN-LAST:event_jtfNomeKeyPressed
 
-    /**
-     * Método usado para filtrar dados da tabela de histórico pela chapa ao
-     * pressionar tecla ENTER do teclado
-     *
-     * @param evt
-     */
     private void jtfHChapaKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_jtfHChapaKeyPressed
         if (evt.getKeyCode() == KeyEvent.VK_ENTER) {
             efTableModel.clear();
@@ -881,20 +793,49 @@ public class UIControleEpi extends javax.swing.JInternalFrame {
         }
     }//GEN-LAST:event_jtblEpiFuncionarioMouseClicked
 
+    private void btnGerarRelatorioActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnGerarRelatorioActionPerformed
+        Funcionario funcionarioSelecionado = getFuncionarioDaLinhaSelecionada();
+
+        if (funcionarioSelecionado != null) {
+            Menu.carregamento(true);
+            new Thread(() -> {
+                try {
+                    epiFuncionarioService.gerarRelatorio(funcionarioSelecionado);
+                } catch (JRException ex) {
+                    Logger.getLogger(UIControleEpi.class.getName()).log(Level.SEVERE, null, ex);
+                    JOptionPane.showMessageDialog(null,
+                            ex.getMessage(),
+                            "Erro ao gerar relatório",
+                            JOptionPane.ERROR_MESSAGE);
+                } catch (SQLException ex) {
+                    Logger.getLogger(UIControleEpi.class.getName()).log(Level.SEVERE, null, ex);
+                    JOptionPane.showMessageDialog(null,
+                            ex.getMessage(),
+                            "Erro ao gerar relatório",
+                            JOptionPane.ERROR_MESSAGE);
+                }
+
+                Menu.carregamento(false);
+            }).start();
+        } else {
+            JOptionPane.showMessageDialog(null,
+                    "Funcionário não selecionado",
+                    "Aviso",
+                    JOptionPane.WARNING_MESSAGE);
+        }
+    }//GEN-LAST:event_btnGerarRelatorioActionPerformed
+
     private void limparCamposFuncionarios() {
         jtfColigada.setText("");
         jtfChapa.setText("");
         jtfNome.setText("");
-    }//limparCamposFuncionarios
+    }
 
     private void limparCamposEpis() {
         jtfCodEpiFiltro.setText("");
         jtfNomeEpiFiltro.setText("");
-    }//limparCamposEpis
+    }
 
-    /**
-     * Método usado para filtrar os funcionários
-     */
     public void filtrarFuncionario() {
         try {
             String query = " where f.CHAPA > 0";
@@ -924,7 +865,7 @@ public class UIControleEpi extends javax.swing.JInternalFrame {
             for (Funcionario funcionario : funcionarios) {
 
                 fTableModel.addRow(funcionario);
-            } //fecha for
+            }
 
             jtblFuncionario.setModel(fTableModel);
 
@@ -932,11 +873,8 @@ public class UIControleEpi extends javax.swing.JInternalFrame {
 
             JOptionPane.showMessageDialog(rootPane, se.getMessage());
         }
-    }//fecha filtarFuncionario
+    }
 
-    /**
-     * Método usado para filtrar tabela de histórico
-     */
     public void filtrarEpiFuncionario() {
         try {
             String query = " where ef.CHAPA > 0";
@@ -978,7 +916,7 @@ public class UIControleEpi extends javax.swing.JInternalFrame {
 
             for (EpiFuncionario registroDeEntrega : registrosDeEntrega) {
                 efTableModel.addRow(registroDeEntrega);
-            } //fecha for 
+            }
 
             jtblEpiFuncionario.setModel(efTableModel);
 
@@ -987,12 +925,9 @@ public class UIControleEpi extends javax.swing.JInternalFrame {
         } catch (Exception ex) {
             JOptionPane.showMessageDialog(this, ex.getMessage(), "Erro", JOptionPane.ERROR_MESSAGE);
             Logger.getLogger(UIControleEpi.class.getName()).log(Level.SEVERE, null, ex);
-        }//fecha catch
-    }//fecha filtrarEpiFuncionario
+        }
+    }
 
-    /**
-     * Método usado para filtrar EPIs
-     */
     public void filtrarEpi() {
         try {
 
@@ -1021,13 +956,8 @@ public class UIControleEpi extends javax.swing.JInternalFrame {
                     JOptionPane.ERROR_MESSAGE
             );
         }
-    }//fecha filtrarEpi
+    }
 
-    /**
-     * Método usado para pegar funcionário selecionado na tabela
-     *
-     * @return Funcionario
-     */
     public Funcionario getFuncionarioDaLinhaSelecionada() {
         if (jtblFuncionario.getSelectedRow() == -1) {
             return null;
@@ -1035,7 +965,7 @@ public class UIControleEpi extends javax.swing.JInternalFrame {
 
         return fTableModel.getFuncionarios().get(jtblFuncionario.getSelectedRow());
 
-    }//fecha getFuncionarioDaLinhaSelecionada
+    }
 
     public Epi getEpiDaLinhaSelecionada() {
         if (jtblEpi.getSelectedRow() == -1) {
@@ -1044,7 +974,7 @@ public class UIControleEpi extends javax.swing.JInternalFrame {
 
         return eTableModel.getEpis().get(jtblEpi.getSelectedRow());
 
-    }//fecha getFuncionarioDaLinhaSelecionada
+    }
 
     public EpiFuncionario getEpiFuncionarioSelecionado() {
         if (jtblEpiFuncionario.getSelectedRow() == -1) {
@@ -1053,11 +983,8 @@ public class UIControleEpi extends javax.swing.JInternalFrame {
 
         return efTableModel.getEpiFuncionarios().get(jtblEpiFuncionario.getSelectedRow());
 
-    }//fecha getEpiFuncionarioSelecionado
+    }
 
-    /**
-     * Método usado para limpar campos do historico
-     */
     public void limparCamposHistorico() {
         jtfHColigada.setText("");
         jtfHNomeEpi.setText("");
@@ -1066,13 +993,13 @@ public class UIControleEpi extends javax.swing.JInternalFrame {
         jftfDataInicio.setText("");
         jftfDataTermino.setText("");
         jchDescontar.setSelected(false);
-    }//fecha limparCamposHistorico
+    }
 
     public void atualizarTblHistorico() {
         efTableModel.clear();
         limparCamposHistorico();
         filtrarEpiFuncionario();
-    }//atualizarTblHistorico
+    }
 
     private void pesquisarFuncionario() {
         Menu.carregamento(true);
@@ -1089,31 +1016,24 @@ public class UIControleEpi extends javax.swing.JInternalFrame {
 
     private void pesquisarHistorico() {
         Menu.carregamento(true);
-
-        new Thread() {
-            @Override
-            public void run() {
-                efTableModel.clear();
-                filtrarEpiFuncionario();
-                Menu.carregamento(false);
-            }
-        }.start();
+        new Thread(() -> {
+            efTableModel.clear();
+            filtrarEpiFuncionario();
+            Menu.carregamento(false);
+        }).start();
     }
 
     private void pesquisarEpis() {
         Menu.carregamento(true);
-
-        new Thread() {
-            @Override
-            public void run() {
-                eTableModel.clear();
-                filtrarEpi();
-                Menu.carregamento(false);
-            }
-        }.start();
+        new Thread(() -> {
+            eTableModel.clear();
+            filtrarEpi();
+            Menu.carregamento(false);
+        }).start();
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JButton btnGerarRelatorio;
     public javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JScrollPane jScrollPane2;
     private javax.swing.JScrollPane jScrollPane3;

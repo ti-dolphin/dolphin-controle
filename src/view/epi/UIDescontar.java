@@ -6,7 +6,7 @@
 package view.epi;
 
 import dao.DAOFactory;
-import dao.EpiFuncionarioDAO;
+import dao.epi.EpiFuncionarioDAO;
 import java.time.LocalDateTime;
 import javax.swing.JOptionPane;
 import model.epi.EpiFuncionario;

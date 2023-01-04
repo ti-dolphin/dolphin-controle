@@ -1,8 +1,5 @@
 package view.epi;
 
-import view.epi.UIControleEpi;
-import cis.sdk.CisBiox;
-import exceptions.RetornosException;
 import java.awt.Color;
 import java.awt.HeadlessException;
 import java.awt.event.KeyEvent;
@@ -10,7 +7,7 @@ import java.sql.SQLException;
 import java.util.regex.Pattern;
 import javax.swing.JOptionPane;
 import model.Funcionario;
-import services.funcionario.FuncionarioService;
+import services.FuncionarioService;
 import services.ServicosFactory;
 
 /**
@@ -20,12 +17,6 @@ import services.ServicosFactory;
 public class UICadAutenticacao extends javax.swing.JDialog {
 
     public static UIControleEpi uiCE;
-    public static byte[] digital1;
-    public static byte[] digital2;
-    public static byte[] digital3;
-    public static byte[] digital4;
-    public static byte[] digital5;
-    public static byte[] digital6;
 
     /**
      * Creates new form UICadAutenticacao
@@ -51,14 +42,6 @@ public class UICadAutenticacao extends javax.swing.JDialog {
     private void initComponents() {
 
         jTabbedPane1 = new javax.swing.JTabbedPane();
-        jPanel1 = new javax.swing.JPanel();
-        jbCadDigital1 = new javax.swing.JButton();
-        jbCadDigital2 = new javax.swing.JButton();
-        jbCadDigital3 = new javax.swing.JButton();
-        jbCadDigital6 = new javax.swing.JButton();
-        jbCadDigital5 = new javax.swing.JButton();
-        jbCadDigital4 = new javax.swing.JButton();
-        jlCadOk = new javax.swing.JLabel();
         jPanel2 = new javax.swing.JPanel();
         jpfCadSenha = new javax.swing.JPasswordField();
         jlCadSenha = new javax.swing.JLabel();
@@ -69,93 +52,6 @@ public class UICadAutenticacao extends javax.swing.JDialog {
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
         setTitle("Controle Dolphin - Cadastrar Autenticação");
         setModal(true);
-
-        jbCadDigital1.setText("Cadastrar Digital 1");
-        jbCadDigital1.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jbCadDigital1ActionPerformed(evt);
-            }
-        });
-
-        jbCadDigital2.setText("Cadastrar Digital 2");
-        jbCadDigital2.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jbCadDigital2ActionPerformed(evt);
-            }
-        });
-
-        jbCadDigital3.setText("Cadastrar Digital 3");
-        jbCadDigital3.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jbCadDigital3ActionPerformed(evt);
-            }
-        });
-
-        jbCadDigital6.setText("Cadastrar Digital 6");
-        jbCadDigital6.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jbCadDigital6ActionPerformed(evt);
-            }
-        });
-
-        jbCadDigital5.setText("Cadastrar Digital 5");
-        jbCadDigital5.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jbCadDigital5ActionPerformed(evt);
-            }
-        });
-
-        jbCadDigital4.setText("Cadastrar Digital 4");
-        jbCadDigital4.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jbCadDigital4ActionPerformed(evt);
-            }
-        });
-
-        jlCadOk.setFont(new java.awt.Font("Tahoma", 1, 18)); // NOI18N
-        jlCadOk.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-
-        javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
-        jPanel1.setLayout(jPanel1Layout);
-        jPanel1Layout.setHorizontalGroup(
-            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel1Layout.createSequentialGroup()
-                .addContainerGap()
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addComponent(jlCadOk, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
-                            .addComponent(jbCadDigital1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                            .addComponent(jbCadDigital2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                            .addComponent(jbCadDigital3, javax.swing.GroupLayout.PREFERRED_SIZE, 138, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addGap(18, 18, 18)
-                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                            .addComponent(jbCadDigital4, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                            .addComponent(jbCadDigital5, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                            .addComponent(jbCadDigital6, javax.swing.GroupLayout.PREFERRED_SIZE, 136, javax.swing.GroupLayout.PREFERRED_SIZE))))
-                .addContainerGap())
-        );
-        jPanel1Layout.setVerticalGroup(
-            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel1Layout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(jlCadOk, javax.swing.GroupLayout.PREFERRED_SIZE, 46, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(18, 18, 18)
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jbCadDigital1, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jbCadDigital4, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jbCadDigital2, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jbCadDigital5, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jbCadDigital3, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jbCadDigital6, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-        );
-
-        jTabbedPane1.addTab("Digitais", jPanel1);
 
         jpfCadSenha.addKeyListener(new java.awt.event.KeyAdapter() {
             public void keyPressed(java.awt.event.KeyEvent evt) {
@@ -232,6 +128,19 @@ public class UICadAutenticacao extends javax.swing.JDialog {
     }// </editor-fold>//GEN-END:initComponents
 
     /**
+     * Método usado para cadastrar senha ao pressionar tecla ENTER do teclado
+     * quando o foco entiver no campo confSenha
+     *
+     * @param evt
+     */
+    private void jpfConfSenhaKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_jpfConfSenhaKeyPressed
+        // TODO add your handling code here:
+        if (evt.getKeyCode() == KeyEvent.VK_ENTER) {
+            cadastrarSenha();
+        }
+    }//GEN-LAST:event_jpfConfSenhaKeyPressed
+
+    /**
      * Método usado para cadastrar senha do funcionário ao clicar no botão
      * cadastrar senha
      *
@@ -240,174 +149,6 @@ public class UICadAutenticacao extends javax.swing.JDialog {
     private void jbCadSenhaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jbCadSenhaActionPerformed
         cadastrarSenha();
     }//GEN-LAST:event_jbCadSenhaActionPerformed
-
-    /**
-     * Método usado para cadastrar digital 1 ao clicar no botão cadastrar
-     * digital 1
-     *
-     * @param evt
-     */
-    private void jbCadDigital1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jbCadDigital1ActionPerformed
-        // TODO add your handling code here:
-        CisBiox biox = new CisBiox();
-        try {
-            int iRetorno = biox.iniciar();
-
-            jlCadOk.setText("Coloque o dedo!");
-            jlCadOk.setForeground(Color.blue);
-
-            if (iRetorno != 1) {
-                throw new RetornosException(iRetorno);
-            }
-
-            new Thread(LerDigital1).start();
-
-        } catch (Exception re) {
-            biox.finalizar();
-            jlCadOk.setText(re.getMessage());
-            jlCadOk.setForeground(Color.red);
-            JOptionPane.showMessageDialog(null, re.getMessage(), "Erro", JOptionPane.ERROR_MESSAGE);
-        }
-    }//GEN-LAST:event_jbCadDigital1ActionPerformed
-
-    /**
-     * Método usado para cadastrar digital 2 ao clicar no botão cadastrar
-     * digital 2
-     *
-     * @param evt
-     */
-    private void jbCadDigital2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jbCadDigital2ActionPerformed
-        CisBiox biox = new CisBiox();
-        try {
-            int iRetorno = biox.iniciar();
-
-            jlCadOk.setText("Coloque o dedo!");
-            jlCadOk.setForeground(Color.blue);
-
-            if (iRetorno != 1) {
-                throw new RetornosException(iRetorno);
-            }
-
-            new Thread(LerDigital2).start();
-
-        } catch (RetornosException re) {
-            biox.finalizar();
-            jlCadOk.setText(re.getMessage());
-            jlCadOk.setForeground(Color.red);
-        }
-    }//GEN-LAST:event_jbCadDigital2ActionPerformed
-
-    /**
-     * Método usado para cadastrar digital 3 ao clicar no botão cadastrar
-     * digital 3
-     *
-     * @param evt
-     */
-    private void jbCadDigital3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jbCadDigital3ActionPerformed
-        // TODO add your handling code here:
-        CisBiox biox = new CisBiox();
-        try {
-            int iRetorno = biox.iniciar();
-
-            jlCadOk.setText("Coloque o dedo!");
-            jlCadOk.setForeground(Color.blue);
-
-            if (iRetorno != 1) {
-                throw new RetornosException(iRetorno);
-            }
-
-            new Thread(LerDigital3).start();
-
-        } catch (RetornosException re) {
-            biox.finalizar();
-            jlCadOk.setText(re.getMessage());
-            jlCadOk.setForeground(Color.red);
-        }
-    }//GEN-LAST:event_jbCadDigital3ActionPerformed
-
-    /**
-     * Método usado para cadastrar digital 4 ao clicar no botão cadastrar
-     * digital 4
-     *
-     * @param evt
-     */
-    private void jbCadDigital4ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jbCadDigital4ActionPerformed
-        // TODO add your handling code here:
-        CisBiox biox = new CisBiox();
-        try {
-            int iRetorno = biox.iniciar();
-
-            jlCadOk.setText("Coloque o dedo!");
-            jlCadOk.setForeground(Color.blue);
-
-            if (iRetorno != 1) {
-                throw new RetornosException(iRetorno);
-            }
-
-            new Thread(LerDigital4).start();
-
-        } catch (RetornosException re) {
-            biox.finalizar();
-            jlCadOk.setText(re.getMessage());
-            jlCadOk.setForeground(Color.red);
-        }
-    }//GEN-LAST:event_jbCadDigital4ActionPerformed
-
-    /**
-     * Método usado para cadastrar digital 5 ao clicar no botão cadastrar
-     * digital 5
-     *
-     * @param evt
-     */
-    private void jbCadDigital5ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jbCadDigital5ActionPerformed
-        // TODO add your handling code here:
-        CisBiox biox = new CisBiox();
-        try {
-            int iRetorno = biox.iniciar();
-
-            jlCadOk.setText("Coloque o dedo!");
-            jlCadOk.setForeground(Color.blue);
-
-            if (iRetorno != 1) {
-                throw new RetornosException(iRetorno);
-            }
-
-            new Thread(LerDigital5).start();
-
-        } catch (RetornosException re) {
-            biox.finalizar();
-            jlCadOk.setText(re.getMessage());
-            jlCadOk.setForeground(Color.red);
-        }
-    }//GEN-LAST:event_jbCadDigital5ActionPerformed
-
-    /**
-     * Método usado para cadastrar digital 6 ao clicar no botão cadastrar
-     * digital 6
-     *
-     * @param evt
-     */
-    private void jbCadDigital6ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jbCadDigital6ActionPerformed
-        // TODO add your handling code here:
-        CisBiox biox = new CisBiox();
-        try {
-            int iRetorno = biox.iniciar();
-
-            jlCadOk.setText("Coloque o dedo!");
-            jlCadOk.setForeground(Color.blue);
-
-            if (iRetorno != 1) {
-                throw new RetornosException(iRetorno);
-            }
-
-            new Thread(LerDigital6).start();
-
-        } catch (RetornosException re) {
-            biox.finalizar();
-            jlCadOk.setText(re.getMessage());
-            jlCadOk.setForeground(Color.red);
-        }
-    }//GEN-LAST:event_jbCadDigital6ActionPerformed
 
     /**
      * Método usado para cadastrar senha ao pressionar tecla ENTER do teclado
@@ -421,19 +162,6 @@ public class UICadAutenticacao extends javax.swing.JDialog {
             cadastrarSenha();
         }
     }//GEN-LAST:event_jpfCadSenhaKeyPressed
-
-    /**
-     * Método usado para cadastrar senha ao pressionar tecla ENTER do teclado
-     * quando o foco entiver no campo confSenha
-     *
-     * @param evt
-     */
-    private void jpfConfSenhaKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_jpfConfSenhaKeyPressed
-        // TODO add your handling code here:
-        if (evt.getKeyCode() == KeyEvent.VK_ENTER) {
-            cadastrarSenha();
-        }
-    }//GEN-LAST:event_jpfConfSenhaKeyPressed
 
     /**
      * Método usado para validar senha
@@ -493,254 +221,8 @@ public class UICadAutenticacao extends javax.swing.JDialog {
         } catch (SQLException se) {
             JOptionPane.showMessageDialog(null, se.getMessage());
         }
-    }//fecha cadastrarSenha
-
-    /**
-     * Método usado para ler e cadastrar digital 1 do funcionário
-     */
-    private static Runnable LerDigital1 = new Runnable() {
-        @Override
-        public void run() {
-            CisBiox biox = new CisBiox();
-            try {
-
-                digital1 = biox.capturarDigital();
-
-                if (biox.getResultado() != 1) {
-                    biox.finalizar();
-                    return;
-                }
-
-                int iRetorno = biox.finalizar();
-
-                if (iRetorno != 1) {
-                    jlCadOk.setText("Erro: " + CisBiox.mensagens(iRetorno));
-                    return;
-                }
-
-                jlCadOk.setText("Leitura OK!");
-                jlCadOk.setForeground(Color.green);
-
-                FuncionarioService fs = ServicosFactory.getFUNCIONARIOSERVICOS();
-                Funcionario f = uiCE.getFuncionarioDaLinhaSelecionada();
-                f.setFinger1(digital1);
-
-                fs.cadastrarAutenticacao(f);
-                JOptionPane.showMessageDialog(null, "Digital cadastrada!");
-            } catch (HeadlessException | SQLException | NullPointerException e) {
-                biox.finalizar();
-                jlCadOk.setText(e.getMessage());
-                jlCadOk.setForeground(Color.red);
-            }
-        }
-    };
-
-    /**
-     * Método usado para ler e cadastrar digital 2 do funcionário
-     */
-    private static Runnable LerDigital2 = new Runnable() {
-        @Override
-        public void run() {
-            CisBiox biox = new CisBiox();
-            try {
-
-                digital2 = biox.capturarDigital();
-
-                if (biox.getResultado() != 1) {
-                    biox.finalizar();
-                    return;
-                }
-
-                int iRetorno = biox.finalizar();
-
-                if (iRetorno != 1) {
-                    jlCadOk.setText("Erro: " + CisBiox.mensagens(iRetorno));
-                    return;
-                }
-
-                jlCadOk.setText("Leitura OK!");
-                jlCadOk.setForeground(Color.green);
-
-                FuncionarioService fs = ServicosFactory.getFUNCIONARIOSERVICOS();
-                Funcionario f = uiCE.getFuncionarioDaLinhaSelecionada();
-                f.setFinger2(digital2);
-
-                fs.cadastrarAutenticacao(f);
-                JOptionPane.showMessageDialog(null, "Digital cadastrada!");
-
-            } catch (HeadlessException | SQLException | NullPointerException e) {
-                biox.finalizar();
-                jlCadOk.setText(e.getMessage());
-                jlCadOk.setForeground(Color.red);
-            }
-        }
-    };
-
-    /**
-     * Método usado para ler e cadastrar digital 3 do funcionário
-     */
-    private static Runnable LerDigital3 = new Runnable() {
-        @Override
-        public void run() {
-            CisBiox biox = new CisBiox();
-            try {
-
-                digital3 = biox.capturarDigital();
-
-                if (biox.getResultado() != 1) {
-                    biox.finalizar();
-                    return;
-                }
-
-                int iRetorno = biox.finalizar();
-
-                if (iRetorno != 1) {
-                    jlCadOk.setText("Erro: " + CisBiox.mensagens(iRetorno));
-                    return;
-                }
-
-                jlCadOk.setText("Leitura OK!");
-                jlCadOk.setForeground(Color.green);
-
-                FuncionarioService fs = ServicosFactory.getFUNCIONARIOSERVICOS();
-                Funcionario f = uiCE.getFuncionarioDaLinhaSelecionada();
-                f.setFinger3(digital3);
-
-                fs.cadastrarAutenticacao(f);
-                JOptionPane.showMessageDialog(null, "Digital cadastrada!");
-
-            } catch (HeadlessException | SQLException | NullPointerException e) {
-                biox.finalizar();
-                jlCadOk.setText(e.getMessage());
-                jlCadOk.setForeground(Color.red);
-            }
-        }
-    };
-
-    /**
-     * Método usado para ler e cadastrar digital 4 do funcionário
-     */
-    private static Runnable LerDigital4 = new Runnable() {
-        @Override
-        public void run() {
-            CisBiox biox = new CisBiox();
-            try {
-
-                digital4 = biox.capturarDigital();
-
-                if (biox.getResultado() != 1) {
-                    biox.finalizar();
-
-                    return;
-                }
-
-                int iRetorno = biox.finalizar();
-
-                if (iRetorno != 1) {
-                    jlCadOk.setText("Erro: " + CisBiox.mensagens(iRetorno));
-                    return;
-                }
-
-                jlCadOk.setText("Leitura OK!");
-                jlCadOk.setForeground(Color.green);
-
-                FuncionarioService fs = ServicosFactory.getFUNCIONARIOSERVICOS();
-                Funcionario f = uiCE.getFuncionarioDaLinhaSelecionada();
-                f.setFinger4(digital4);
-
-                fs.cadastrarAutenticacao(f);
-                JOptionPane.showMessageDialog(null, "Digital cadastrada!");
-
-            } catch (HeadlessException | SQLException | NullPointerException e) {
-                biox.finalizar();
-                jlCadOk.setText(e.getMessage());
-                jlCadOk.setForeground(Color.red);
-            }
-        }
-    };
-
-    /**
-     * Método usado para ler e cadastrar digital 5 do funcionário
-     */
-    private static Runnable LerDigital5 = new Runnable() {
-        @Override
-        public void run() {
-            CisBiox biox = new CisBiox();
-            try {
-
-                digital5 = biox.capturarDigital();
-
-                if (biox.getResultado() != 1) {
-                    biox.finalizar();
-                    return;
-                }
-
-                int iRetorno = biox.finalizar();
-
-                if (iRetorno != 1) {
-                    jlCadOk.setText("Erro: " + CisBiox.mensagens(iRetorno));
-                    return;
-                }
-
-                jlCadOk.setText("Leitura OK!");
-                jlCadOk.setForeground(Color.green);
-
-                FuncionarioService fs = ServicosFactory.getFUNCIONARIOSERVICOS();
-                Funcionario f = uiCE.getFuncionarioDaLinhaSelecionada();
-                f.setFinger5(digital5);
-
-                fs.cadastrarAutenticacao(f);
-                JOptionPane.showMessageDialog(null, "Digital cadastrada!");
-
-            } catch (HeadlessException | SQLException | NullPointerException e) {
-                biox.finalizar();
-                jlCadOk.setText(e.getMessage());
-                jlCadOk.setForeground(Color.red);
-            }
-        }
-    };
-
-    /**
-     * Método usado para ler e cadastrar digital 6 do funcionário
-     */
-    private static Runnable LerDigital6 = new Runnable() {
-        @Override
-        public void run() {
-            CisBiox biox = new CisBiox();
-            try {
-
-                digital6 = biox.capturarDigital();
-
-                if (biox.getResultado() != 1) {
-                    biox.finalizar();
-                    return;
-                }
-
-                int iRetorno = biox.finalizar();
-
-                if (iRetorno != 1) {
-                    jlCadOk.setText("Erro: " + CisBiox.mensagens(iRetorno));
-                    return;
-                }
-
-                jlCadOk.setText("Leitura OK!");
-                jlCadOk.setForeground(Color.green);
-
-                FuncionarioService fs = ServicosFactory.getFUNCIONARIOSERVICOS();
-                Funcionario f = uiCE.getFuncionarioDaLinhaSelecionada();
-                f.setFinger6(digital6);
-
-                fs.cadastrarAutenticacao(f);
-                JOptionPane.showMessageDialog(null, "Digital cadastrada!");
-
-            } catch (HeadlessException | SQLException | NullPointerException e) {
-                biox.finalizar();
-                jlCadOk.setText(e.getMessage());
-                jlCadOk.setForeground(Color.red);
-            }
-        }
-    };
-
+    }
+    
     /**
      * @param args the command line arguments
      */
@@ -784,17 +266,9 @@ public class UICadAutenticacao extends javax.swing.JDialog {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel2;
     private javax.swing.JTabbedPane jTabbedPane1;
-    private javax.swing.JButton jbCadDigital1;
-    private javax.swing.JButton jbCadDigital2;
-    private javax.swing.JButton jbCadDigital3;
-    private javax.swing.JButton jbCadDigital4;
-    private javax.swing.JButton jbCadDigital5;
-    private javax.swing.JButton jbCadDigital6;
     private javax.swing.JButton jbCadSenha;
-    private static javax.swing.JLabel jlCadOk;
     private javax.swing.JLabel jlCadSenha;
     private javax.swing.JLabel jlConfSenha;
     private javax.swing.JPasswordField jpfCadSenha;

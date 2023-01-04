@@ -3,12 +3,16 @@ package services.epi;
 import java.sql.SQLException;
 import java.util.ArrayList;
 
-import dao.EpiDAO;
+import dao.epi.EpiDAO;
 import model.epi.Epi;
 
 public class EpiService {
     
-    private EpiDAO epiDAO = new EpiDAO();
+    private final EpiDAO epiDAO;
+
+    public EpiService() {
+        this.epiDAO = new EpiDAO();
+    }
 
     public ArrayList<Epi> buscarEpi() throws SQLException {
         return epiDAO.buscarEpi();

@@ -1,4 +1,4 @@
-package services.funcionario;
+package services;
 
 import java.sql.SQLException;
 import java.util.ArrayList;

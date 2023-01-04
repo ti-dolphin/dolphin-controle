@@ -1,5 +1,7 @@
 package dao;
 
+import dao.epi.EpiFuncionarioDAO;
+import dao.epi.EpiDAO;
 import dao.apontamento.ApontamentoDAO;
 import dao.apontamento.ComentarioDAO;
 import dao.apontamento.RelComentariosApontDAO;

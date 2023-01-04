@@ -4,26 +4,32 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 
 import model.epi.EpiFuncionario;
-import dao.EpiFuncionarioDAO;
+import dao.epi.EpiFuncionarioDAO;
+import java.io.File;
+import java.sql.Connection;
+import java.util.HashMap;
+import model.Funcionario;
+import net.sf.jasperreports.engine.JRException;
+import net.sf.jasperreports.engine.JasperFillManager;
+import net.sf.jasperreports.engine.JasperPrint;
+import net.sf.jasperreports.view.JasperViewer;
 import org.apache.commons.mail.EmailException;
-import services.email.EmailService;
+import persistencia.ConexaoBanco;
 import view.Menu;
 
 public class EpiFuncionarioService {
 
     private final EpiFuncionarioDAO dao;
-    private final EmailService emailService;
 
     public EpiFuncionarioService() {
         this.dao = new EpiFuncionarioDAO();
-        this.emailService = new EmailService();
     }
 
     public EpiFuncionario entregarEpi(EpiFuncionario epiFuncionario) throws SQLException, EmailException {
         epiFuncionario.setCreatedBy(Menu.logado.getLogin());
         dao.cadastrarEpiFuncionario(epiFuncionario);
-        EpiFuncionario ef = dao.buscarEpiFuncionario(epiFuncionario.getFuncionario().getChapa(), 
-                epiFuncionario.getFuncionario().getCodColigada(), 
+        EpiFuncionario ef = dao.buscarEpiFuncionario(epiFuncionario.getFuncionario().getChapa(),
+                epiFuncionario.getFuncionario().getCodColigada(),
                 epiFuncionario.getEpi().getCodEpi());
         return ef;
     }
@@ -31,8 +37,8 @@ public class EpiFuncionarioService {
     public EpiFuncionario devolverEpi(EpiFuncionario epiFuncionario) throws SQLException, EmailException {
         epiFuncionario.setModifiedBy(Menu.logado.getLogin());
         dao.alterarEpiFuncionario(epiFuncionario);
-        return dao.buscarEpiFuncionario(epiFuncionario.getFuncionario().getChapa(), 
-                epiFuncionario.getFuncionario().getCodColigada(), 
+        return dao.buscarEpiFuncionario(epiFuncionario.getFuncionario().getChapa(),
+                epiFuncionario.getFuncionario().getCodColigada(),
                 epiFuncionario.getEpi().getCodEpi());
     }
 
@@ -52,5 +58,19 @@ public class EpiFuncionarioService {
         dao.alterarDescontar(epiFuncionario);
     }
 
-    
+    public void gerarRelatorio(Funcionario funcionario) throws JRException, SQLException {
+        Connection con = ConexaoBanco.getConexao();
+        String caminhoCorrente = new File("").getAbsolutePath();
+        String caminhoDaImagem = caminhoCorrente + "/img/dse-logo-relatorio.png";
+
+        HashMap filtro = new HashMap();
+        filtro.put("COLIGADA_PARAM", funcionario.getCodColigada());
+        filtro.put("CHAPA_PARAM", funcionario.getChapa());
+        filtro.put("IMG_PARAM", caminhoDaImagem);
+
+        JasperPrint jasperPrint = JasperFillManager.fillReport(caminhoCorrente + "/relatorios/rel-epis-entregues.jasper", filtro, con);
+        JasperViewer view = new JasperViewer(jasperPrint, false);
+        view.setVisible(true);
+    }
+
 }

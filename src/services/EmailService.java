@@ -1,4 +1,4 @@
-package services.email;
+package services;
 
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -32,7 +32,6 @@ public class EmailService {
         email.setSubject(assunto);
         email.setHtmlMsg(mensagem);
         email.addTo(destinatario);
-        email.setDebug(true);
         email.send();
     }
 }

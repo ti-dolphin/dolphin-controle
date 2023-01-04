@@ -5,26 +5,17 @@
 package view.epi;
 
 import java.awt.event.KeyEvent;
-import java.io.File;
-import java.sql.Connection;
 import java.sql.SQLException;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
-import java.util.HashMap;
 import javax.swing.JOptionPane;
 import model.epi.Epi;
 import model.epi.EpiFuncionario;
 import model.epi.tables.EpiEntregaTableModel;
 import model.Funcionario;
 import model.HistoricoTableModel;
-import net.sf.jasperreports.engine.JRException;
-import net.sf.jasperreports.engine.JasperFillManager;
-import net.sf.jasperreports.engine.JasperPrint;
-import net.sf.jasperreports.view.JasperViewer;
-import persistencia.ConexaoBanco;
 import services.epi.EpiFuncionarioService;
 import services.epi.EpiService;
-import view.UICarregando;
 import view.UIMotivo;
 
 /**
@@ -230,7 +221,6 @@ public class UIFuncionarioEPI extends javax.swing.JDialog {
         jtfLNomeEpiHistFiltro = new javax.swing.JTextField();
         jbHPesquisar = new javax.swing.JButton();
         jbAtualizarHistoricoDoFun = new javax.swing.JButton();
-        jbRelatorio = new javax.swing.JButton();
         jScrollPane3 = new javax.swing.JScrollPane();
         jtEpisDoFunc = new javax.swing.JTable();
 
@@ -423,20 +413,12 @@ public class UIFuncionarioEPI extends javax.swing.JDialog {
             }
         });
 
-        jbRelatorio.setText("Relatório");
-        jbRelatorio.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jbRelatorioActionPerformed(evt);
-            }
-        });
-
         jlpEpi.setLayer(jlLCodEpiHistFiltro, javax.swing.JLayeredPane.DEFAULT_LAYER);
         jlpEpi.setLayer(jtfLCodEpiHistFiltro, javax.swing.JLayeredPane.DEFAULT_LAYER);
         jlpEpi.setLayer(jlLNomeEpiHistFiltro, javax.swing.JLayeredPane.DEFAULT_LAYER);
         jlpEpi.setLayer(jtfLNomeEpiHistFiltro, javax.swing.JLayeredPane.DEFAULT_LAYER);
         jlpEpi.setLayer(jbHPesquisar, javax.swing.JLayeredPane.DEFAULT_LAYER);
         jlpEpi.setLayer(jbAtualizarHistoricoDoFun, javax.swing.JLayeredPane.DEFAULT_LAYER);
-        jlpEpi.setLayer(jbRelatorio, javax.swing.JLayeredPane.DEFAULT_LAYER);
 
         javax.swing.GroupLayout jlpEpiLayout = new javax.swing.GroupLayout(jlpEpi);
         jlpEpi.setLayout(jlpEpiLayout);
@@ -452,8 +434,6 @@ public class UIFuncionarioEPI extends javax.swing.JDialog {
                 .addGap(18, 18, 18)
                 .addComponent(jtfLNomeEpiHistFiltro, javax.swing.GroupLayout.PREFERRED_SIZE, 236, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addComponent(jbRelatorio)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(jbAtualizarHistoricoDoFun)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(jbHPesquisar)
@@ -468,8 +448,7 @@ public class UIFuncionarioEPI extends javax.swing.JDialog {
                     .addComponent(jlLNomeEpiHistFiltro)
                     .addComponent(jtfLNomeEpiHistFiltro, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jbHPesquisar, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jbAtualizarHistoricoDoFun, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jbRelatorio, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(jbAtualizarHistoricoDoFun, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addContainerGap(13, Short.MAX_VALUE))
         );
 
@@ -595,52 +574,6 @@ public class UIFuncionarioEPI extends javax.swing.JDialog {
         atualizarTblHis();
     }//GEN-LAST:event_jbAtualizarHistoricoDoFunActionPerformed
 
-    private void jbRelatorioActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jbRelatorioActionPerformed
-        if (flagRelatorio == false) {
-            flagRelatorio = true;
-            final UICarregando carregando = new UICarregando(null, false);
-            carregando.setVisible(true);
-            Thread t = new Thread() {
-                @Override
-                public void run() {
-                    try {
-                        Connection con = ConexaoBanco.getConexao();
-
-                        String caminhoCorrente = new File("").getAbsolutePath();
-
-                        String caminhoDoRelatorio = caminhoCorrente + "/relatorios/rel-historico-epis.jasper";
-
-                        JasperPrint jasperPrint;
-
-                        String caminhoDaImagem = caminhoCorrente + "/img/dse-logo-relatorio.png";
-
-                        HashMap filtro = new HashMap();
-                        filtro.put("coligada", funcionario.getCodColigada());
-                        filtro.put("chapa", funcionario.getChapa());
-                        filtro.put("imagem", caminhoDaImagem);
-
-                        jasperPrint = JasperFillManager.fillReport(caminhoDoRelatorio, filtro, con);
-
-                        JasperViewer view = new JasperViewer(jasperPrint, false);
-
-                        view.setVisible(true);
-
-                    } catch (SQLException ex) {
-                        JOptionPane.showMessageDialog(null, "" + ex.getMessage(),
-                                "Erro ao carregar dados", JOptionPane.ERROR_MESSAGE);
-                    } catch (JRException ex) {
-                        JOptionPane.showMessageDialog(null, "" + ex.getMessage(),
-                                "Erro ao gerar relatório", JOptionPane.ERROR_MESSAGE);
-                    } finally {
-                        carregando.dispose();
-                    }
-                }
-            };
-
-            t.start();
-        }
-    }//GEN-LAST:event_jbRelatorioActionPerformed
-
     private void jtEpisDoFuncMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jtEpisDoFuncMouseClicked
         if (evt.getClickCount() == 2) {
             EpiFuncionario ef = getLinhaHistorico();
@@ -681,7 +614,6 @@ public class UIFuncionarioEPI extends javax.swing.JDialog {
     private javax.swing.JButton jbAtualizarHistoricoDoFun;
     private javax.swing.JButton jbEPesquisar;
     private javax.swing.JButton jbHPesquisar;
-    private javax.swing.JButton jbRelatorio;
     private javax.swing.JLabel jlColigada;
     private javax.swing.JLabel jlLCodEpiFiltro;
     private javax.swing.JLabel jlLCodEpiHistFiltro;
