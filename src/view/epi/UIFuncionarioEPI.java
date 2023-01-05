@@ -85,7 +85,7 @@ public class UIFuncionarioEPI extends javax.swing.JDialog {
             String chapa = funcionarioLinha.getChapa();
             short coligada = funcionarioLinha.getCodColigada();
 
-            String query = " WHERE EF.CODCOLIGADA = " + coligada + " AND EF.CHAPA = '" + chapa + "'";
+            String query = " WHERE ef.CODCOLIGADA = " + coligada + " AND ef.CHAPA = '" + chapa + "'";
 
             if (!jtfLNomeEpiHistFiltro.getText().isEmpty()) {
                 query = query

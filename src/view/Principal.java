@@ -13,7 +13,7 @@ import javax.swing.JOptionPane;
  */
 public class Principal {
 
-    final static String VERSAO = "1.5.3.3";
+    final static String VERSAO = "1.5.3.4";
 
     public static void main(String[] args) {
         configurarTema("Nimbus");
