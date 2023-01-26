@@ -10,6 +10,8 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import model.Funcao;
@@ -29,7 +31,7 @@ import view.Menu;
  */
 public class ApontamentoDAO {
 
-    public ArrayList<Apontamento> filtrarApontamento(String query) throws SQLException {
+    public ArrayList<Apontamento> filtrarApontamentos(String query) throws SQLException {
         Connection con = ConexaoBanco.getConexao();
         Statement stat = con.createStatement();
 
@@ -89,7 +91,7 @@ public class ApontamentoDAO {
                 funcionario.setNome(rs.getString("F.NOME"));
                 funcao.setCodigo(rs.getString("FUN.CODFUNCAO"));
                 funcao.setNome(rs.getString("FUN.NOME"));
-                apontamento.setData(rs.getTimestamp("A.DATA").toLocalDateTime());
+                apontamento.setData(rs.getDate("A.DATA").toLocalDate());
                 apontamento.setComentado(rs.getBoolean("A.COMENTADO"));
                 centroCusto.setCodCusto(rs.getString("C.CODCUSTO"));
                 centroCusto.setNome(rs.getString("C.NOME"));
@@ -163,7 +165,7 @@ public class ApontamentoDAO {
                 a.setIntegra(rs.getBoolean("A.INTEGRA"));
                 f.setChapa(rs.getString("A.CHAPA"));
                 f.setNome(rs.getString("F.NOME"));
-                a.setData(rs.getTimestamp("A.DATA").toLocalDateTime());
+                a.setData(rs.getDate("A.DATA").toLocalDate());
                 sa.setCodStatusApont(rs.getString("A.CODSTATUSAPONT"));
                 c.setCodCusto(rs.getString("A.CODCCUSTO"));
                 c.setNome(rs.getString("C.NOME"));
@@ -241,7 +243,7 @@ public class ApontamentoDAO {
                 a.setIntegra(rs.getBoolean("A.INTEGRA"));
                 f.setChapa(rs.getString("A.CHAPA"));
                 f.setNome(rs.getString("F.NOME"));
-                a.setData(rs.getTimestamp("A.DATA").toLocalDateTime());
+                a.setData(rs.getDate("A.DATA").toLocalDate());
                 sa.setCodStatusApont(rs.getString("A.CODSTATUSAPONT"));
                 c.setCodCusto(rs.getString("A.CODCCUSTO"));
                 c.setNome(rs.getString("C.NOME"));
@@ -405,7 +407,7 @@ public class ApontamentoDAO {
                 a.setIntegra(rs.getBoolean("A.INTEGRA"));
                 f.setChapa(rs.getString("A.CHAPA"));
                 f.setNome(rs.getString("F.NOME"));
-                a.setData(rs.getTimestamp("A.DATA").toLocalDateTime());
+                a.setData(rs.getDate("A.DATA").toLocalDate());
                 a.setCustoMaoDeObra(rs.getDouble("A.CUSTOMO"));
                 sa.setCodStatusApont(rs.getString("A.CODSTATUSAPONT"));
                 c.setCodCusto(rs.getString("A.CODCCUSTO"));
@@ -533,7 +535,7 @@ public class ApontamentoDAO {
                 funcionario.setChapa(rs.getString("PFUNC.CHAPA"));
                 funcionario.setNome(rs.getString("PFUNC.NOME"));
                 apontamento.setCodApont(rs.getInt("APONTAMENTOS.CODAPONT"));
-                apontamento.setData(rs.getTimestamp("APONTAMENTOS.DATA").toLocalDateTime());
+                apontamento.setData(rs.getDate("APONTAMENTOS.DATA").toLocalDate());
                 apontamento.setVerificado(rs.getBoolean("APONTAMENTOS.VERIFICADO"));
                 apontamento.setProblema(rs.getBoolean("APONTAMENTOS.PROBLEMA"));
                 apontamento.setMotivo(rs.getString("APONTAMENTOS.MOTIVO_PROBLEMA"));
@@ -553,7 +555,7 @@ public class ApontamentoDAO {
                 apontamentos.add(apontamento);
 
             }
-            
+
             return apontamentos;
 
         } catch (SQLException e) {
@@ -562,21 +564,26 @@ public class ApontamentoDAO {
             con.close();
         }
     }
-    
-    public List<Apontamento> buscarPontosPorId(int id) throws SQLException {
+
+    public List<Apontamento> filtrarProblemasDeApontamento(String query) throws SQLException {
         Connection con = ConexaoBanco.getConexao();
 
         try {
-            String sql = "SELECT APONTAMENTOS.CODAPONT, PFUNC.CHAPA, PFUNC.NOME, APONTAMENTOS.DATA,"
-                    + " APONTAMENTOS.VERIFICADO, APONTAMENTOS.PROBLEMA, APONTAMENTOS.MOTIVO_PROBLEMA,"
-                    + " APONTAMENTOS.JUSTIFICATIVA, APONTAMENTOS.COMPETENCIA,"
-                    + " APONTAMENTOS.CODCCUSTO, GCCUSTO.NOME, APONTAMENTOS.CODLIDER, PESSOA.NOME"
+            String sql = "SELECT APONTAMENTOS.CODAPONT, APONTAMENTOS.COMENTADO, APONTAMENTOS.DATA,"
+                    + " APONTAMENTOS.PROBLEMA, APONTAMENTOS.COMPETENCIA,"
+                    + " PFUNC.CHAPA, PFUNC.NOME, PFUNC.CODSITUACAO,"
+                    + " GCCUSTO.NOME, GERENTE.CODPESSOA, GERENTE.NOME, GERENTE.EMAIL,"
+                    + " APONTAMENTOS.CODSTATUSAPONT, STATUSAPONT.DESCRICAO, LIDER.NOME,"
+                    + " APONTAMENTOS.MOTIVO_PROBLEMA, APONTAMENTOS.JUSTIFICATIVA"
                     + " FROM APONTAMENTOS"
                     + " INNER JOIN PFUNC ON APONTAMENTOS.CHAPA = PFUNC.CHAPA"
                     + " INNER JOIN GCCUSTO ON APONTAMENTOS.CODCCUSTO = GCCUSTO.CODCUSTO"
-                    + " INNER JOIN PESSOA ON APONTAMENTOS.CODLIDER = PESSOA.CODPESSOA"
-                    + " WHERE APONTAMENTOS.CODAPONT = " + id + " ORDER BY APONTAMENTOS.DATA, PFUNC.NOME";
-
+                    + " INNER JOIN STATUSAPONT ON APONTAMENTOS.CODSTATUSAPONT = STATUSAPONT.CODSTATUSAPONT"
+                    + " LEFT JOIN PESSOA GERENTE ON GERENTE.CODPESSOA = GCCUSTO.RESPONSAVEL"
+                    + " INNER JOIN PESSOA LIDER ON LIDER.CODPESSOA = APONTAMENTOS.CODLIDER"
+                    + " WHERE APONTAMENTOS.PROBLEMA = TRUE " 
+                    + query + " ORDER BY APONTAMENTOS.DATA, PFUNC.NOME";
+            
             PreparedStatement prepareStatement = con.prepareStatement(sql);
             ResultSet rs = prepareStatement.executeQuery();
 
@@ -588,23 +595,29 @@ public class ApontamentoDAO {
                 Funcionario funcionario = new Funcionario();
                 CentroCusto centroCusto = new CentroCusto();
                 Pessoa lider = new Pessoa();
-
+                StatusApont status = new StatusApont();
+                Pessoa gerente = new Pessoa();
+                Situacao situacao = new Situacao();
+                
+                situacao.setCodSituacao(rs.getString("PFUNC.CODSITUACAO").charAt(0));
                 funcionario.setChapa(rs.getString("PFUNC.CHAPA"));
                 funcionario.setNome(rs.getString("PFUNC.NOME"));
+                funcionario.setSituacao(situacao);
                 apontamento.setCodApont(rs.getInt("APONTAMENTOS.CODAPONT"));
-                apontamento.setData(rs.getTimestamp("APONTAMENTOS.DATA").toLocalDateTime());
-                apontamento.setVerificado(rs.getBoolean("APONTAMENTOS.VERIFICADO"));
+                apontamento.setData(rs.getDate("APONTAMENTOS.DATA").toLocalDate());
                 apontamento.setProblema(rs.getBoolean("APONTAMENTOS.PROBLEMA"));
-                apontamento.setMotivo(rs.getString("APONTAMENTOS.MOTIVO_PROBLEMA"));
-                apontamento.setJustificativa(rs.getString("APONTAMENTOS.JUSTIFICATIVA"));
                 apontamento.setCompetencia(rs.getInt("APONTAMENTOS.COMPETENCIA"));
-                centroCusto.setCodCusto(rs.getString("APONTAMENTOS.CODCCUSTO"));
                 centroCusto.setNome(rs.getString("GCCUSTO.NOME"));
-                lider.setCodPessoa(rs.getInt("APONTAMENTOS.CODLIDER"));
-                lider.setNome(rs.getString("PESSOA.NOME"));
+                lider.setNome(rs.getString("LIDER.NOME"));
+                status.setCodStatusApont(rs.getString("APONTAMENTOS.CODSTATUSAPONT"));
+                status.setDescricao(rs.getString("STATUSAPONT.DESCRICAO"));
+                gerente.setNome(rs.getString("GERENTE.NOME"));
+                gerente.setEmail(rs.getString("GERENTE.EMAIL"));
                 apontamento.setCentroCusto(centroCusto);
                 apontamento.setFuncionario(funcionario);
                 apontamento.setLider(lider);
+                apontamento.setStatusApont(status);
+                apontamento.setGerente(gerente);
 
                 apontamentos.add(apontamento);
 
@@ -618,6 +631,7 @@ public class ApontamentoDAO {
             con.close();
         }
     }
+
     public List<Apontamento> buscarPontosPorNotificacoesNaoLidas() throws SQLException {
         Connection con = ConexaoBanco.getConexao();
 
@@ -648,7 +662,7 @@ public class ApontamentoDAO {
                 funcionario.setChapa(rs.getString("PFUNC.CHAPA"));
                 funcionario.setNome(rs.getString("PFUNC.NOME"));
                 apontamento.setCodApont(rs.getInt("APONTAMENTOS.CODAPONT"));
-                apontamento.setData(rs.getTimestamp("APONTAMENTOS.DATA").toLocalDateTime());
+                apontamento.setData(rs.getDate("APONTAMENTOS.DATA").toLocalDate());
                 apontamento.setVerificado(rs.getBoolean("APONTAMENTOS.VERIFICADO"));
                 apontamento.setProblema(rs.getBoolean("APONTAMENTOS.PROBLEMA"));
                 apontamento.setMotivo(rs.getString("APONTAMENTOS.MOTIVO_PROBLEMA"));

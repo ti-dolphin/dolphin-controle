@@ -123,7 +123,7 @@ public class ApontamentoPontoTableModel extends AbstractTableModel {
             String justificativa = (String) valor;
             if (!justificativa.isBlank()) {
                 apontamento.setJustificativa(justificativa);
-                String data = FormatarData.formatarDataEHoraEmTexto(apontamento.getData(), "dd/MM/yyyy");
+                String data = FormatarData.formatarDataEmTexto(apontamento.getData(), "dd/MM/yyyy");
                 try {
                     notificacaoService.notificar(new Notificacao(
                             Menu.logado.getLogin()

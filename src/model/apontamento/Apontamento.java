@@ -5,10 +5,8 @@
  */
 package model.apontamento;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-import javax.swing.JOptionPane;
 import model.Funcionario;
 import model.Situacao;
 import model.os.CentroCusto;
@@ -23,7 +21,7 @@ public class Apontamento {
 
     private int codApont;
     private Funcionario funcionario;
-    private LocalDateTime data;
+    private LocalDate data;
     private StatusApont statusApont;
     private CentroCusto centroCusto;
     private OrdemServico ordemServico;
@@ -87,11 +85,11 @@ public class Apontamento {
         this.funcionario = funcionario;
     }
 
-    public LocalDateTime getData() {
+    public LocalDate getData() {
         return data;
     }
 
-    public void setData(LocalDateTime data) {
+    public void setData(LocalDate data) {
         this.data = data;
     }
 

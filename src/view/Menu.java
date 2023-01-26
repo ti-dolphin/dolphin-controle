@@ -12,7 +12,6 @@ import javax.swing.event.InternalFrameEvent;
 import javax.swing.event.InternalFrameListener;
 import java.awt.Image;
 import java.awt.Graphics;
-import java.awt.HeadlessException;
 import java.beans.PropertyVetoException;
 import java.sql.SQLException;
 import java.time.LocalDateTime;
@@ -23,7 +22,6 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.JDesktopPane;
 import javax.swing.JOptionPane;
-import model.apontamento.Apontamento;
 import model.os.Pessoa;
 import services.NotificacaoService;
 import view.apontamento.UIApontamentos;
@@ -162,43 +160,6 @@ public class Menu extends javax.swing.JFrame implements InternalFrameListener {
         if (logado.isPermProspeccao()) {
             mComercial.setEnabled(true);
             miProspeccao.setEnabled(true);
-        }
-    }
-    
-    public void abrirTelaApontamentos(Apontamento apontamento) throws HeadlessException {
-        try {
-            if (!flagUIApontamentos) {
-                final UICarregando carregando = new UICarregando(this, false);
-                carregando.setVisible(true);
-                Thread t = new Thread() {
-                    @Override
-                    public void run() {
-                        if (apontamento != null) {
-                            uiApontamentos = new UIApontamentos(apontamento);
-                        } else {
-                            uiApontamentos = new UIApontamentos();
-                        }
-                        jdpAreaTrabalho.add(uiApontamentos);
-                        try {
-                            uiApontamentos.setMaximum(true);
-                        } catch (PropertyVetoException e) {
-                            JOptionPane.showMessageDialog(null, e.getMessage(),
-                                    "Erro ao maximizar tela!",
-                                    JOptionPane.ERROR_MESSAGE);
-                        }
-                        uiApontamentos.setVisible(true);
-                        flagUIApontamentos = true;
-                        uiApontamentos.addInternalFrameListener(Menu.this);
-                        uiApontamentos.setLocation(
-                                jdpAreaTrabalho.getWidth() / 2 - uiApontamentos.getWidth() / 2,
-                                jdpAreaTrabalho.getHeight() / 2 - uiApontamentos.getHeight() / 2);
-                        carregando.dispose();
-                    }
-                };
-                t.start();
-            }
-        } catch (Exception e) {
-            JOptionPane.showMessageDialog(null, "" + e.getMessage());
         }
     }
 
@@ -555,7 +516,29 @@ public class Menu extends javax.swing.JFrame implements InternalFrameListener {
     }//GEN-LAST:event_jmiSobreMousePressed
 
     private void jmiApontamentoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jmiApontamentoActionPerformed
-        abrirTelaApontamentos(null);
+        try {
+            if (!flagUIApontamentos) {
+                new Thread(() -> {
+                    uiApontamentos = new UIApontamentos();
+                    jdpAreaTrabalho.add(uiApontamentos);
+                    try {
+                        uiApontamentos.setMaximum(true);
+                    } catch (PropertyVetoException e) {
+                        JOptionPane.showMessageDialog(null, e.getMessage(),
+                                "Erro ao maximizar tela!",
+                                JOptionPane.ERROR_MESSAGE);
+                    }
+                    uiApontamentos.setVisible(true);
+                    flagUIApontamentos = true;
+                    uiApontamentos.addInternalFrameListener(Menu.this);
+                    uiApontamentos.setLocation(
+                            jdpAreaTrabalho.getWidth() / 2 - uiApontamentos.getWidth() / 2,
+                            jdpAreaTrabalho.getHeight() / 2 - uiApontamentos.getHeight() / 2);
+                }).start();
+            }
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(null, "" + e.getMessage());
+        }
     }//GEN-LAST:event_jmiApontamentoActionPerformed
 
 

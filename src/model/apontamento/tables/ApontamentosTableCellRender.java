@@ -6,6 +6,7 @@ package model.apontamento.tables;
 
 import java.awt.Component;
 import java.time.DayOfWeek;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.time.format.TextStyle;
@@ -20,9 +21,9 @@ import javax.swing.table.DefaultTableCellRenderer;
  */
 public final class ApontamentosTableCellRender extends DefaultTableCellRenderer {
 
-    private ApontamentosTableModel aTableModel;
+    private ApontamentoTableModel aTableModel;
 
-    public ApontamentosTableCellRender(ApontamentosTableModel aTableModel) {
+    public ApontamentosTableCellRender(ApontamentoTableModel aTableModel) {
         this.aTableModel = aTableModel;
     }
 
@@ -32,8 +33,8 @@ public final class ApontamentosTableCellRender extends DefaultTableCellRenderer 
 
         if (c instanceof JLabel) {
             final JLabel label = (JLabel) c;
-            if (value instanceof LocalDateTime) {
-                LocalDateTime data = (LocalDateTime) value;
+            if (value instanceof LocalDate) {
+                LocalDate data = (LocalDate) value;
                 label.setText(data.format(DateTimeFormatter.ofPattern("dd/MM/yyyy")));
             }
 

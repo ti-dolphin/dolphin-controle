@@ -25,12 +25,12 @@ public final class SinalizarColunaTabelaApontamentos extends DefaultTableCellRen
 
     private Color corEscuraDaLinha = new Color(243, 243, 243);
 
-    private ApontamentosTableModel apTableModel;
+    private ApontamentoTableModel apTableModel;
     private Icon iconeVerde;
     private Icon iconeVermelho;
     private String caminho;
 
-    public SinalizarColunaTabelaApontamentos(ApontamentosTableModel apTableModel) {
+    public SinalizarColunaTabelaApontamentos(ApontamentoTableModel apTableModel) {
         this.apTableModel = apTableModel;
         try {
             caminho = new File(".").getCanonicalPath() + File.separator + "img";

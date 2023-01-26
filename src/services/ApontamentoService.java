@@ -28,12 +28,16 @@ public class ApontamentoService {
         this.notificacaoService = new NotificacaoService();
     }
     
-    public List<Apontamento> filtrarApontamentosPontoPorId(int id) throws SQLException {
-        return dao.buscarPontosPorId(id);
+    public List<Apontamento> filtrarApontamentos(String query) throws SQLException {
+        return dao.filtrarApontamentos(query);
     }
     
     public List<Apontamento> filtrarApontamentosPonto(String query) throws SQLException {
         return dao.buscarPontos(query);
+    }
+    
+    public List<Apontamento> filtrarProblemasDeApontamento(String query) throws SQLException {
+        return dao.filtrarProblemasDeApontamento(query);
     }
     
     public List<Apontamento> buscarPontosPorNotificacoesNaoLidas() throws SQLException {

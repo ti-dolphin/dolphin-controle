@@ -6,7 +6,7 @@
 package model.apontamento.tables;
 
 import java.time.DayOfWeek;
-import java.time.LocalDateTime;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -17,7 +17,7 @@ import model.apontamento.Apontamento;
  *
  * @author guilherme.oliveira
  */
-public class ApontamentosTableModel extends AbstractTableModel {
+public class ApontamentoTableModel extends AbstractTableModel {
 
     private List<Apontamento> apontamentos = new ArrayList<>();
     private String[] colunas = {"Assiduidade", "Comentado", "Chapa", "Funcionário", "Função",
@@ -70,7 +70,7 @@ public class ApontamentosTableModel extends AbstractTableModel {
             case COLUNA_CHAPA:
                 return Integer.class;
             case COLUNA_DATA:
-                return LocalDateTime.class;
+                return LocalDate.class;
             case COLUNA_DIA_DA_SEMANA:
                 return DayOfWeek.class;
             case COLUNA_NUMERO_OS:
@@ -99,9 +99,6 @@ public class ApontamentosTableModel extends AbstractTableModel {
                 return apontamento.getFuncionario().getNome();
             case COLUNA_FUNCAO:
                 return apontamento.getFuncionario().getFuncao().getNome();
-                
-                
-                
             case COLUNA_DATA:
                 return apontamento.getData();
             case COLUNA_DIA_DA_SEMANA:
@@ -112,8 +109,6 @@ public class ApontamentosTableModel extends AbstractTableModel {
                 return apontamento.getCentroCusto().getNome();
             case COLUNA_CNO:
                 return apontamento.getCentroCusto().getCodReduzido();
-                
-                
             case COLUNA_STATUS:
                 return apontamento.getStatusApont().getDescricao();
             case COLUNA_LIDER:
@@ -124,8 +119,6 @@ public class ApontamentosTableModel extends AbstractTableModel {
                 return apontamento.getSituacao().getCodSituacao();
             case COLUNA_MODIFICADO_POR:
                 return apontamento.getModificadoPor();
-                
-                
             case COLUNA_NUMERO_OS:
                 return apontamento.getOrdemServico().getCodOs();
         }
