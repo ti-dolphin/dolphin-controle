@@ -38,7 +38,7 @@ import net.sf.jasperreports.engine.JasperFillManager;
 import net.sf.jasperreports.engine.JasperPrint;
 import net.sf.jasperreports.view.JasperViewer;
 import persistencia.ConexaoBanco;
-import services.ApontamentoService;
+import services.apontamento.ApontamentoService;
 import utilitarios.ExportaExcel;
 import utilitarios.FormatarData;
 import view.Menu;
@@ -58,11 +58,13 @@ public class UIApontamentos extends javax.swing.JInternalFrame {
     private boolean flagUIApontar;
     private boolean flagUIComentarios;
     private boolean flagApontamentosEmMassa;
-    private boolean tabelaProblemasJaCarregada;
-    private boolean tabelaPontoJaCarregada;
+    private boolean flagPrimeiroCarregamentoPonto;
+    private boolean flagPrimeiroCarregamentoProblema;
 
     public UIApontamentos() {
         this.apontamentoService = new ApontamentoService();
+        flagPrimeiroCarregamentoPonto = true;
+        flagPrimeiroCarregamentoProblema = true;
 
         initComponents();
 
@@ -73,9 +75,11 @@ public class UIApontamentos extends javax.swing.JInternalFrame {
 
         this.apontamentoPontoTableModel = new ApontamentoPontoTableModel();
         this.tblApontamentoPonto.setModel(apontamentoPontoTableModel);
+        this.tblApontamentoPonto.setAutoCreateRowSorter(true);
         configurarTabelaApontamentosPonto();
 
         this.apontamentoProblemaTableModel = new ApontamentoProblemaTableModel();
+        this.tblApontamentoProblema.setAutoCreateRowSorter(true);
         this.tblApontamentoProblema.setModel(apontamentoProblemaTableModel);
         configurarTabelaApontamentoProblema();
 
@@ -260,7 +264,6 @@ public class UIApontamentos extends javax.swing.JInternalFrame {
         jlGerente.setText("Gerente");
 
         jbGerarRelatoriosComentarios.setText("Relatório dos comentários");
-        jbGerarRelatoriosComentarios.setEnabled(false);
         jbGerarRelatoriosComentarios.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 jbGerarRelatoriosComentariosActionPerformed(evt);
@@ -282,7 +285,6 @@ public class UIApontamentos extends javax.swing.JInternalFrame {
             }
         });
 
-        tblApontamentos.setAutoCreateRowSorter(true);
         tblApontamentos.setAutoResizeMode(javax.swing.JTable.AUTO_RESIZE_OFF);
         tblApontamentos.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
@@ -626,6 +628,7 @@ public class UIApontamentos extends javax.swing.JInternalFrame {
         tblApontamentoPonto.getColumnModel().getColumn(apontamentoPontoTableModel.COLUNA_JUSTIFICATIVA).setPreferredWidth(350);
         tblApontamentoPonto.getColumnModel().getColumn(apontamentoPontoTableModel.COLUNA_CENTRO_CUSTO).setPreferredWidth(350);
         tblApontamentoPonto.getColumnModel().getColumn(apontamentoPontoTableModel.COLUNA_LIDER).setPreferredWidth(150);
+        tblApontamentoPonto.getColumnModel().getColumn(apontamentoPontoTableModel.COLUNA_BANCO_HORAS).setPreferredWidth(150);
         apontamentoPontoTableCellRender = new ApontamentosPontoTableCellRender(apontamentoPontoTableModel);
         tblApontamentoPonto.setDefaultRenderer(Object.class, apontamentoPontoTableCellRender);
         tblApontamentoPonto.putClientProperty("terminateEditOnFocusLost", Boolean.TRUE);
@@ -647,61 +650,13 @@ public class UIApontamentos extends javax.swing.JInternalFrame {
                 .setCellRenderer(new ApontamentoProblemasTableCellRender());
     }
 
-    private void carregarTabelaApontamentos() {
+    private List<Apontamento> carregarTabelaApontamentos() {
+
+        List<Apontamento> apontamentos = new ArrayList<>();
+
         try {
 
-            String query = " ";
-            String dataInicio = FormatarData.formatarData(jftfDataInicio.getText());
-            String dataTermino = FormatarData.formatarData(jftfDataTermino.getText());
-            Pessoa lider = (Pessoa) jcbLider.getSelectedItem();
-            Pessoa gerente = (Pessoa) jcbGerente.getSelectedItem();
-            StatusApont statusApont = (StatusApont) jcbStatusApont.getSelectedItem();
-
-            if (!jtfChapa.getText().isEmpty()) {
-                query = query + " and A.CHAPA LIKE '%" + jtfChapa.getText() + "%'";
-            }
-
-            if (!jtfNome.getText().isEmpty()) {
-                query = query + " and F.NOME LIKE '%" + jtfNome.getText() + "%'";
-            }
-
-            if (!jtfCentroCusto.getText().isEmpty()) {
-                query = query + " and C.NOME LIKE '%" + jtfCentroCusto.getText() + "%'";
-            }
-
-            if (jcbLider.getSelectedIndex() != 0) {
-                query = query + " and A.CODLIDER = " + lider.getCodPessoa();
-            }
-
-            if (jcbGerente.getSelectedIndex() != 0) {
-                query = query + " and PG.CODPESSOA = " + gerente.getCodPessoa();
-            }
-
-            if (!"SE".equals(statusApont.getCodStatusApont())) {
-                query = query + " and A.CODSTATUSAPONT = '" + statusApont.getCodStatusApont() + "'";
-            }
-
-            if (!jftfDataInicio.getText().equals("  /  /    ") || !jftfDataTermino.getText().equals("  /  /    ")) {
-                query = query + " and A.DATA BETWEEN ('" + dataInicio + "')"
-                        + " and ('" + dataTermino + "')";
-            }
-
-            if (jchAtivos.isSelected()) {
-                query = query + " and F.CODSITUACAO <> 'D'";
-            }
-            jbGerarRelatoriosComentarios.setEnabled(false);
-
-            if (jchComentados.isSelected()) {
-                query = query + " and A.COMENTADO = TRUE";
-                jbGerarRelatoriosComentarios.setEnabled(true);
-            }
-
-            if (cbxAssiduidade.isSelected()) {
-                query = query + " and A.ASSIDUIDADE = FALSE";
-            }
-
-            ArrayList<Apontamento> apontamentos
-                    = (ArrayList<Apontamento>) apontamentoService.filtrarApontamentos(query);
+            apontamentos = (ArrayList<Apontamento>) apontamentoService.filtrarApontamentos(gerarFiltros());
 
             apontamentoTableModel.clear();
 
@@ -710,6 +665,7 @@ public class UIApontamentos extends javax.swing.JInternalFrame {
             }
 
             jlContador.setText("Número de registros retornados: " + String.valueOf(apontamentos.size()));
+
         } catch (SQLException se) {
             Logger.getLogger(UIApontamentos.class.getName()).log(Level.SEVERE, null, se);
             JOptionPane.showMessageDialog(UIApontamentos.this, se.getMessage(),
@@ -721,9 +677,14 @@ public class UIApontamentos extends javax.swing.JInternalFrame {
                     "Erro ao filtrar apontamentos! ",
                     JOptionPane.ERROR_MESSAGE);
         }
+
+        return apontamentos;
     }
 
-    private void carregarTabelaApontamentosPonto() {
+    private List<Apontamento> carregarTabelaApontamentosPonto() {
+
+        List<Apontamento> apontamentosPonto = new ArrayList<>();
+
         try {
             String query = "";
             String txtChapa = jtfChapa.getText();
@@ -749,7 +710,7 @@ public class UIApontamentos extends javax.swing.JInternalFrame {
                 query = query + " and APONTAMENTOS.CODLIDER = " + lider.getCodPessoa();
             }
 
-            ArrayList<Apontamento> apontamentosPonto = (ArrayList<Apontamento>) apontamentoService.filtrarApontamentosPonto(query);
+            apontamentosPonto = (ArrayList<Apontamento>) apontamentoService.filtrarApontamentoPonto(query);
 
             apontamentoPontoTableModel.clear();
 
@@ -765,9 +726,13 @@ public class UIApontamentos extends javax.swing.JInternalFrame {
                     ex.getMessage(),
                     JOptionPane.ERROR_MESSAGE);
         }
+
+        return apontamentosPonto;
     }
 
-    private void carregarTabelaApontamentoProblema() {
+    private List<Apontamento> carregarTabelaApontamentoProblema() {
+
+        List<Apontamento> apontamentosProblema = new ArrayList<>();
 
         try {
 
@@ -808,22 +773,23 @@ public class UIApontamentos extends javax.swing.JInternalFrame {
                 query = query + " and PFUNC.CODSITUACAO <> 'D'";
             }
 
-            ArrayList<Apontamento> apontamentosComProblema
-                    = (ArrayList<Apontamento>) this.apontamentoService.filtrarProblemasDeApontamento(query);
+            apontamentosProblema = (ArrayList<Apontamento>) this.apontamentoService.filtrarApontamentoProblema(query);
 
             apontamentoProblemaTableModel.clear();
 
-            for (Apontamento apontamento : apontamentosComProblema) {
+            for (Apontamento apontamento : apontamentosProblema) {
                 apontamentoProblemaTableModel.addRow(apontamento);
             }
 
-            jlContador.setText("Número de registros retornados: " + String.valueOf(apontamentosComProblema.size()));
+            jlContador.setText("Número de registros retornados: " + String.valueOf(apontamentosProblema.size()));
         } catch (SQLException ex) {
             Logger.getLogger(UIApontamentos.class.getName()).log(Level.SEVERE, null, ex);
             JOptionPane.showMessageDialog(UIApontamentos.this, ex.getMessage(),
                     "Erro ao filtrar apontamentos com problema! ",
                     JOptionPane.ERROR_MESSAGE);
         }
+
+        return apontamentosProblema;
     }
 
     private void carregarTabelaApontamentosPontoPorNotificacoesNaoLidas() {
@@ -938,39 +904,22 @@ public class UIApontamentos extends javax.swing.JInternalFrame {
         }
     }
 
-    private void gerarRelatorio(ArrayList<Apontamento> apontamentosFiltrados) {
+    private void gerarRelatorio() {
         Menu.carregamento(true);
         new Thread() {
             @Override
             public void run() {
                 try {
-                    if (apontamentosFiltrados == null) {
-                        Menu.carregamento(false);
-                        return;
-                    }
                     Connection con = ConexaoBanco.getConexao();
-                    RelComentariosApontDAO dao = DAOFactory.getRELCOMENTARIOSAPONTDAO();
-                    JasperPrint jasperPrint;
                     String caminhoCorrente = new File("").getAbsolutePath();
-                    String caminhoDoRelatorio = caminhoCorrente + "/relatorios/rel-comentarios-apont.jasper";
                     String caminhoDaImagem = caminhoCorrente + "/img/dse-logo-relatorio.png";
+
                     HashMap filtro = new HashMap();
+                    filtro.put("USUARIO_PARAM", Menu.getUiLogin().getPessoa().getLogin());
+                    filtro.put("IMG_PARAM", caminhoDaImagem);
 
-                    dao.deletar();
-
-                    for (Apontamento apontamento : apontamentosFiltrados) {
-                        if (apontamento.isComentado()) {
-                            dao.inserir(apontamento.getCodApont(), Menu.getUiLogin().getPessoa().getLogin());
-                        }
-                    }
-
-                    filtro.put("imagem", caminhoDaImagem);
-                    filtro.put("usuario", Menu.getUiLogin().getPessoa().getLogin());
-
-                    jasperPrint = JasperFillManager.fillReport(caminhoDoRelatorio, filtro, con);
-
+                    JasperPrint jasperPrint = JasperFillManager.fillReport(caminhoCorrente + "/relatorios/rel-apontamento-comentario.jasper", filtro, con);
                     JasperViewer view = new JasperViewer(jasperPrint, false);
-
                     view.setVisible(true);
 
                 } catch (SQLException ex) {
@@ -986,20 +935,79 @@ public class UIApontamentos extends javax.swing.JInternalFrame {
         }.start();
     }
 
-    private void pesquisar() {
+    private String gerarFiltros() throws Exception {
+        String query = " ";
+        String dataInicio = FormatarData.formatarData(jftfDataInicio.getText());
+        String dataTermino = FormatarData.formatarData(jftfDataTermino.getText());
+        Pessoa lider = (Pessoa) jcbLider.getSelectedItem();
+        Pessoa gerente = (Pessoa) jcbGerente.getSelectedItem();
+        StatusApont statusApont = (StatusApont) jcbStatusApont.getSelectedItem();
+
+        if (!jtfChapa.getText().isEmpty()) {
+            query = query + " and A.CHAPA LIKE '%" + jtfChapa.getText() + "%'";
+        }
+
+        if (!jtfNome.getText().isEmpty()) {
+            query = query + " and F.NOME LIKE '%" + jtfNome.getText() + "%'";
+        }
+
+        if (!jtfCentroCusto.getText().isEmpty()) {
+            query = query + " and C.NOME LIKE '%" + jtfCentroCusto.getText() + "%'";
+        }
+
+        if (jcbLider.getSelectedIndex() != 0) {
+            query = query + " and A.CODLIDER = " + lider.getCodPessoa();
+        }
+
+        if (jcbGerente.getSelectedIndex() != 0) {
+            query = query + " and PG.CODPESSOA = " + gerente.getCodPessoa();
+        }
+
+        if (!"SE".equals(statusApont.getCodStatusApont())) {
+            query = query + " and A.CODSTATUSAPONT = '" + statusApont.getCodStatusApont() + "'";
+        }
+
+        if (!jftfDataInicio.getText().equals("  /  /    ") || !jftfDataTermino.getText().equals("  /  /    ")) {
+            query = query + " and A.DATA BETWEEN ('" + dataInicio + "')"
+                    + " and ('" + dataTermino + "')";
+        }
+
+        if (jchAtivos.isSelected()) {
+            query = query + " and F.CODSITUACAO <> 'D'";
+        }
+        jbGerarRelatoriosComentarios.setEnabled(false);
+
+        if (jchComentados.isSelected()) {
+            query = query + " and A.COMENTADO = TRUE";
+            jbGerarRelatoriosComentarios.setEnabled(true);
+        }
+
+        if (cbxAssiduidade.isSelected()) {
+            query = query + " and A.ASSIDUIDADE = FALSE";
+        }
+
+        return query;
+    }
+
+    private List<Apontamento> pesquisar() {
+
+        List<Apontamento> apontamentos;
+
         switch (jtpPainelApontamentos.getSelectedIndex()) {
             case 0:
-                carregarTabelaApontamentos();
+                apontamentos = carregarTabelaApontamentos();
                 break;
             case 1:
-                carregarTabelaApontamentosPonto();
+                apontamentos = carregarTabelaApontamentosPonto();
                 break;
             case 2:
-                carregarTabelaApontamentoProblema();
+                apontamentos = carregarTabelaApontamentoProblema();
                 break;
             default:
-                carregarTabelaApontamentos();
+                apontamentos = carregarTabelaApontamentos();
         }
+
+        return apontamentos;
     }
 
     private void jbPesquisarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jbPesquisarActionPerformed
@@ -1066,9 +1074,12 @@ public class UIApontamentos extends javax.swing.JInternalFrame {
     }//GEN-LAST:event_jtfCentroCustoKeyPressed
 
     private void jbGerarRelatoriosComentariosActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jbGerarRelatoriosComentariosActionPerformed
-        //TODO: popular lista
-        ArrayList<Apontamento> apontamentos = new ArrayList<>();
-        gerarRelatorio(apontamentos);
+        try {
+            gerarRelatorio();
+        } catch (Exception ex) {
+            JOptionPane.showMessageDialog(null, ex.getMessage(), "Erro ao gerar relatório", JOptionPane.ERROR_MESSAGE);
+            Logger.getLogger(UIApontamentos.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }//GEN-LAST:event_jbGerarRelatoriosComentariosActionPerformed
 
     private void jbExportarExcelActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jbExportarExcelActionPerformed
@@ -1161,16 +1172,12 @@ public class UIApontamentos extends javax.swing.JInternalFrame {
     }//GEN-LAST:event_jtfNomeKeyPressed
 
     private void jtpPainelApontamentosMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jtpPainelApontamentosMouseClicked
-        if (jtpPainelApontamentos.getSelectedIndex() == 1) {
-            if (!tabelaPontoJaCarregada) {
-                carregarTabelaApontamentosPonto();
-                tabelaPontoJaCarregada = true;
-            }
-        } else if (jtpPainelApontamentos.getSelectedIndex() == 2) {
-            if (!tabelaProblemasJaCarregada) {
-                carregarTabelaApontamentoProblema();
-                tabelaProblemasJaCarregada = true;
-            }
+        if (flagPrimeiroCarregamentoPonto) {
+            flagPrimeiroCarregamentoPonto = false;
+            pesquisar();
+        } else if (flagPrimeiroCarregamentoProblema) {
+            flagPrimeiroCarregamentoProblema = false;
+            pesquisar();
         }
     }//GEN-LAST:event_jtpPainelApontamentosMouseClicked
 

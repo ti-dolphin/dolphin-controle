@@ -2,7 +2,7 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
  * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
  */
-package services;
+package services.apontamento;
 
 import dao.apontamento.ApontamentoDAO;
 import java.sql.SQLException;
@@ -13,7 +13,7 @@ import javax.swing.JOptionPane;
 import model.apontamento.Apontamento;
 import view.Menu;
 import view.apontamento.UIApontamentos;
-
+import services.NotificacaoService;
 /**
  *
  * @author ti
@@ -32,11 +32,11 @@ public class ApontamentoService {
         return dao.filtrarApontamentos(query);
     }
     
-    public List<Apontamento> filtrarApontamentosPonto(String query) throws SQLException {
-        return dao.buscarPontos(query);
+    public List<Apontamento> filtrarApontamentoPonto(String query) throws SQLException {
+        return dao.filtrarApontamentoPonto(query);
     }
     
-    public List<Apontamento> filtrarProblemasDeApontamento(String query) throws SQLException {
+    public List<Apontamento> filtrarApontamentoProblema(String query) throws SQLException {
         return dao.filtrarProblemasDeApontamento(query);
     }
     

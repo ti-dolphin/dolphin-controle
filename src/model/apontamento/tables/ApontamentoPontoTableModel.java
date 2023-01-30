@@ -19,7 +19,7 @@ import javax.swing.JOptionPane;
 import javax.swing.table.AbstractTableModel;
 import model.Notificacao;
 import model.apontamento.Apontamento;
-import services.ApontamentoService;
+import services.apontamento.ApontamentoService;
 import services.NotificacaoService;
 import utilitarios.FormatarData;
 import view.Menu;
@@ -32,7 +32,7 @@ public class ApontamentoPontoTableModel extends AbstractTableModel {
 
     private List<Apontamento> apontamentos = new ArrayList<>();
     private String[] colunas = {"Chapa", "Nome", "Data", "Status", "Verificado", "Problema",
-        "Motivo", "Justificativa", "Centro de Custo", "Líder"};
+        "Motivo", "Justificativa", "Centro de Custo", "Líder", "Banco de Horas"};
     private ApontamentoDAO aDAO;
     private NotificacaoService notificacaoService;
 
@@ -46,6 +46,7 @@ public class ApontamentoPontoTableModel extends AbstractTableModel {
     public final int COLUNA_JUSTIFICATIVA = 7;
     public final int COLUNA_CENTRO_CUSTO = 8;
     public final int COLUNA_LIDER = 9;
+    public final int COLUNA_BANCO_HORAS = 10;
     private ApontamentoService apontamentoService;
 
     public ApontamentoPontoTableModel() {
@@ -176,6 +177,8 @@ public class ApontamentoPontoTableModel extends AbstractTableModel {
                 return apontamento.getCentroCusto().getNome();
             case COLUNA_LIDER:
                 return apontamento.getLider().getNome();
+            case COLUNA_BANCO_HORAS:
+                return apontamento.getFuncionario().getBancoHoras();
 
         }
         return null;

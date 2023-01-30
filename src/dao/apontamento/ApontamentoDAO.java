@@ -504,11 +504,11 @@ public class ApontamentoDAO {
         }
     }
 
-    public List<Apontamento> buscarPontos(String query) throws SQLException {
+    public List<Apontamento> filtrarApontamentoPonto(String query) throws SQLException {
         Connection con = ConexaoBanco.getConexao();
 
         try {
-            String sql = "SELECT APONTAMENTOS.CODAPONT, PFUNC.CHAPA, PFUNC.NOME, APONTAMENTOS.DATA,"
+            String sql = "SELECT APONTAMENTOS.CODAPONT, PFUNC.CHAPA, PFUNC.NOME, PFUNC.BANCO_HORAS, APONTAMENTOS.DATA,"
                     + " APONTAMENTOS.VERIFICADO, APONTAMENTOS.PROBLEMA, APONTAMENTOS.MOTIVO_PROBLEMA,"
                     + " APONTAMENTOS.JUSTIFICATIVA, APONTAMENTOS.COMPETENCIA, APONTAMENTOS.CODSTATUSAPONT, STATUSAPONT.DESCRICAO,"
                     + " APONTAMENTOS.CODCCUSTO, GCCUSTO.NOME, APONTAMENTOS.CODLIDER, PESSOA.NOME"
@@ -534,6 +534,7 @@ public class ApontamentoDAO {
 
                 funcionario.setChapa(rs.getString("PFUNC.CHAPA"));
                 funcionario.setNome(rs.getString("PFUNC.NOME"));
+                funcionario.setBancoHoras(rs.getDouble("PFUNC.BANCO_HORAS"));
                 apontamento.setCodApont(rs.getInt("APONTAMENTOS.CODAPONT"));
                 apontamento.setData(rs.getDate("APONTAMENTOS.DATA").toLocalDate());
                 apontamento.setVerificado(rs.getBoolean("APONTAMENTOS.VERIFICADO"));
