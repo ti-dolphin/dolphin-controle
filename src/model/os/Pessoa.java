@@ -5,8 +5,6 @@
  */
 package model.os;
 
-import java.util.List;
-
 /**
  *
  * @author guilherme.oliveira
@@ -44,6 +42,8 @@ public class Pessoa {
     private String email;
     private boolean permApontamentoPonto;
     private boolean permApontamentoPontoJustificativa;
+    private boolean permBancoHoras;
+    private boolean permFolga;
 
     public Pessoa() {
         this.codPessoa = 1;
@@ -303,6 +303,22 @@ public class Pessoa {
 
     public void setPermApontamentoPontoJustificativa(boolean permApontamentoPontoMotivo) {
         this.permApontamentoPontoJustificativa = permApontamentoPontoMotivo;
+    }
+
+    public boolean isPermBancoHoras() {
+        return permBancoHoras;
+    }
+
+    public void setPermBancoHoras(boolean permBancoHoras) {
+        this.permBancoHoras = permBancoHoras;
+    }
+
+    public boolean isPermFolga() {
+        return permFolga;
+    }
+
+    public void setPermFolga(boolean permFolga) {
+        this.permFolga = permFolga;
     }
     
     @Override

@@ -9,6 +9,7 @@ package view.apontamento;
 import dao.DAOFactory;
 import dao.apontamento.ApontamentoDAO;
 import dao.apontamento.ComentarioDAO;
+import java.awt.Color;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.logging.Level;
@@ -18,6 +19,7 @@ import javax.swing.JTextArea;
 import model.apontamento.Apontamento;
 import model.apontamento.Comentario;
 import model.apontamento.ComentarioApontTableModel;
+import model.apontamento.StatusApont;
 import view.Menu;
 
 /**
@@ -38,6 +40,7 @@ public class UIComentariosApontamentos extends javax.swing.JDialog {
         initComponents();
         this.uiApontamentos = uiApontamentos;
         this.apontamentoSelecionado = apontamentoSelecionado;
+        gerarAvisoDeFolgaNaoPermitida();
         preencherComentarios();
         redimensionarColunas();
     }
@@ -106,6 +109,18 @@ public class UIComentariosApontamentos extends javax.swing.JDialog {
     private void limpar() {
         jtaComentarios.setText("");
     }//limpar
+    
+    private void gerarAvisoDeFolgaNaoPermitida() {
+        
+        StatusApont status = apontamentoSelecionado.getStatusApont();
+        double saldoBancoHoras = apontamentoSelecionado.getFuncionario().getBancoHoras();
+        
+        System.out.println(saldoBancoHoras);
+        if (saldoBancoHoras < 0) {
+            lblAvisoFolgaNaoPerdida.setForeground(Color.red);
+            lblAvisoFolgaNaoPerdida.setText("Aviso! Comentário de folga não é permitido se saldo do banco de horas for negativo.");
+        }
+    }
 
     private void salvar() {
         try {
@@ -196,6 +211,7 @@ public class UIComentariosApontamentos extends javax.swing.JDialog {
         jbComentar = new javax.swing.JButton();
         jScrollPane1 = new javax.swing.JScrollPane();
         jtComentarios = new javax.swing.JTable();
+        lblAvisoFolgaNaoPerdida = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
         setTitle("Comentários do Apontamento");
@@ -259,7 +275,8 @@ public class UIComentariosApontamentos extends javax.swing.JDialog {
                     .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 740, Short.MAX_VALUE)
                     .addGroup(layout.createSequentialGroup()
                         .addComponent(jlComentario)
-                        .addGap(0, 0, Short.MAX_VALUE))
+                        .addGap(18, 18, 18)
+                        .addComponent(lblAvisoFolgaNaoPerdida, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                         .addGap(0, 0, Short.MAX_VALUE)
                         .addComponent(jbComentariosPadrao)
@@ -274,7 +291,9 @@ public class UIComentariosApontamentos extends javax.swing.JDialog {
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jlComentario)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                    .addComponent(jlComentario, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(lblAvisoFolgaNaoPerdida, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 114, Short.MAX_VALUE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
@@ -382,5 +401,6 @@ public class UIComentariosApontamentos extends javax.swing.JDialog {
     private javax.swing.JLabel jlComentario;
     private javax.swing.JTable jtComentarios;
     private javax.swing.JTextArea jtaComentarios;
+    private javax.swing.JLabel lblAvisoFolgaNaoPerdida;
     // End of variables declaration//GEN-END:variables
 }

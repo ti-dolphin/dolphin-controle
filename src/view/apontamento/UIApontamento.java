@@ -22,6 +22,7 @@ import model.apontamento.Apontamento;
 import model.apontamento.StatusApont;
 import model.os.CentroCusto;
 import model.os.Pessoa;
+import services.apontamento.ApontamentoService;
 import view.Menu;
 import view.UIManPessoas;
 
@@ -35,9 +36,11 @@ public class UIApontamento extends javax.swing.JDialog {
     private DefaultListModel lista = new DefaultListModel();
     private CentroCusto centroCusto;
     private ArrayList<CentroCusto> ca;
+    private ApontamentoService apontamentoService;
 
-   public UIApontamento(UIApontamentos uiApontamentos) {
+    public UIApontamento(UIApontamentos uiApontamentos) {
         initComponents();
+        this.apontamentoService = new ApontamentoService();
         this.uiApontamentos = uiApontamentos;
         preencherComboSA();
         preencherComboBoxLider();
@@ -160,21 +163,25 @@ public class UIApontamento extends javax.swing.JDialog {
         Menu.carregamento(true);
 
         new Thread(() -> {
+            boolean apontamentoSalvo = false;
             List<Apontamento> apontamentos = uiApontamentos.getApontamentosSelecionados();
-            try {
 
-                for (Apontamento apontamento : apontamentos) {
-
-                    ApontamentoDAO dao = DAOFactory.getAPONTAMENTODAO();
-
+            for (Apontamento apontamento : apontamentos) {
+                try {
                     CentroCusto c = new CentroCusto();
-                    
+
                     if (apontamento != null) {
                         Pessoa lider = (Pessoa) jcbLider.getSelectedItem();
                         StatusApont sa = (StatusApont) jcbStatus.getSelectedItem();
 
                         //Se nao for vinculado a OS pode editar
                         if (apontamento.getOrdemServico().getCodOs() == 0) {
+
+                            if (apontamento.getFuncionario().getBancoHoras() <= 0
+                                    && sa.getCodStatusApont().equals("FO")
+                                    && !Menu.getUiLogin().getPessoa().isPermFolga()) {
+                                throw new Exception("Não é permitido folga com banco de horas negativo");
+                            }
 
                             //se centro de custo for vazio nao pode editar
                             if (jtfCodCentroCusto.getText().isEmpty()) {
@@ -214,12 +221,10 @@ public class UIApontamento extends javax.swing.JDialog {
 
                             if (jchAtualizarStatusNaoPreenchido.isSelected()) {
                                 if (apontamento.getStatusApont().getCodStatusApont().equals("-")) {
-                                    System.out.println("log");
                                     apontamento.setStatusApont(sa);
                                 }
                             } else {
                                 if (!jtfCodCentroCusto.getText().isEmpty()) {
-                                    System.out.println("log2");
                                     apontamento.setStatusApont(sa);
                                 }
                             }//else status apont
@@ -234,8 +239,8 @@ public class UIApontamento extends javax.swing.JDialog {
                             apontamento.setLider(lider);
                         }//else
 
-                        dao.atualizar(apontamento);
-
+                        apontamentoService.salvar(apontamento);
+                        apontamentoSalvo = true;
                     } else {
                         JOptionPane.showMessageDialog(UIApontamento.this,
                                 "Apontamento não encontrado!",
@@ -243,20 +248,22 @@ public class UIApontamento extends javax.swing.JDialog {
                                 JOptionPane.ERROR_MESSAGE);
                     }
 
+                } catch (Exception ex) {
+                    Logger.getLogger(UIApontamentos.class.getName()).log(Level.SEVERE, null, ex);
+                    JOptionPane.showMessageDialog(UIApontamento.this, ex.getMessage(),
+                            "Erro ao salvar apontamento!",
+                            JOptionPane.ERROR_MESSAGE);
+                } finally {
+                    Menu.carregamento(false);
                 }
-
+            }
+            
+            if (apontamentoSalvo) {
                 JOptionPane.showMessageDialog(UIApontamento.this, "Apontamento salvo!");
-                UIApontamento.this.dispose();
-
-            } catch (Exception ex) {
-                Logger.getLogger(UIApontamentos.class.getName()).log(Level.SEVERE, null, ex);
-                JOptionPane.showMessageDialog(UIApontamento.this, ex.getMessage(),
-                        "Erro ao salvar apontamento!",
-                        JOptionPane.ERROR_MESSAGE);
-            } finally {
-                Menu.carregamento(false);
+                this.dispose();
             }
         }).start();
+
     }//salvar
 
     /**

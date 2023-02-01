@@ -114,5 +114,4 @@ public class FormatarData {
         ZoneId zid = tz == null ? ZoneId.systemDefault() : tz.toZoneId();
         return LocalDateTime.ofInstant(calendar.toInstant(), zid);
     }
-
 }

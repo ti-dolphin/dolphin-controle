@@ -10,8 +10,6 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
-import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import model.Funcao;
@@ -36,7 +34,7 @@ public class ApontamentoDAO {
         Statement stat = con.createStatement();
 
         try {
-            String sql = "SELECT A.CODOS, A.INTEGRA, A.CODAPONT, A.CHAPA, F.NOME, FUN.CODFUNCAO,"
+            String sql = "SELECT A.CODOS, A.INTEGRA, A.CODAPONT, A.CHAPA, F.NOME, F.BANCO_HORAS, FUN.CODFUNCAO,"
                     + " FUN.NOME, A.DATA, C.CODCUSTO, C.NOME, C.ATIVO, C.CODREDUZIDO, A.CODSTATUSAPONT, SA.DESCRICAO,"
                     + " P.CODPESSOA, P.NOME, PG.CODPESSOA, PG.NOME, A.ATIVIDADE, A.CODSITUACAO, A.COMENTADO, A.MODIFICADOPOR,"
                     + " A.COMPETENCIA, A.ASSIDUIDADE"
@@ -89,6 +87,7 @@ public class ApontamentoDAO {
                 apontamento.setIntegra(rs.getBoolean("A.INTEGRA"));
                 funcionario.setChapa(rs.getString("A.CHAPA"));
                 funcionario.setNome(rs.getString("F.NOME"));
+                funcionario.setBancoHoras(rs.getDouble("F.BANCO_HORAS"));
                 funcao.setCodigo(rs.getString("FUN.CODFUNCAO"));
                 funcao.setNome(rs.getString("FUN.NOME"));
                 apontamento.setData(rs.getDate("A.DATA").toLocalDate());
@@ -580,7 +579,7 @@ public class ApontamentoDAO {
                     + " INNER JOIN PFUNC ON APONTAMENTOS.CHAPA = PFUNC.CHAPA"
                     + " INNER JOIN GCCUSTO ON APONTAMENTOS.CODCCUSTO = GCCUSTO.CODCUSTO"
                     + " INNER JOIN STATUSAPONT ON APONTAMENTOS.CODSTATUSAPONT = STATUSAPONT.CODSTATUSAPONT"
-                    + " LEFT JOIN PESSOA GERENTE ON GERENTE.CODPESSOA = GCCUSTO.RESPONSAVEL"
+                    + " LEFT JOIN PESSOA GERENTE ON GERENTE.CODGERENTE = GCCUSTO.RESPONSAVEL"
                     + " INNER JOIN PESSOA LIDER ON LIDER.CODPESSOA = APONTAMENTOS.CODLIDER"
                     + " WHERE APONTAMENTOS.PROBLEMA = TRUE " 
                     + query + " ORDER BY APONTAMENTOS.DATA, PFUNC.NOME";

@@ -51,7 +51,7 @@ public class FuncionarioDAO {
             String sql;
             sql = "select \n"
                     + "	f.CODCOLIGADA, f.CHAPA, f.NOME, f.CODSITUACAO, fun.NOME, f.DATAADMISSAO, f.CODFILIAL, f.CPF, f.FINGER1, f.FINGER2, f.FINGER3, f.FINGER4,\n"
-                    + "	f.FINGER5, f.FINGER6, f.SENHA, f.EMAIL \n"
+                    + "	f.FINGER5, f.FINGER6, f.SENHA, f.EMAIL, f.BANCO_HORAS \n"
                     + "from \n"
                     + "	PFUNC f \n"
                     + "inner join \n"
@@ -87,6 +87,7 @@ public class FuncionarioDAO {
                 funcionario.setCpf(rs.getString("f.CPF"));
                 funcionario.setSenha(rs.getInt("f.SENHA"));
                 funcionario.setEmail(rs.getString("f.EMAIL"));
+                funcionario.setBancoHoras(rs.getDouble("f.BANCO_HORAS"));
 
                 fun.add(funcionario);
             }

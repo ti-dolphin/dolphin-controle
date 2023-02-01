@@ -31,14 +31,16 @@ public class PessoaDAO {
                     + " PERM_TIPO, PERM_STATUS, PERM_APONT, PERM_STATUS_APONT, PERM_PESSOAS,"
                     + " PERM_COMENT_OS, PERM_COMENT_APONT, ATIVO, EMAIL, PERM_PONTO,"
                     + " PERM_VENDA, PERM_DESCONTADO, PERM_CADEPI, PERM_CUSTO, PERM_FERRAMENTAS,"
-                    + " PERM_CHECKLIST, PERM_PROSPECCAO, PERM_APONTAMENTO_PONTO, PERM_APONTAMENTO_PONTO_JUSTIFICATIVA)"
+                    + " PERM_CHECKLIST, PERM_PROSPECCAO, PERM_APONTAMENTO_PONTO, PERM_APONTAMENTO_PONTO_JUSTIFICATIVA, PERM_BANCO_HORAS,"
+                    + " PERM_FOLGA)"
                     + " values (null,"
                     + " ?, ?, ?, ?, ?,"
                     + " ?, ?, ?, ?, ?,"
                     + " ?, ?, ?, ?, ?,"
                     + " ?, ?, ?, ?, ?,"
                     + " ?, ?, ?, ?, ?,"
-                    + " ?, ?, ?, ?)";
+                    + " ?, ?, ?, ?, ?,"
+                    + " ?)";
             
             pstmt = con.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
             
@@ -76,6 +78,9 @@ public class PessoaDAO {
             pstmt.setBoolean(27, p.isPermProspeccao());
             pstmt.setBoolean(28, p.isPermApontamentoPonto());
             pstmt.setBoolean(29, p.isPermApontamentoPontoJustificativa());
+            pstmt.setBoolean(30, p.isPermBancoHoras());
+            
+            pstmt.setBoolean(31, p.isPermFolga());
             
             pstmt.execute();
             
@@ -140,6 +145,8 @@ public class PessoaDAO {
                 p.setPermProspeccao(rs.getBoolean("PERM_PROSPECCAO"));
                 p.setPermApontamentoPonto(rs.getBoolean("PERM_APONTAMENTO_PONTO"));
                 p.setPermApontamentoPontoJustificativa(rs.getBoolean("PERM_APONTAMENTO_PONTO_JUSTIFICATIVA"));
+                p.setPermBancoHoras(rs.getBoolean("PERM_BANCO_HORAS"));
+                p.setPermFolga(rs.getBoolean("PERM_FOLGA"));
 
                 pa.add(p);
             }
@@ -198,6 +205,8 @@ public class PessoaDAO {
                 p.setPermProspeccao(rs.getBoolean("PERM_PROSPECCAO"));
                 p.setPermApontamentoPonto(rs.getBoolean("PERM_APONTAMENTO_PONTO"));
                 p.setPermApontamentoPontoJustificativa(rs.getBoolean("PERM_APONTAMENTO_PONTO_JUSTIFICATIVA"));
+                p.setPermBancoHoras(rs.getBoolean("PERM_BANCO_HORAS"));
+                p.setPermFolga(rs.getBoolean("PERM_FOLGA"));
 
                 pa.add(p);
             }
@@ -255,6 +264,8 @@ public class PessoaDAO {
                 p.setPermCustoMO(rs.getBoolean("PERM_CUSTO"));
                 p.setPermProspeccao(rs.getBoolean("PERM_PROSPECCAO"));
                 p.setPermApontamentoPonto(rs.getBoolean("PERM_APONTAMENTO_PONTO"));
+                p.setPermBancoHoras(rs.getBoolean("PERM_BANCO_HORAS"));
+                p.setPermFolga(rs.getBoolean("PERM_FOLGA"));
                 p.setAtivo(rs.getBoolean("ATIVO"));
                                 
                 pa.add(p);
@@ -324,6 +335,8 @@ public class PessoaDAO {
                 p.setPermDescontado(rs.getBoolean("PERM_DESCONTADO"));
                 p.setPermCustoMO(rs.getBoolean("PERM_CUSTO"));
                 p.setPermProspeccao(rs.getBoolean("PERM_PROSPECCAO"));
+                p.setPermBancoHoras(rs.getBoolean("PERM_BANCO_HORAS"));
+                p.setPermFolga(rs.getBoolean("PERM_FOLGA"));
                 p.setAtivo(rs.getBoolean("ATIVO"));
                 
                 pa.add(p);
@@ -380,6 +393,8 @@ public class PessoaDAO {
                 p.setPermFerramentas(rs.getBoolean("PERM_FERRAMENTAS"));
                 p.setPermProspeccao(rs.getBoolean("PERM_PROSPECCAO"));
                 p.setPermApontamentoPonto(rs.getBoolean("PERM_APONTAMENTO_PONTO"));
+                p.setPermBancoHoras(rs.getBoolean("PERM_BANCO_HORAS"));
+                p.setPermFolga(rs.getBoolean("PERM_FOLGA"));
                 
                 pa.add(p);
             }
@@ -405,8 +420,9 @@ public class PessoaDAO {
                     + " PERM_TIPO = ?, PERM_STATUS = ?, PERM_APONT = ?, PERM_PESSOAS = ?, PERM_STATUS_APONT = ?,"
                     + " PERM_COMENT_OS = ?, PERM_COMENT_APONT = ?, EMAIL = ?, PERM_PONTO = ?, PERM_VENDA = ?,"
                     + " PERM_DESCONTADO = ?, ATIVO = ?, PERM_CUSTO = ?, PERM_FERRAMENTAS = ?, PERM_CHECKLIST = ?,"
-                    + " PERM_PROSPECCAO = ?, PERM_APONTAMENTO_PONTO = ?, PERM_APONTAMENTO_PONTO_JUSTIFICATIVA = ?"
-                    + " where CODPESSOA = ?";
+                    + " PERM_PROSPECCAO = ?, PERM_APONTAMENTO_PONTO = ?, PERM_APONTAMENTO_PONTO_JUSTIFICATIVA = ?,"
+                    + " PERM_BANCO_HORAS = ?, PERM_FOLGA = ?"
+                    + " WHERE CODPESSOA = ?";
             
             pstmt = con.prepareStatement(sql);
             
@@ -443,8 +459,12 @@ public class PessoaDAO {
             pstmt.setBoolean(26, p.isPermProspeccao());
             pstmt.setBoolean(27, p.isPermApontamentoPonto());
             pstmt.setBoolean(28, p.isPermApontamentoPontoJustificativa());
+            pstmt.setBoolean(29, p.isPermBancoHoras());
+            pstmt.setBoolean(30, p.isPermFolga());
             
-            pstmt.setInt(29, p.getCodPessoa());
+            pstmt.setInt(31, p.getCodPessoa());
+            
+            
             pstmt.executeUpdate();
             
         } catch (SQLException se) {

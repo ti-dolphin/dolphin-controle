@@ -7,7 +7,6 @@ package view.apontamento;
 
 import dao.DAOFactory;
 import dao.apontamento.ApontamentoDAO;
-import dao.apontamento.RelComentariosApontDAO;
 import dao.apontamento.StatusApontDAO;
 import dao.os.PessoaDAO;
 import java.awt.event.KeyEvent;
@@ -32,6 +31,7 @@ import model.apontamento.StatusApont;
 import model.apontamento.tables.ApontamentoProblemaTableModel;
 import model.apontamento.tables.ApontamentoProblemasTableCellRender;
 import model.apontamento.tables.SinalizarColunaTabelaApontamentos;
+import model.apontamento.tables.IconeApontamentoTableCellRederer;
 import model.os.Pessoa;
 import net.sf.jasperreports.engine.JRException;
 import net.sf.jasperreports.engine.JasperFillManager;
@@ -79,8 +79,8 @@ public class UIApontamentos extends javax.swing.JInternalFrame {
         configurarTabelaApontamentosPonto();
 
         this.apontamentoProblemaTableModel = new ApontamentoProblemaTableModel();
-        this.tblApontamentoProblema.setAutoCreateRowSorter(true);
         this.tblApontamentoProblema.setModel(apontamentoProblemaTableModel);
+        this.tblApontamentoProblema.setAutoCreateRowSorter(true);
         configurarTabelaApontamentoProblema();
 
         darPermissoes();
@@ -591,19 +591,20 @@ public class UIApontamentos extends javax.swing.JInternalFrame {
     }
 
     private void configurarTabelaApontamentos() {
-        tblApontamentos.getColumnModel().getColumn(ApontamentoTableModel.COLUNA_COMENTADO).setPreferredWidth(100);
-        tblApontamentos.getColumnModel().getColumn(ApontamentoTableModel.COLUNA_CHAPA).setPreferredWidth(100);
-        tblApontamentos.getColumnModel().getColumn(ApontamentoTableModel.COLUNA_FUNCIONARIO).setPreferredWidth(300);
+        tblApontamentos.getColumnModel().getColumn(ApontamentoTableModel.COLUNA_ASSIDUIDADE).setPreferredWidth(80);
+        tblApontamentos.getColumnModel().getColumn(ApontamentoTableModel.COLUNA_COMENTADO).setPreferredWidth(80);
+        tblApontamentos.getColumnModel().getColumn(ApontamentoTableModel.COLUNA_BANCO_HORAS).setPreferredWidth(80);
+        tblApontamentos.getColumnModel().getColumn(ApontamentoTableModel.COLUNA_CHAPA).setPreferredWidth(70);
+        tblApontamentos.getColumnModel().getColumn(ApontamentoTableModel.COLUNA_FUNCIONARIO).setPreferredWidth(250);
         tblApontamentos.getColumnModel().getColumn(ApontamentoTableModel.COLUNA_FUNCAO).setPreferredWidth(350);
-        tblApontamentos.getColumnModel().getColumn(ApontamentoTableModel.COLUNA_DATA).setPreferredWidth(150);
-        tblApontamentos.getColumnModel().getColumn(ApontamentoTableModel.COLUNA_DIA_DA_SEMANA).setPreferredWidth(150);
+        tblApontamentos.getColumnModel().getColumn(ApontamentoTableModel.COLUNA_DATA).setPreferredWidth(80);
+        tblApontamentos.getColumnModel().getColumn(ApontamentoTableModel.COLUNA_DIA_DA_SEMANA).setPreferredWidth(100);
         tblApontamentos.getColumnModel().getColumn(ApontamentoTableModel.COLUNA_GERENTE).setPreferredWidth(300);
         tblApontamentos.getColumnModel().getColumn(ApontamentoTableModel.COLUNA_CENTRO_CUSTO).setPreferredWidth(350);
         tblApontamentos.getColumnModel().getColumn(ApontamentoTableModel.COLUNA_STATUS).setPreferredWidth(100);
         tblApontamentos.getColumnModel().getColumn(ApontamentoTableModel.COLUNA_LIDER).setPreferredWidth(350);
         tblApontamentos.getColumnModel().getColumn(ApontamentoTableModel.COLUNA_ATIVIDADE).setPreferredWidth(350);
         tblApontamentos.getColumnModel().getColumn(ApontamentoTableModel.COLUNA_SITUACAO).setPreferredWidth(100);
-        tblApontamentos.getColumnModel().getColumn(ApontamentoTableModel.COLUNA_ASSIDUIDADE).setPreferredWidth(100);
         apontamentoTableCellRender = new ApontamentosTableCellRender(apontamentoTableModel);
         tblApontamentos.getColumnModel()
                 .getColumn(ApontamentoTableModel.COLUNA_DATA)
@@ -614,6 +615,10 @@ public class UIApontamentos extends javax.swing.JInternalFrame {
         tblApontamentos.getColumnModel()
                 .getColumn(ApontamentoTableModel.COLUNA_ASSIDUIDADE)
                 .setCellRenderer(new SinalizarColunaTabelaApontamentos(apontamentoTableModel));
+        tblApontamentos.getColumnModel()
+                .getColumn(ApontamentoTableModel.COLUNA_BANCO_HORAS)
+                .setCellRenderer(new IconeApontamentoTableCellRederer());
+        
     }
 
     private void configurarTabelaApontamentosPonto() {
@@ -628,7 +633,6 @@ public class UIApontamentos extends javax.swing.JInternalFrame {
         tblApontamentoPonto.getColumnModel().getColumn(apontamentoPontoTableModel.COLUNA_JUSTIFICATIVA).setPreferredWidth(350);
         tblApontamentoPonto.getColumnModel().getColumn(apontamentoPontoTableModel.COLUNA_CENTRO_CUSTO).setPreferredWidth(350);
         tblApontamentoPonto.getColumnModel().getColumn(apontamentoPontoTableModel.COLUNA_LIDER).setPreferredWidth(150);
-        tblApontamentoPonto.getColumnModel().getColumn(apontamentoPontoTableModel.COLUNA_BANCO_HORAS).setPreferredWidth(150);
         apontamentoPontoTableCellRender = new ApontamentosPontoTableCellRender(apontamentoPontoTableModel);
         tblApontamentoPonto.setDefaultRenderer(Object.class, apontamentoPontoTableCellRender);
         tblApontamentoPonto.putClientProperty("terminateEditOnFocusLost", Boolean.TRUE);

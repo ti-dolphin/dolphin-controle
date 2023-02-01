@@ -12,6 +12,7 @@ import java.util.Collections;
 import java.util.List;
 import javax.swing.table.AbstractTableModel;
 import model.apontamento.Apontamento;
+import view.Menu;
 
 /**
  *
@@ -20,7 +21,7 @@ import model.apontamento.Apontamento;
 public class ApontamentoTableModel extends AbstractTableModel {
 
     private List<Apontamento> apontamentos = new ArrayList<>();
-    private String[] colunas = {"Assiduidade", "Comentado", "Chapa", "Funcionário", "Função",
+    private String[] colunas = {"Assiduidade", "Comentado", "Banco Hrs", "Chapa", "Funcionário", "Função",
         "Data", "Dia da Semana", "Gerente", "Centro de Custo", "CNO (CEI)", 
         
         "Status", "Líder", "Atividade", "Situação", "Modificado Por", 
@@ -29,23 +30,24 @@ public class ApontamentoTableModel extends AbstractTableModel {
 
     public static final int COLUNA_ASSIDUIDADE = 0;
     public static final int COLUNA_COMENTADO = 1;
-    public static final int COLUNA_CHAPA = 2;
-    public static final int COLUNA_FUNCIONARIO = 3;
-    public static final int COLUNA_FUNCAO = 4;
+    public static final int COLUNA_BANCO_HORAS = 2;
+    public static final int COLUNA_CHAPA = 3;
+    public static final int COLUNA_FUNCIONARIO = 4;
+    public static final int COLUNA_FUNCAO = 5;
     
-    public static final int COLUNA_DATA = 5;
-    public static final int COLUNA_DIA_DA_SEMANA = 6;
-    public static final int COLUNA_GERENTE = 7;
-    public static final int COLUNA_CENTRO_CUSTO = 8;
-    public static final int COLUNA_CNO = 9;
+    public static final int COLUNA_DATA = 6;
+    public static final int COLUNA_DIA_DA_SEMANA = 7;
+    public static final int COLUNA_GERENTE = 8;
+    public static final int COLUNA_CENTRO_CUSTO = 9;
+    public static final int COLUNA_CNO = 10;
     
-    public static final int COLUNA_STATUS = 10;
-    public static final int COLUNA_LIDER = 11;
-    public static final int COLUNA_ATIVIDADE = 12;
-    public static final int COLUNA_SITUACAO = 13;
-    public static final int COLUNA_MODIFICADO_POR = 14;
+    public static final int COLUNA_STATUS = 11;
+    public static final int COLUNA_LIDER = 12;
+    public static final int COLUNA_ATIVIDADE = 13;
+    public static final int COLUNA_SITUACAO = 14;
+    public static final int COLUNA_MODIFICADO_POR = 15;
     
-    public static final int COLUNA_NUMERO_OS = 15;
+    public static final int COLUNA_NUMERO_OS = 16;
 
     @Override
     public String getColumnName(int column) {
@@ -67,8 +69,6 @@ public class ApontamentoTableModel extends AbstractTableModel {
         switch (coluna) {
             case COLUNA_ASSIDUIDADE:
                 return Boolean.class;
-            case COLUNA_CHAPA:
-                return Integer.class;
             case COLUNA_DATA:
                 return LocalDate.class;
             case COLUNA_DIA_DA_SEMANA:
@@ -121,6 +121,14 @@ public class ApontamentoTableModel extends AbstractTableModel {
                 return apontamento.getModificadoPor();
             case COLUNA_NUMERO_OS:
                 return apontamento.getOrdemServico().getCodOs();
+            case COLUNA_BANCO_HORAS:
+                if (Menu.getUiLogin().getPessoa().isPermBancoHoras()) {
+                    return String.valueOf(apontamento.getFuncionario().getBancoHoras());
+                } else if (apontamento.getFuncionario().getBancoHoras() >= 0) {
+                    return "Positivo";
+                } else {
+                    return "Negativo";
+                }
         }
         return null;
     }

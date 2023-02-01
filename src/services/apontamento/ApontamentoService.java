@@ -14,6 +14,7 @@ import model.apontamento.Apontamento;
 import view.Menu;
 import view.apontamento.UIApontamentos;
 import services.NotificacaoService;
+
 /**
  *
  * @author ti
@@ -27,19 +28,23 @@ public class ApontamentoService {
         this.dao = new ApontamentoDAO();
         this.notificacaoService = new NotificacaoService();
     }
-    
+
+    public void salvar(Apontamento apontamento) throws SQLException, Exception {
+        dao.alterar(apontamento);
+    }
+
     public List<Apontamento> filtrarApontamentos(String query) throws SQLException {
         return dao.filtrarApontamentos(query);
     }
-    
+
     public List<Apontamento> filtrarApontamentoPonto(String query) throws SQLException {
         return dao.filtrarApontamentoPonto(query);
     }
-    
+
     public List<Apontamento> filtrarApontamentoProblema(String query) throws SQLException {
         return dao.filtrarProblemasDeApontamento(query);
     }
-    
+
     public List<Apontamento> buscarPontosPorNotificacoesNaoLidas() throws SQLException {
         return dao.buscarPontosPorNotificacoesNaoLidas();
     }

@@ -23,13 +23,13 @@ import view.os.UIPermissaoTipo;
  */
 public class UICadPessoa extends javax.swing.JDialog {
 
-    UIManPessoas uiManPessoas;
-    PessoaTipoModel pessoaTipoModel = new PessoaTipoModel();
-    PessoaResponsavelTableModel pessoaResponsavelModel = new PessoaResponsavelTableModel();
-    Pessoa pessoa;
-    PessoaDAO pdao;
-    PessoaTipoDAO ptdao;
-    PessoaResponsavelDAO prdao;
+    private UIManPessoas uiManPessoas;
+    private PessoaTipoModel pessoaTipoModel = new PessoaTipoModel();
+    private PessoaResponsavelTableModel pessoaResponsavelModel = new PessoaResponsavelTableModel();
+    private Pessoa pessoa;
+    private PessoaDAO pdao;
+    private PessoaTipoDAO ptdao;
+    private PessoaResponsavelDAO prdao;
     
     public UICadPessoa(Pessoa pessoa, UIManPessoas uiManPessoas) {
         this.pessoa = pessoa;
@@ -100,6 +100,8 @@ public class UICadPessoa extends javax.swing.JDialog {
             chProspeccao.setSelected(pessoa.isPermProspeccao());
             cbxApontamentoPonto.setSelected(pessoa.isPermApontamentoPonto());
             cbxApontamentoPontoJustificativa.setSelected(pessoa.isPermApontamentoPontoJustificativa());
+            cbxPermBancoHoras.setSelected(pessoa.isPermBancoHoras());
+            cbxPermFolga.setSelected(pessoa.isPermFolga());
         }
     }
 
@@ -139,6 +141,8 @@ public class UICadPessoa extends javax.swing.JDialog {
         pessoa.setPermProspeccao(chProspeccao.isSelected());
         pessoa.setPermApontamentoPonto(cbxApontamentoPonto.isSelected());
         pessoa.setPermApontamentoPontoJustificativa(cbxApontamentoPontoJustificativa.isSelected());
+        pessoa.setPermBancoHoras(cbxPermBancoHoras.isSelected());
+        pessoa.setPermFolga(cbxPermFolga.isSelected());
 
         if (jchLogin.isSelected()) {
             if (jtfLogin.getText().isEmpty()) {
@@ -372,6 +376,8 @@ public class UICadPessoa extends javax.swing.JDialog {
         chProspeccao = new javax.swing.JCheckBox();
         cbxApontamentoPonto = new javax.swing.JCheckBox();
         cbxApontamentoPontoJustificativa = new javax.swing.JCheckBox();
+        cbxPermBancoHoras = new javax.swing.JCheckBox();
+        cbxPermFolga = new javax.swing.JCheckBox();
         jPanel3 = new javax.swing.JPanel();
         jScrollPane1 = new javax.swing.JScrollPane();
         jtTiposPermitidos = new javax.swing.JTable();
@@ -468,7 +474,7 @@ public class UICadPessoa extends javax.swing.JDialog {
                 .addComponent(jchResponsavel)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jchLider)
-                .addContainerGap(214, Short.MAX_VALUE))
+                .addContainerGap(288, Short.MAX_VALUE))
         );
 
         jTabbedPane1.addTab("Dado Pessoais", jPanel1);
@@ -537,11 +543,15 @@ public class UICadPessoa extends javax.swing.JDialog {
 
         cbxApontamentoPontoJustificativa.setText("Ponto Justificativa");
 
+        cbxPermBancoHoras.setText("Banco de Horas");
+
+        cbxPermFolga.setText("Permitir Folga");
+
         javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
         jPanel2.setLayout(jPanel2Layout);
         jPanel2Layout.setHorizontalGroup(
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel2Layout.createSequentialGroup()
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel2Layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(jlLogin)
@@ -562,6 +572,8 @@ public class UICadPessoa extends javax.swing.JDialog {
                             .addComponent(jchTipo))))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(cbxPermFolga)
+                    .addComponent(cbxPermBancoHoras)
                     .addComponent(jlSenha)
                     .addComponent(jpfSenha, javax.swing.GroupLayout.PREFERRED_SIZE, 272, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jchApontamentos)
@@ -640,7 +652,11 @@ public class UICadPessoa extends javax.swing.JDialog {
                         .addComponent(jchCheckList)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                         .addComponent(chProspeccao)))
-                .addContainerGap(20, Short.MAX_VALUE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(cbxPermBancoHoras)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(cbxPermFolga)
+                .addContainerGap(22, Short.MAX_VALUE))
         );
 
         jTabbedPane1.addTab("Permissões", jPanel2);
@@ -681,7 +697,7 @@ public class UICadPessoa extends javax.swing.JDialog {
             jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel3Layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 415, Short.MAX_VALUE)
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 498, Short.MAX_VALUE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jbRemover)
@@ -727,7 +743,7 @@ public class UICadPessoa extends javax.swing.JDialog {
             jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel4Layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 415, Short.MAX_VALUE)
+                .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 498, Short.MAX_VALUE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jbRemover1)
@@ -850,6 +866,8 @@ public class UICadPessoa extends javax.swing.JDialog {
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JCheckBox cbxApontamentoPonto;
     private javax.swing.JCheckBox cbxApontamentoPontoJustificativa;
+    private javax.swing.JCheckBox cbxPermBancoHoras;
+    private javax.swing.JCheckBox cbxPermFolga;
     private javax.swing.JCheckBox chProspeccao;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel2;
