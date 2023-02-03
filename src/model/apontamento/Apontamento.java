@@ -41,6 +41,11 @@ public class Apontamento {
     private String justificativa;
     private int competencia;
     private boolean assiduidade;
+    private boolean pontoAviso;
+    private LocalDateTime dataHoraMotivo;
+    private LocalDateTime dataHoraJustificativa;
+    private boolean ajustado;
+    private String justificadoPor;
 
     public Apontamento() {
     }
@@ -220,4 +225,45 @@ public class Apontamento {
     public void setAssiduidade(boolean assiduidade) {
         this.assiduidade = assiduidade;
     }
+
+    public boolean isPontoAviso() {
+        return pontoAviso;
+    }
+
+    public void setPontoAviso(boolean pontoAviso) {
+        this.pontoAviso = pontoAviso;
+    }
+
+    public LocalDateTime getDataHoraMotivo() {
+        return dataHoraMotivo;
+    }
+
+    public void setDataHoraMotivo(LocalDateTime dataHoraMotivo) {
+        this.dataHoraMotivo = dataHoraMotivo;
+    }
+
+    public LocalDateTime getDataHoraJustificativa() {
+        return dataHoraJustificativa;
+    }
+
+    public void setDataHoraJustificativa(LocalDateTime dataHoraJustificativa) {
+        this.dataHoraJustificativa = dataHoraJustificativa;
+    }
+
+    public boolean isAjustado() {
+        return ajustado;
+    }
+
+    public void setAjustado(boolean ajustado) {
+        this.ajustado = ajustado;
+    }
+
+    public String getJustificadoPor() {
+        return justificadoPor;
+    }
+
+    public void setJustificadoPor(String justificadoPor) {
+        this.justificadoPor = justificadoPor;
+    }
+
 }

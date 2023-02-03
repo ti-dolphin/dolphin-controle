@@ -79,7 +79,6 @@ public class PessoaDAO {
             pstmt.setBoolean(28, p.isPermApontamentoPonto());
             pstmt.setBoolean(29, p.isPermApontamentoPontoJustificativa());
             pstmt.setBoolean(30, p.isPermBancoHoras());
-            
             pstmt.setBoolean(31, p.isPermFolga());
             
             pstmt.execute();
@@ -463,7 +462,6 @@ public class PessoaDAO {
             pstmt.setBoolean(30, p.isPermFolga());
             
             pstmt.setInt(31, p.getCodPessoa());
-            
             
             pstmt.executeUpdate();
             

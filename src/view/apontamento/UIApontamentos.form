@@ -70,6 +70,8 @@
                               <Component id="btnAvisos" min="-2" max="-2" attributes="0"/>
                               <EmptySpace max="32767" attributes="0"/>
                               <Component id="cbxNaoApontados" min="-2" max="-2" attributes="0"/>
+                              <EmptySpace min="0" pref="0" max="-2" attributes="0"/>
+                              <Component id="jcbSemJustificativa" min="-2" max="-2" attributes="0"/>
                               <EmptySpace max="-2" attributes="0"/>
                               <Component id="cbxAssiduidade" min="-2" max="-2" attributes="0"/>
                               <EmptySpace type="unrelated" max="-2" attributes="0"/>
@@ -197,6 +199,7 @@
                   <Component id="btnAvisos" alignment="3" min="-2" max="-2" attributes="0"/>
                   <Component id="cbxAssiduidade" alignment="3" min="-2" max="-2" attributes="0"/>
                   <Component id="cbxNaoApontados" alignment="3" min="-2" max="-2" attributes="0"/>
+                  <Component id="jcbSemJustificativa" alignment="3" min="-2" max="-2" attributes="0"/>
               </Group>
               <EmptySpace min="-2" max="-2" attributes="0"/>
               <Component id="jtpPainelApontamentos" pref="525" max="32767" attributes="0"/>
@@ -586,6 +589,9 @@
                       <TableHeader reorderingAllowed="true" resizingAllowed="true"/>
                     </Property>
                   </Properties>
+                  <Events>
+                    <EventHandler event="mouseClicked" listener="java.awt.event.MouseListener" parameters="java.awt.event.MouseEvent" handler="tblApontamentoPontoMouseClicked"/>
+                  </Events>
                 </Component>
               </SubComponents>
             </Container>
@@ -626,6 +632,11 @@
       <Events>
         <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="btnPeriodoAnteriorActionPerformed"/>
       </Events>
+    </Component>
+    <Component class="javax.swing.JCheckBox" name="jcbSemJustificativa">
+      <Properties>
+        <Property name="text" type="java.lang.String" value="Sem Justificativa"/>
+      </Properties>
     </Component>
   </SubComponents>
 </Form>

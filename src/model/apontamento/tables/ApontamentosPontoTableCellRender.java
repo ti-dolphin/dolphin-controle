@@ -7,6 +7,7 @@ package model.apontamento.tables;
 import java.awt.Color;
 import java.awt.Component;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import javax.swing.JLabel;
 import javax.swing.JTable;
 import javax.swing.table.DefaultTableCellRenderer;
@@ -43,6 +44,9 @@ public final class ApontamentosPontoTableCellRender extends DefaultTableCellRend
             }
             if (value instanceof LocalDate) {
                 label.setText(FormatarData.formatarDataEmTexto((LocalDate) value, "dd/MM/yyyy"));
+            }
+            if (value instanceof LocalDateTime) {
+                label.setText(FormatarData.formatarDataEHoraEmTexto((LocalDateTime) value, "dd/MM/yyyy HH:mm"));
             }
         }
         return c;

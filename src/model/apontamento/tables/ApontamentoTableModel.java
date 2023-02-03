@@ -21,33 +21,34 @@ import view.Menu;
 public class ApontamentoTableModel extends AbstractTableModel {
 
     private List<Apontamento> apontamentos = new ArrayList<>();
-    private String[] colunas = {"Assiduidade", "Comentado", "Banco Hrs", "Chapa", "Funcionário", "Função",
+    private String[] colunas = {"Ponto", "Assiduidade", "Comentado", "Banco Hrs", "Chapa", "Funcionário", "Função",
         "Data", "Dia da Semana", "Gerente", "Centro de Custo", "CNO (CEI)", 
         
         "Status", "Líder", "Atividade", "Situação", "Modificado Por", 
         
         "N° OS/Tarefa"};
 
-    public static final int COLUNA_ASSIDUIDADE = 0;
-    public static final int COLUNA_COMENTADO = 1;
-    public static final int COLUNA_BANCO_HORAS = 2;
-    public static final int COLUNA_CHAPA = 3;
-    public static final int COLUNA_FUNCIONARIO = 4;
-    public static final int COLUNA_FUNCAO = 5;
+    public static final int COLUNA_PONTO = 0;
+    public static final int COLUNA_ASSIDUIDADE = 1;
+    public static final int COLUNA_COMENTADO = 2;
+    public static final int COLUNA_BANCO_HORAS = 3;
+    public static final int COLUNA_CHAPA = 4;
+    public static final int COLUNA_FUNCIONARIO = 5;
+    public static final int COLUNA_FUNCAO = 6;
     
-    public static final int COLUNA_DATA = 6;
-    public static final int COLUNA_DIA_DA_SEMANA = 7;
-    public static final int COLUNA_GERENTE = 8;
-    public static final int COLUNA_CENTRO_CUSTO = 9;
-    public static final int COLUNA_CNO = 10;
+    public static final int COLUNA_DATA = 7;
+    public static final int COLUNA_DIA_DA_SEMANA = 8;
+    public static final int COLUNA_GERENTE = 9;
+    public static final int COLUNA_CENTRO_CUSTO = 10;
+    public static final int COLUNA_CNO = 11;
     
-    public static final int COLUNA_STATUS = 11;
-    public static final int COLUNA_LIDER = 12;
-    public static final int COLUNA_ATIVIDADE = 13;
-    public static final int COLUNA_SITUACAO = 14;
-    public static final int COLUNA_MODIFICADO_POR = 15;
+    public static final int COLUNA_STATUS = 12;
+    public static final int COLUNA_LIDER = 13;
+    public static final int COLUNA_ATIVIDADE = 14;
+    public static final int COLUNA_SITUACAO = 15;
+    public static final int COLUNA_MODIFICADO_POR = 16;
     
-    public static final int COLUNA_NUMERO_OS = 16;
+    public static final int COLUNA_NUMERO_OS = 17;
 
     @Override
     public String getColumnName(int column) {
@@ -67,6 +68,8 @@ public class ApontamentoTableModel extends AbstractTableModel {
     @Override
     public Class<?> getColumnClass(int coluna) {
         switch (coluna) {
+            case COLUNA_PONTO:
+                return Boolean.class;
             case COLUNA_ASSIDUIDADE:
                 return Boolean.class;
             case COLUNA_DATA:
@@ -86,6 +89,8 @@ public class ApontamentoTableModel extends AbstractTableModel {
     public Object getValueAt(int linha, int coluna) {
         Apontamento apontamento = apontamentos.get(linha);
         switch (coluna) {
+            case COLUNA_PONTO:
+                return apontamento.isPontoAviso();
             case COLUNA_ASSIDUIDADE:
                 return apontamento.isAssiduidade();
             case COLUNA_COMENTADO:
@@ -93,6 +98,16 @@ public class ApontamentoTableModel extends AbstractTableModel {
                     return "Sim";
                 }
                 return "";
+            case COLUNA_BANCO_HORAS:
+                if (Menu.logado.isPermBancoHoras()) {
+                    return apontamento.getFuncionario().getBancoHoras();
+                } else {
+                    if (apontamento.getFuncionario().getBancoHoras() >= 0.0) {
+                        return "Positivo";
+                    } else {
+                        return "Negativo";
+                    }
+                }
             case COLUNA_CHAPA:
                 return apontamento.getFuncionario().getChapa();
             case COLUNA_FUNCIONARIO:
@@ -121,14 +136,6 @@ public class ApontamentoTableModel extends AbstractTableModel {
                 return apontamento.getModificadoPor();
             case COLUNA_NUMERO_OS:
                 return apontamento.getOrdemServico().getCodOs();
-            case COLUNA_BANCO_HORAS:
-                if (Menu.getUiLogin().getPessoa().isPermBancoHoras()) {
-                    return String.valueOf(apontamento.getFuncionario().getBancoHoras());
-                } else if (apontamento.getFuncionario().getBancoHoras() >= 0) {
-                    return "Positivo";
-                } else {
-                    return "Negativo";
-                }
         }
         return null;
     }

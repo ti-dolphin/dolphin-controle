@@ -60,6 +60,42 @@ public class ComentarioDAO {
             throw new SQLException("Erro ao cadastrar comentario! " + se.getMessage());
         }
     }//salvar
+    
+    public Comentario buscarComentarioApontamentoPorId(int codComentario) throws SQLException {
+        Connection con = ConexaoBanco.getConexao();
+        Statement stat = con.createStatement();
+
+        try {
+            String sql = "SELECT CODCOMENTARIO, CODAPONT, DESCRICAO,"
+                    + " RECCREATEDBY, RECCREATEDON FROM COMENTARIOS"
+                    + " WHERE CODCOMENTARIO = " + codComentario;
+
+            ResultSet rs = stat.executeQuery(sql);
+
+            if (rs.next()) {
+                Comentario comentario = new Comentario();
+                Apontamento apontamento = new Apontamento();
+
+                comentario.setCodComentario(rs.getInt("CODCOMENTARIO"));
+                apontamento.setCodApont(rs.getInt("CODAPONT"));
+                comentario.setDescricao(rs.getString("DESCRICAO"));
+                comentario.setCreatedBy(rs.getString("RECCREATEDBY"));
+                comentario.setCreatedOn(rs.getTimestamp("RECCREATEDON").toLocalDateTime());
+
+                comentario.setApontamento(apontamento);
+
+                return comentario;
+            }
+
+            return null;
+
+        } catch (SQLException se) {
+            throw new SQLException("Erro ao buscar comentarios! " + se.getMessage());
+        } finally {
+            con.close();
+            stat.close();
+        }//finally
+    }//buscar
 
     public ArrayList<Comentario> buscarComentApont(int codApont) throws SQLException {
         Connection con = ConexaoBanco.getConexao();

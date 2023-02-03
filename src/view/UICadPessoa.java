@@ -1,21 +1,18 @@
 
 package view;
 
-import model.os.PessoaResponsavelTableModel;
 import dao.DAOFactory;
 import dao.os.PessoaDAO;
 import dao.os.PessoaResponsavelDAO;
 import dao.os.PessoaTipoDAO;
-import java.awt.event.KeyEvent;
-import java.util.ArrayList;
-import javax.swing.JOptionPane;
-import model.os.PessoaResponsavel;
-import model.os.Pessoa;
-import model.os.PessoaTipo;
-import model.os.PessoaTipoModel;
+import model.os.*;
 import utilitarios.Criptografia;
 import view.os.UIPermissaoResponsavel;
 import view.os.UIPermissaoTipo;
+
+import javax.swing.*;
+import java.awt.event.KeyEvent;
+import java.util.ArrayList;
 
 /**
  *
@@ -411,14 +408,10 @@ public class UICadPessoa extends javax.swing.JDialog {
         });
 
         jlCodPessoa.setText("Código");
-
         jchSolicitante.setText("Solicitante");
-
         jlNome.setText("Nome");
         jlNome.setToolTipText("Cadastrar Pessoa");
-
         jlEmail.setText("Email");
-
         jchAtivo.setSelected(true);
         jchAtivo.setText("Ativo");
 
@@ -478,39 +471,24 @@ public class UICadPessoa extends javax.swing.JDialog {
         );
 
         jTabbedPane1.addTab("Dado Pessoais", jPanel1);
-
         jchEpi.setText("EPI");
-
         jchAutenticar.setText("Autenticar");
-
         jchOs.setText("OS/Tarefa");
-
         jchTipo.setText("Cadastro de Tipo");
-
         jchStatus.setText("Cadastro de Status");
-
         jchPessoas.setText("Pessoas");
-
         jchStatusApont.setText("Status dos Apontamentos");
-
         jchApontamentos.setText("Apontamentos");
-
         jchComentarOs.setText("Comentar OS");
-
         jchComentarApont.setText("Comentar Apontamento");
-
         jtfLogin.setEnabled(false);
-
         jlSenha.setText("Senha");
-
         jpfSenha.setEnabled(false);
         jpfSenha.addKeyListener(new java.awt.event.KeyAdapter() {
             public void keyPressed(java.awt.event.KeyEvent evt) {
                 jpfSenhaKeyPressed(evt);
             }
         });
-
-        jlLogin.setText("Login");
 
         jchLogin.setText("Login");
         jchLogin.addChangeListener(new javax.swing.event.ChangeListener() {
@@ -520,31 +498,18 @@ public class UICadPessoa extends javax.swing.JDialog {
         });
 
         jchPonto.setText("Automacao Ponto");
-
         jchVenda.setText(" Venda");
-
         jchDescontado.setText("Ver descontados");
-
         jchCadEPI.setText("Cadastro de EPI");
-
         jchGestaoPessoas.setText("Gestão de pessoas");
-
         jchControleDeRecesso.setText("Controle de Recesso");
-
         jchCustoMO.setText("Custo de Mao de Obra");
-
         jchFerramentas.setText("Ferramentas");
-
         jchCheckList.setText("Checklist");
-
         chProspeccao.setText("Prospecção");
-
         cbxApontamentoPonto.setText("Ponto");
-
         cbxApontamentoPontoJustificativa.setText("Ponto Justificativa");
-
         cbxPermBancoHoras.setText("Banco de Horas");
-
         cbxPermFolga.setText("Permitir Folga");
 
         javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
@@ -656,8 +621,7 @@ public class UICadPessoa extends javax.swing.JDialog {
                 .addComponent(cbxPermBancoHoras)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(cbxPermFolga)
-                .addContainerGap(22, Short.MAX_VALUE))
-        );
+                .addContainerGap(22, Short.MAX_VALUE)));
 
         jTabbedPane1.addTab("Permissões", jPanel2);
 

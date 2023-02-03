@@ -25,6 +25,32 @@ public class Funcionario {
     private Situacao situacao;
     private Funcao funcao;
     private double bancoHoras;
+    
+    public Funcionario() {
+    }
+
+    public Funcionario(short codColigada, String chapa, String nome, 
+            LocalDate dataAdmissao, short codFilial, String cpf, byte[] finger1, 
+            byte[] finger2, byte[] finger3, byte[] finger4, byte[] finger5, 
+            byte[] finger6, int senha, String email, Situacao situacao, 
+            Funcao funcao) {
+        this.codColigada = codColigada;
+        this.chapa = chapa;
+        this.nome = nome;
+        this.dataAdmissao = dataAdmissao;
+        this.codFilial = codFilial;
+        this.cpf = cpf;
+        this.finger1 = finger1;
+        this.finger2 = finger2;
+        this.finger3 = finger3;
+        this.finger4 = finger4;
+        this.finger5 = finger5;
+        this.finger6 = finger6;
+        this.senha = senha;
+        this.email = email;
+        this.situacao = situacao;
+        this.funcao = funcao;
+    }
 
     public short getCodColigada() {
         return codColigada;

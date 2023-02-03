@@ -10,6 +10,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import model.Funcao;
@@ -37,7 +38,7 @@ public class ApontamentoDAO {
             String sql = "SELECT A.CODOS, A.INTEGRA, A.CODAPONT, A.CHAPA, F.NOME, F.BANCO_HORAS, FUN.CODFUNCAO,"
                     + " FUN.NOME, A.DATA, C.CODCUSTO, C.NOME, C.ATIVO, C.CODREDUZIDO, A.CODSTATUSAPONT, SA.DESCRICAO,"
                     + " P.CODPESSOA, P.NOME, PG.CODPESSOA, PG.NOME, A.ATIVIDADE, A.CODSITUACAO, A.COMENTADO, A.MODIFICADOPOR,"
-                    + " A.COMPETENCIA, A.ASSIDUIDADE"
+                    + " A.COMPETENCIA, A.ASSIDUIDADE, A.PONTO"
                     + " FROM\n"
                     + "	APONTAMENTOS A\n"
                     + "INNER JOIN\n"
@@ -106,6 +107,7 @@ public class ApontamentoDAO {
                 si.setCodSituacao(rs.getString("A.CODSITUACAO").charAt(0));
                 apontamento.setModificadoPor(rs.getString("A.MODIFICADOPOR"));
                 apontamento.setAssiduidade(rs.getBoolean("A.ASSIDUIDADE"));
+                apontamento.setPontoAviso(rs.getBoolean("A.PONTO"));
                 apontamento.setCompetencia(rs.getInt("A.COMPETENCIA"));
                 apontamento.setOrdemServico(os);
                 apontamento.setStatusApont(s);
@@ -510,7 +512,8 @@ public class ApontamentoDAO {
             String sql = "SELECT APONTAMENTOS.CODAPONT, PFUNC.CHAPA, PFUNC.NOME, PFUNC.BANCO_HORAS, APONTAMENTOS.DATA,"
                     + " APONTAMENTOS.VERIFICADO, APONTAMENTOS.PROBLEMA, APONTAMENTOS.MOTIVO_PROBLEMA,"
                     + " APONTAMENTOS.JUSTIFICATIVA, APONTAMENTOS.COMPETENCIA, APONTAMENTOS.CODSTATUSAPONT, STATUSAPONT.DESCRICAO,"
-                    + " APONTAMENTOS.CODCCUSTO, GCCUSTO.NOME, APONTAMENTOS.CODLIDER, PESSOA.NOME"
+                    + " APONTAMENTOS.CODCCUSTO, GCCUSTO.NOME, APONTAMENTOS.CODLIDER, PESSOA.NOME, APONTAMENTOS.DATA_HORA_MOTIVO,"
+                    + " APONTAMENTOS.DATA_HORA_JUSTIFICATIVA, APONTAMENTOS.AJUSTADO, APONTAMENTOS.JUSTIFICADO_POR"
                     + " FROM APONTAMENTOS"
                     + " INNER JOIN PFUNC ON APONTAMENTOS.CHAPA = PFUNC.CHAPA"
                     + " INNER JOIN GCCUSTO ON APONTAMENTOS.CODCCUSTO = GCCUSTO.CODCUSTO"
@@ -538,7 +541,11 @@ public class ApontamentoDAO {
                 apontamento.setData(rs.getDate("APONTAMENTOS.DATA").toLocalDate());
                 apontamento.setVerificado(rs.getBoolean("APONTAMENTOS.VERIFICADO"));
                 apontamento.setProblema(rs.getBoolean("APONTAMENTOS.PROBLEMA"));
+                apontamento.setAjustado(rs.getBoolean("APONTAMENTOS.AJUSTADO"));
+                apontamento.setDataHoraMotivo((LocalDateTime) rs.getObject("APONTAMENTOS.DATA_HORA_MOTIVO"));
                 apontamento.setMotivo(rs.getString("APONTAMENTOS.MOTIVO_PROBLEMA"));
+                apontamento.setDataHoraJustificativa((LocalDateTime) rs.getObject("APONTAMENTOS.DATA_HORA_JUSTIFICATIVA"));
+                apontamento.setJustificadoPor(rs.getString("APONTAMENTOS.JUSTIFICADO_POR"));
                 apontamento.setJustificativa(rs.getString("APONTAMENTOS.JUSTIFICATIVA"));
                 apontamento.setCompetencia(rs.getInt("APONTAMENTOS.COMPETENCIA"));
                 centroCusto.setCodCusto(rs.getString("APONTAMENTOS.CODCCUSTO"));
@@ -581,9 +588,9 @@ public class ApontamentoDAO {
                     + " INNER JOIN STATUSAPONT ON APONTAMENTOS.CODSTATUSAPONT = STATUSAPONT.CODSTATUSAPONT"
                     + " LEFT JOIN PESSOA GERENTE ON GERENTE.CODGERENTE = GCCUSTO.RESPONSAVEL"
                     + " INNER JOIN PESSOA LIDER ON LIDER.CODPESSOA = APONTAMENTOS.CODLIDER"
-                    + " WHERE APONTAMENTOS.PROBLEMA = TRUE " 
+                    + " WHERE APONTAMENTOS.PROBLEMA = TRUE "
                     + query + " ORDER BY APONTAMENTOS.DATA, PFUNC.NOME";
-            
+
             PreparedStatement prepareStatement = con.prepareStatement(sql);
             ResultSet rs = prepareStatement.executeQuery();
 
@@ -598,7 +605,7 @@ public class ApontamentoDAO {
                 StatusApont status = new StatusApont();
                 Pessoa gerente = new Pessoa();
                 Situacao situacao = new Situacao();
-                
+
                 situacao.setCodSituacao(rs.getString("PFUNC.CODSITUACAO").charAt(0));
                 funcionario.setChapa(rs.getString("PFUNC.CHAPA"));
                 funcionario.setNome(rs.getString("PFUNC.NOME"));
@@ -723,19 +730,53 @@ public class ApontamentoDAO {
         }
     }
 
+    public List<Apontamento> buscarApontamentosComProblemaESemJustificativa(Apontamento apont) throws SQLException {
+        Connection con = ConexaoBanco.getConexao();
+
+        try {
+            String sql = "SELECT CODAPONT FROM APONTAMENTOS"
+                    + " WHERE CHAPA = ?"
+                    + " AND COMPETENCIA = ?"
+                    + " AND PROBLEMA = TRUE"
+                    + " AND JUSTIFICATIVA IS NULL";
+            PreparedStatement preparedStatement = con.prepareStatement(sql);
+            preparedStatement.setString(1, apont.getFuncionario().getChapa());
+            preparedStatement.setInt(2, apont.getCompetencia());
+            ResultSet rs = preparedStatement.executeQuery();
+
+            ArrayList<Apontamento> apontamentos = new ArrayList<>();
+
+            while (rs.next()) {
+
+                Apontamento apontamento = new Apontamento();
+
+                apontamento.setCodApont(rs.getInt("CODAPONT"));
+
+                apontamentos.add(apontamento);
+
+            }
+
+            return apontamentos;
+
+        } catch (SQLException e) {
+            throw new SQLException("Erro ao buscar dados do apontamento! " + e.getMessage());
+        } finally {
+            con.close();
+        }
+    }
+
     public void verificar(Apontamento apontamento) throws SQLException {
         Connection con = ConexaoBanco.getConexao();
 
         try {
             String sql = "UPDATE APONTAMENTOS SET VERIFICADO = ?, PROBLEMA = ?,"
-                    + " MOTIVO_PROBLEMA = ?, JUSTIFICATIVA = ?"
+                    + " MOTIVO_PROBLEMA = ?"
                     + " WHERE CODAPONT = ?";
             PreparedStatement preparedStatement = con.prepareStatement(sql);
             preparedStatement.setBoolean(1, apontamento.isVerificado());
             preparedStatement.setBoolean(2, apontamento.isProblema());
             preparedStatement.setString(3, apontamento.getMotivo());
-            preparedStatement.setString(4, apontamento.getJustificativa());
-            preparedStatement.setInt(5, apontamento.getCodApont());
+            preparedStatement.setInt(4, apontamento.getCodApont());
             preparedStatement.executeUpdate();
             preparedStatement.close();
         } catch (SQLException se) {
@@ -760,6 +801,135 @@ public class ApontamentoDAO {
             preparedStatement.close();
         } catch (SQLException se) {
             throw new SQLException("Erro ao verificar assiduidade! " + se.getMessage());
+        } finally {
+            con.close();
+        }
+    }
+
+    public void verificarPontoAviso(Apontamento apontamento, boolean ponto) throws SQLException {
+        Connection con = ConexaoBanco.getConexao();
+
+        try {
+            String sql = "UPDATE APONTAMENTOS SET PONTO = ?"
+                    + " WHERE CHAPA = ?"
+                    + " AND COMPETENCIA = ?";
+            PreparedStatement preparedStatement = con.prepareStatement(sql);
+            preparedStatement.setBoolean(1, ponto);
+            preparedStatement.setString(2, apontamento.getFuncionario().getChapa());
+            preparedStatement.setInt(3, apontamento.getCompetencia());
+            preparedStatement.executeUpdate();
+            preparedStatement.close();
+        } catch (SQLException se) {
+            throw new SQLException("Erro ao verificar ponto! " + se.getMessage());
+        } finally {
+            con.close();
+        }
+    }
+
+    public void registrarDataEHoraMotivo(int codApont) throws SQLException {
+        Connection con = ConexaoBanco.getConexao();
+
+        try {
+            String sql = "UPDATE APONTAMENTOS SET DATA_HORA_MOTIVO = NOW() WHERE CODAPONT = ?";
+            PreparedStatement preparedStatement = con.prepareStatement(sql);
+            preparedStatement.setInt(1, codApont);
+            preparedStatement.executeUpdate();
+            preparedStatement.close();
+        } catch (SQLException se) {
+            throw new SQLException("Erro ao registrar data e hora do motivo! " + se.getMessage());
+        } finally {
+            con.close();
+        }
+    }
+
+    public void registrarJustificativa(Apontamento apontamento) throws SQLException {
+        Connection con = ConexaoBanco.getConexao();
+
+        try {
+            String sql = "UPDATE APONTAMENTOS SET JUSTIFICATIVA = ?, DATA_HORA_JUSTIFICATIVA = NOW(), JUSTIFICADO_POR = ? WHERE CODAPONT = ?";
+            PreparedStatement preparedStatement = con.prepareStatement(sql);
+            preparedStatement.setString(1, apontamento.getJustificativa());
+            preparedStatement.setString(2, Menu.logado.getLogin());
+            preparedStatement.setInt(3, apontamento.getCodApont());
+            preparedStatement.executeUpdate();
+            preparedStatement.close();
+        } catch (SQLException se) {
+            throw new SQLException("Erro ao registrar data e hora da justificativa! " + se.getMessage());
+        } finally {
+            con.close();
+        }
+    }
+
+    public Apontamento buscarPontoPorId(int id) throws SQLException {
+        Connection con = ConexaoBanco.getConexao();
+
+        try {
+            String sql = "SELECT APONTAMENTOS.CODAPONT, PFUNC.CHAPA, PFUNC.NOME, APONTAMENTOS.DATA,"
+                    + " APONTAMENTOS.VERIFICADO, APONTAMENTOS.PROBLEMA, APONTAMENTOS.MOTIVO_PROBLEMA,"
+                    + " APONTAMENTOS.JUSTIFICATIVA, APONTAMENTOS.COMPETENCIA,"
+                    + " APONTAMENTOS.DATA_HORA_MOTIVO, APONTAMENTOS.DATA_HORA_JUSTIFICATIVA, APONTAMENTOS.JUSTIFICADO_POR,"
+                    + " APONTAMENTOS.CODCCUSTO, GCCUSTO.NOME, APONTAMENTOS.CODLIDER, PESSOA.NOME"
+                    + " FROM APONTAMENTOS"
+                    + " INNER JOIN PFUNC ON APONTAMENTOS.CHAPA = PFUNC.CHAPA"
+                    + " INNER JOIN GCCUSTO ON APONTAMENTOS.CODCCUSTO = GCCUSTO.CODCUSTO"
+                    + " INNER JOIN PESSOA ON APONTAMENTOS.CODLIDER = PESSOA.CODPESSOA"
+                    + " WHERE APONTAMENTOS.CODAPONT = " + id + " ORDER BY APONTAMENTOS.DATA, PFUNC.NOME";
+
+            PreparedStatement prepareStatement = con.prepareStatement(sql);
+            ResultSet rs = prepareStatement.executeQuery();
+
+            if (rs.next()) {
+
+                Apontamento apontamento = new Apontamento();
+                Funcionario funcionario = new Funcionario();
+                CentroCusto centroCusto = new CentroCusto();
+                Pessoa lider = new Pessoa();
+
+                funcionario.setChapa(rs.getString("PFUNC.CHAPA"));
+                funcionario.setNome(rs.getString("PFUNC.NOME"));
+                apontamento.setCodApont(rs.getInt("APONTAMENTOS.CODAPONT"));
+                apontamento.setData(rs.getDate("APONTAMENTOS.DATA").toLocalDate());
+                apontamento.setVerificado(rs.getBoolean("APONTAMENTOS.VERIFICADO"));
+                apontamento.setProblema(rs.getBoolean("APONTAMENTOS.PROBLEMA"));
+                apontamento.setMotivo(rs.getString("APONTAMENTOS.MOTIVO_PROBLEMA"));
+                apontamento.setJustificadoPor(rs.getString("APONTAMENTOS.JUSTIFICADO_POR"));
+                apontamento.setJustificativa(rs.getString("APONTAMENTOS.JUSTIFICATIVA"));
+                apontamento.setCompetencia(rs.getInt("APONTAMENTOS.COMPETENCIA"));
+                apontamento.setDataHoraMotivo((LocalDateTime) rs.getObject("APONTAMENTOS.DATA_HORA_MOTIVO"));
+                apontamento.setDataHoraJustificativa((LocalDateTime) rs.getObject("APONTAMENTOS.DATA_HORA_JUSTIFICATIVA"));
+                centroCusto.setCodCusto(rs.getString("APONTAMENTOS.CODCCUSTO"));
+                centroCusto.setNome(rs.getString("GCCUSTO.NOME"));
+                lider.setCodPessoa(rs.getInt("APONTAMENTOS.CODLIDER"));
+                lider.setNome(rs.getString("PESSOA.NOME"));
+                apontamento.setCentroCusto(centroCusto);
+                apontamento.setFuncionario(funcionario);
+                apontamento.setLider(lider);
+                return apontamento;
+            }
+
+            return null;
+
+        } catch (SQLException e) {
+            throw new SQLException("Erro ao buscar dados do apontamento! " + e.getMessage());
+        } finally {
+            con.close();
+        }
+    }
+
+    public void editarApontamentoPonto(Apontamento apontamento) throws SQLException {
+        Connection con = ConexaoBanco.getConexao();
+
+        try {
+            String sql = "UPDATE APONTAMENTOS SET AJUSTADO = ?"
+                    + " WHERE CODAPONT = ?";
+            PreparedStatement preparedStatement = con.prepareStatement(sql);
+            preparedStatement.setBoolean(1, apontamento.isAjustado());
+            System.out.println(apontamento.isAjustado());
+            preparedStatement.setInt(2, apontamento.getCodApont());
+            preparedStatement.executeUpdate();
+            preparedStatement.close();
+        } catch (SQLException se) {
+            throw new SQLException("Erro ao editar apontamento ponto! " + se.getMessage());
         } finally {
             con.close();
         }

@@ -312,7 +312,7 @@ public class Pessoa {
     public void setPermBancoHoras(boolean permBancoHoras) {
         this.permBancoHoras = permBancoHoras;
     }
-
+    
     public boolean isPermFolga() {
         return permFolga;
     }

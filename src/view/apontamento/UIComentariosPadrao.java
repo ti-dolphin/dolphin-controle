@@ -34,7 +34,6 @@ public class UIComentariosPadrao extends javax.swing.JDialog {
 
         jtComentarios.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
-                {"Folga programada - abater do banco de horas."},
                 {"Treinamento - (informar qual treinamento e qual o local do mesmo)."},
                 {"Esqueceu de bater o ponto - (preencher formulário de ocorrência)."},
                 {"Entrada em atraso - não abater da ocorrência."},

@@ -139,6 +139,7 @@ public class UIApontamentos extends javax.swing.JInternalFrame {
         cbxNaoApontados = new javax.swing.JCheckBox();
         btnPeriodoAtual = new javax.swing.JButton();
         btnPeriodoAnterior = new javax.swing.JButton();
+        jcbSemJustificativa = new javax.swing.JCheckBox();
         jMenuBar1 = new javax.swing.JMenuBar();
         jmRelatorios = new javax.swing.JMenu();
         jmiTomadores = new javax.swing.JMenuItem();
@@ -357,6 +358,11 @@ public class UIApontamentos extends javax.swing.JInternalFrame {
             }
         ));
         tblApontamentoProblema.setAutoResizeMode(javax.swing.JTable.AUTO_RESIZE_OFF);
+        tblApontamentoProblema.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                tblApontamentoPontoMouseClicked(evt);
+            }
+        });
         jScrollPane3.setViewportView(tblApontamentoProblema);
 
         javax.swing.GroupLayout jPanel3Layout = new javax.swing.GroupLayout(jPanel3);
@@ -402,6 +408,8 @@ public class UIApontamentos extends javax.swing.JInternalFrame {
             }
         });
 
+        jcbSemJustificativa.setText("Sem Justificativa");
+
         jmRelatorios.setText("Relatórios");
 
         jmiTomadores.setText("Tomadores");
@@ -440,6 +448,8 @@ public class UIApontamentos extends javax.swing.JInternalFrame {
                                 .addComponent(btnAvisos)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                                 .addComponent(cbxNaoApontados)
+                                .addGap(0, 0, 0)
+                                .addComponent(jcbSemJustificativa)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                                 .addComponent(cbxAssiduidade)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
@@ -541,7 +551,8 @@ public class UIApontamentos extends javax.swing.JInternalFrame {
                     .addComponent(jbExportarExcel)
                     .addComponent(btnAvisos)
                     .addComponent(cbxAssiduidade)
-                    .addComponent(cbxNaoApontados))
+                    .addComponent(cbxNaoApontados)
+                    .addComponent(jcbSemJustificativa))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jtpPainelApontamentos, javax.swing.GroupLayout.DEFAULT_SIZE, 525, Short.MAX_VALUE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
@@ -618,7 +629,7 @@ public class UIApontamentos extends javax.swing.JInternalFrame {
         tblApontamentos.getColumnModel()
                 .getColumn(ApontamentoTableModel.COLUNA_BANCO_HORAS)
                 .setCellRenderer(new IconeApontamentoTableCellRederer());
-        
+
     }
 
     private void configurarTabelaApontamentosPonto() {
@@ -629,7 +640,11 @@ public class UIApontamentos extends javax.swing.JInternalFrame {
         tblApontamentoPonto.getColumnModel().getColumn(apontamentoPontoTableModel.COLUNA_STATUS).setPreferredWidth(100);
         tblApontamentoPonto.getColumnModel().getColumn(apontamentoPontoTableModel.COLUNA_VERIFICADO).setPreferredWidth(100);
         tblApontamentoPonto.getColumnModel().getColumn(apontamentoPontoTableModel.COLUNA_PROBLEMA).setPreferredWidth(100);
+        tblApontamentoPonto.getColumnModel().getColumn(apontamentoPontoTableModel.COLUNA_AJUSTADO).setPreferredWidth(100);
+        tblApontamentoPonto.getColumnModel().getColumn(apontamentoPontoTableModel.COLUNA_DATA_HORA_MOTIVO).setPreferredWidth(130);
         tblApontamentoPonto.getColumnModel().getColumn(apontamentoPontoTableModel.COLUNA_MOTIVO).setPreferredWidth(350);
+        tblApontamentoPonto.getColumnModel().getColumn(apontamentoPontoTableModel.COLUNA_DATA_HORA_JUSTIFICATIVA).setPreferredWidth(130);
+        tblApontamentoPonto.getColumnModel().getColumn(apontamentoPontoTableModel.COLUNA_JUSTIFICADO_POR).setPreferredWidth(100);
         tblApontamentoPonto.getColumnModel().getColumn(apontamentoPontoTableModel.COLUNA_JUSTIFICATIVA).setPreferredWidth(350);
         tblApontamentoPonto.getColumnModel().getColumn(apontamentoPontoTableModel.COLUNA_CENTRO_CUSTO).setPreferredWidth(350);
         tblApontamentoPonto.getColumnModel().getColumn(apontamentoPontoTableModel.COLUNA_LIDER).setPreferredWidth(150);
@@ -655,12 +670,11 @@ public class UIApontamentos extends javax.swing.JInternalFrame {
     }
 
     private List<Apontamento> carregarTabelaApontamentos() {
-
-        List<Apontamento> apontamentos = new ArrayList<>();
-
+        ArrayList<Apontamento> apontamentos = new ArrayList<>();
+        
         try {
 
-            apontamentos = (ArrayList<Apontamento>) apontamentoService.filtrarApontamentos(gerarFiltros());
+            apontamentos = (ArrayList) apontamentoService.filtrarApontamentos(gerarFiltros());
 
             apontamentoTableModel.clear();
 
@@ -685,7 +699,7 @@ public class UIApontamentos extends javax.swing.JInternalFrame {
         return apontamentos;
     }
 
-    private List<Apontamento> carregarTabelaApontamentosPonto() {
+    private List<Apontamento> carregarTabelaApontamentoPonto() {
 
         List<Apontamento> apontamentosPonto = new ArrayList<>();
 
@@ -822,6 +836,15 @@ public class UIApontamentos extends javax.swing.JInternalFrame {
         }.start();
     }
 
+    private void calcularNumeroDeRegistrosRetornados(int tamanhoDaLista) {
+        int contador = 0;
+        for (int i = 0; i < tamanhoDaLista; i++) {
+            contador++;
+        }
+
+        jlContador.setText("Número de registros retornados: " + String.valueOf(contador));
+    }
+
     private void limpar() {
         jtfNome.setText("");
         jtfChapa.setText("");
@@ -831,6 +854,7 @@ public class UIApontamentos extends javax.swing.JInternalFrame {
         jcbGerente.setSelectedIndex(0);
         jchComentados.setSelected(false);
         jchAtivos.setSelected(true);
+        jcbSemJustificativa.setSelected(false);
         preencherData();
     }
 
@@ -993,22 +1017,22 @@ public class UIApontamentos extends javax.swing.JInternalFrame {
         return query;
     }
 
-    private List<Apontamento> pesquisar() {
+    private ArrayList<Apontamento> pesquisar() {
 
-        List<Apontamento> apontamentos;
+        ArrayList<Apontamento> apontamentos;
 
         switch (jtpPainelApontamentos.getSelectedIndex()) {
             case 0:
-                apontamentos = carregarTabelaApontamentos();
+                apontamentos = (ArrayList<Apontamento>) carregarTabelaApontamentos();
                 break;
             case 1:
-                apontamentos = carregarTabelaApontamentosPonto();
+                apontamentos = (ArrayList<Apontamento>) carregarTabelaApontamentoPonto();
                 break;
             case 2:
-                apontamentos = carregarTabelaApontamentoProblema();
+                apontamentos = (ArrayList<Apontamento>) carregarTabelaApontamentoProblema();
                 break;
             default:
-                apontamentos = carregarTabelaApontamentos();
+                apontamentos = (ArrayList<Apontamento>) carregarTabelaApontamentos();
         }
 
         return apontamentos;
@@ -1230,6 +1254,21 @@ public class UIApontamentos extends javax.swing.JInternalFrame {
         jftfDataTermino.setText(ate);
     }//GEN-LAST:event_btnPeriodoAnteriorActionPerformed
 
+    private void tblApontamentoPontoMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tblApontamentoPontoMouseClicked
+        int linhaSelecionada = tblApontamentoPonto.getSelectedRow();
+
+        Apontamento apontamento = apontamentoPontoTableModel.getApontamento(linhaSelecionada);
+        String motivo = (String) tblApontamentoPonto.getValueAt(linhaSelecionada, apontamentoPontoTableModel.COLUNA_MOTIVO);
+
+        if (apontamento.isProblema() && motivo == null) {
+            tblApontamentoPonto.editCellAt(linhaSelecionada, apontamentoPontoTableModel.COLUNA_MOTIVO);
+            JOptionPane.showMessageDialog(null,
+                    "Campo motivo deve ser preenchido",
+                    "Aviso",
+                    JOptionPane.WARNING_MESSAGE);
+        }
+    }//GEN-LAST:event_tblApontamentoPontoMouseClicked
+
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnAvisos;
     private javax.swing.JButton btnPeriodoAnterior;
@@ -1253,6 +1292,7 @@ public class UIApontamentos extends javax.swing.JInternalFrame {
     private javax.swing.JButton jbPesquisar;
     private javax.swing.JComboBox<Pessoa> jcbGerente;
     private javax.swing.JComboBox<Object> jcbLider;
+    private javax.swing.JCheckBox jcbSemJustificativa;
     private javax.swing.JComboBox<StatusApont> jcbStatusApont;
     private javax.swing.JCheckBox jchAtivos;
     private javax.swing.JCheckBox jchComentados;

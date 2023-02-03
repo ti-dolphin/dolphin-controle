@@ -6,7 +6,6 @@
 package view.apontamento;
 
 import dao.DAOFactory;
-import dao.apontamento.ApontamentoDAO;
 import dao.apontamento.StatusApontDAO;
 import dao.os.CentroCustoDAO;
 import dao.os.PessoaDAO;

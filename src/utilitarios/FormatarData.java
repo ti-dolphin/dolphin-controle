@@ -55,8 +55,7 @@ public class FormatarData {
 
     /**
      * Método usado para formatar data e hora no padrão especificado. Ex.:
-     * 2018-01-07T16:11:26.485 -> 07/01/2018 16:11:26 (No padrao dd/MM/yyyy
-     * HH:mm:ss)
+     * 2018-01-07T16:11:26.485 -> 07/01/2018 16:11:26 (No padrao dd/MM/yyyy HH:mm:ss)
      *
      * @param dataEHora
      * @param padrao
