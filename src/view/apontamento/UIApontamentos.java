@@ -7,7 +7,7 @@ package view.apontamento;
 
 import dao.DAOFactory;
 import dao.apontamento.ApontamentoDAO;
-import dao.apontamento.StatusApontDAO;
+import dao.apontamento.StatusApontamentoDAO;
 import dao.os.PessoaDAO;
 import java.awt.event.KeyEvent;
 import java.io.File;
@@ -30,7 +30,6 @@ import model.apontamento.tables.ApontamentoTableModel;
 import model.apontamento.StatusApont;
 import model.apontamento.tables.ApontamentoProblemaTableModel;
 import model.apontamento.tables.ApontamentoProblemasTableCellRender;
-import model.apontamento.tables.SinalizarColunaTabelaApontamentos;
 import model.apontamento.tables.IconeApontamentoTableCellRederer;
 import model.os.Pessoa;
 import net.sf.jasperreports.engine.JRException;
@@ -39,6 +38,7 @@ import net.sf.jasperreports.engine.JasperPrint;
 import net.sf.jasperreports.view.JasperViewer;
 import persistencia.ConexaoBanco;
 import services.apontamento.ApontamentoService;
+import services.apontamento.StatusApontamentoService;
 import utilitarios.ExportaExcel;
 import utilitarios.FormatarData;
 import view.Menu;
@@ -50,6 +50,7 @@ import view.Menu;
 public class UIApontamentos extends javax.swing.JInternalFrame {
 
     private final ApontamentoService apontamentoService;
+    private StatusApontamentoService statusApontamentoService;
     private ApontamentoTableModel apontamentoTableModel;
     private ApontamentoProblemaTableModel apontamentoProblemaTableModel;
     private ApontamentosPontoTableCellRender apontamentoPontoTableCellRender;
@@ -63,6 +64,7 @@ public class UIApontamentos extends javax.swing.JInternalFrame {
 
     public UIApontamentos() {
         this.apontamentoService = new ApontamentoService();
+        this.statusApontamentoService = new StatusApontamentoService();
         flagPrimeiroCarregamentoPonto = true;
         flagPrimeiroCarregamentoProblema = true;
 
@@ -134,7 +136,6 @@ public class UIApontamentos extends javax.swing.JInternalFrame {
         jPanel3 = new javax.swing.JPanel();
         jScrollPane3 = new javax.swing.JScrollPane();
         tblApontamentoProblema = new javax.swing.JTable();
-        btnAvisos = new javax.swing.JButton();
         cbxAssiduidade = new javax.swing.JCheckBox();
         cbxNaoApontados = new javax.swing.JCheckBox();
         btnPeriodoAtual = new javax.swing.JButton();
@@ -383,13 +384,6 @@ public class UIApontamentos extends javax.swing.JInternalFrame {
 
         jtpPainelApontamentos.addTab("Problemas", jPanel3);
 
-        btnAvisos.setText("Avisos");
-        btnAvisos.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnAvisosActionPerformed(evt);
-            }
-        });
-
         cbxAssiduidade.setText("Sem Assiduidade");
 
         cbxNaoApontados.setText("Não apontados");
@@ -444,8 +438,6 @@ public class UIApontamentos extends javax.swing.JInternalFrame {
                                 .addComponent(jbGerarRelatoriosComentarios)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                                 .addComponent(jbExportarExcel)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                                .addComponent(btnAvisos)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                                 .addComponent(cbxNaoApontados)
                                 .addGap(0, 0, 0)
@@ -463,7 +455,7 @@ public class UIApontamentos extends javax.swing.JInternalFrame {
                                 .addContainerGap())))
                     .addGroup(layout.createSequentialGroup()
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(jtpPainelApontamentos)
+                            .addComponent(jtpPainelApontamentos, javax.swing.GroupLayout.DEFAULT_SIZE, 1247, Short.MAX_VALUE)
                             .addGroup(layout.createSequentialGroup()
                                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                                     .addGroup(layout.createSequentialGroup()
@@ -480,7 +472,7 @@ public class UIApontamentos extends javax.swing.JInternalFrame {
                                             .addComponent(jlCentroCusto))
                                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                            .addComponent(jcbStatusApont, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                            .addComponent(jcbStatusApont, javax.swing.GroupLayout.PREFERRED_SIZE, 96, javax.swing.GroupLayout.PREFERRED_SIZE)
                                             .addComponent(jLabel1))
                                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -549,7 +541,6 @@ public class UIApontamentos extends javax.swing.JInternalFrame {
                     .addComponent(jbGerarRelatoriosComentarios)
                     .addComponent(jchComentados)
                     .addComponent(jbExportarExcel)
-                    .addComponent(btnAvisos)
                     .addComponent(cbxAssiduidade)
                     .addComponent(cbxNaoApontados)
                     .addComponent(jcbSemJustificativa))
@@ -617,6 +608,7 @@ public class UIApontamentos extends javax.swing.JInternalFrame {
         tblApontamentos.getColumnModel().getColumn(ApontamentoTableModel.COLUNA_ATIVIDADE).setPreferredWidth(350);
         tblApontamentos.getColumnModel().getColumn(ApontamentoTableModel.COLUNA_SITUACAO).setPreferredWidth(100);
         apontamentoTableCellRender = new ApontamentosTableCellRender(apontamentoTableModel);
+        IconeApontamentoTableCellRederer icone = new IconeApontamentoTableCellRederer();
         tblApontamentos.getColumnModel()
                 .getColumn(ApontamentoTableModel.COLUNA_DATA)
                 .setCellRenderer(apontamentoTableCellRender);
@@ -624,12 +616,14 @@ public class UIApontamentos extends javax.swing.JInternalFrame {
                 .getColumn(ApontamentoTableModel.COLUNA_DIA_DA_SEMANA)
                 .setCellRenderer(apontamentoTableCellRender);
         tblApontamentos.getColumnModel()
+                .getColumn(ApontamentoTableModel.COLUNA_PONTO)
+                .setCellRenderer(icone);
+        tblApontamentos.getColumnModel()
                 .getColumn(ApontamentoTableModel.COLUNA_ASSIDUIDADE)
-                .setCellRenderer(new SinalizarColunaTabelaApontamentos(apontamentoTableModel));
+                .setCellRenderer(icone);
         tblApontamentos.getColumnModel()
                 .getColumn(ApontamentoTableModel.COLUNA_BANCO_HORAS)
-                .setCellRenderer(new IconeApontamentoTableCellRederer());
-
+                .setCellRenderer(icone);
     }
 
     private void configurarTabelaApontamentosPonto() {
@@ -893,10 +887,9 @@ public class UIApontamentos extends javax.swing.JInternalFrame {
     }
 
     private void preencherComboBoxStatusApont() {
-        StatusApontDAO dao = DAOFactory.getSTATUSAPONTDAO();
 
         try {
-            for (StatusApont status : dao.buscarCombo(true)) {
+            for (StatusApont status : statusApontamentoService.buscarStatusApontamento()) {
                 jcbStatusApont.addItem(status);
             }
         } catch (SQLException se) {
@@ -1209,31 +1202,7 @@ public class UIApontamentos extends javax.swing.JInternalFrame {
         }
     }//GEN-LAST:event_jtpPainelApontamentosMouseClicked
 
-    private void btnAvisosActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAvisosActionPerformed
-        carregarTabelaApontamentosPontoPorNotificacoesNaoLidas();
-    }//GEN-LAST:event_btnAvisosActionPerformed
-
     private void btnPeriodoAtualActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnPeriodoAtualActionPerformed
-        LocalDate hoje = LocalDate.now();
-        int mesAtual = hoje.getMonthValue();
-        int proximoMes = mesAtual + 1;
-        int anoAtual = hoje.getYear();
-        int proximoAno = hoje.getYear() + 1;
-
-        String de = LocalDate.of(anoAtual, mesAtual, 16).format(DateTimeFormatter.ofPattern("dd/MM/yyyy"));
-        String ate;
-
-        if (proximoMes > 12) {
-            ate = LocalDate.of(proximoAno, 1, 15).format(DateTimeFormatter.ofPattern("dd/MM/yyyy"));
-        } else {
-            ate = LocalDate.of(anoAtual, proximoMes, 15).format(DateTimeFormatter.ofPattern("dd/MM/yyyy"));
-        }
-
-        jftfDataInicio.setText(de);
-        jftfDataTermino.setText(ate);
-    }//GEN-LAST:event_btnPeriodoAtualActionPerformed
-
-    private void btnPeriodoAnteriorActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnPeriodoAnteriorActionPerformed
         LocalDate hoje = LocalDate.now();
         int mesAtual = hoje.getMonthValue();
         int mesAnterior = mesAtual - 1;
@@ -1248,7 +1217,35 @@ public class UIApontamentos extends javax.swing.JInternalFrame {
         } else {
             de = LocalDate.of(anoAtual, mesAnterior, 16).format(DateTimeFormatter.ofPattern("dd/MM/yyyy"));
         }
+        
         ate = LocalDate.of(anoAtual, mesAtual, 15).format(DateTimeFormatter.ofPattern("dd/MM/yyyy"));
+
+        jftfDataInicio.setText(de);
+        jftfDataTermino.setText(ate);
+    }//GEN-LAST:event_btnPeriodoAtualActionPerformed
+
+    private void btnPeriodoAnteriorActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnPeriodoAnteriorActionPerformed
+        LocalDate hoje = LocalDate.now();
+        int mesAtual = hoje.getMonthValue();
+        int mesAnterior = mesAtual - 1;
+        int mesPreAnterior = mesAtual - 2;
+        int anoAtual = hoje.getYear();
+        int anoAnterior = anoAtual - 1;
+
+        String de;
+        String ate;
+
+        if (mesPreAnterior < 1) {
+            de = LocalDate.of(anoAnterior, 12, 16).format(DateTimeFormatter.ofPattern("dd/MM/yyyy"));
+        } else {
+            de = LocalDate.of(anoAtual, mesPreAnterior, 16).format(DateTimeFormatter.ofPattern("dd/MM/yyyy"));
+        }
+        
+        if (mesAnterior < 1) {
+            ate = LocalDate.of(anoAnterior, 12, 15).format(DateTimeFormatter.ofPattern("dd/MM/yyyy"));
+        } else {
+            ate = LocalDate.of(anoAtual, mesAnterior, 15).format(DateTimeFormatter.ofPattern("dd/MM/yyyy"));
+        }
 
         jftfDataInicio.setText(de);
         jftfDataTermino.setText(ate);
@@ -1270,7 +1267,6 @@ public class UIApontamentos extends javax.swing.JInternalFrame {
     }//GEN-LAST:event_tblApontamentoPontoMouseClicked
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JButton btnAvisos;
     private javax.swing.JButton btnPeriodoAnterior;
     private javax.swing.JButton btnPeriodoAtual;
     private javax.swing.JCheckBox cbxAssiduidade;

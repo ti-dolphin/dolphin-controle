@@ -5,7 +5,7 @@ import dao.epi.EpiDAO;
 import dao.apontamento.ApontamentoDAO;
 import dao.apontamento.ComentarioDAO;
 import dao.apontamento.RelComentariosApontDAO;
-import dao.apontamento.StatusApontDAO;
+import dao.apontamento.StatusApontamentoDAO;
 import dao.os.AlteracoesOsDAO;
 import dao.os.CentroCustoDAO;
 import dao.os.CidadeDAO;
@@ -37,7 +37,7 @@ public class DAOFactory {
     private static final PessoaDAO PESSOADAO = new PessoaDAO();
     private static final OrdemServicoDAO ORDEMSERVICODAO = new OrdemServicoDAO();
     private static final StatusDAO STATUSDAO = new StatusDAO();
-    private static final StatusApontDAO STATUSAPONTDAO = new StatusApontDAO();
+    private static final StatusApontamentoDAO STATUSAPONTDAO = new StatusApontamentoDAO();
     private static final CentroCustoDAO CENTROCUSTODAO = new CentroCustoDAO();
     private static final ApontamentoDAO APONTAMENTODAO = new ApontamentoDAO();
     private static final ComentarioDAO COMENTARIODAO = new ComentarioDAO();
@@ -69,7 +69,7 @@ public class DAOFactory {
         return COMENTARIODAO;
     }
     
-    public static StatusApontDAO getSTATUSAPONTDAO() {
+    public static StatusApontamentoDAO getSTATUSAPONTDAO() {
         return STATUSAPONTDAO;
     }
 

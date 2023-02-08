@@ -66,8 +66,6 @@
                               <Component id="jbGerarRelatoriosComentarios" min="-2" max="-2" attributes="0"/>
                               <EmptySpace max="-2" attributes="0"/>
                               <Component id="jbExportarExcel" min="-2" max="-2" attributes="0"/>
-                              <EmptySpace type="unrelated" max="-2" attributes="0"/>
-                              <Component id="btnAvisos" min="-2" max="-2" attributes="0"/>
                               <EmptySpace max="32767" attributes="0"/>
                               <Component id="cbxNaoApontados" min="-2" max="-2" attributes="0"/>
                               <EmptySpace min="0" pref="0" max="-2" attributes="0"/>
@@ -108,7 +106,7 @@
                                       </Group>
                                       <EmptySpace min="-2" max="-2" attributes="0"/>
                                       <Group type="103" groupAlignment="0" attributes="0">
-                                          <Component id="jcbStatusApont" alignment="0" max="32767" attributes="0"/>
+                                          <Component id="jcbStatusApont" alignment="0" min="-2" pref="96" max="-2" attributes="0"/>
                                           <Component id="jLabel1" alignment="0" min="-2" max="-2" attributes="0"/>
                                       </Group>
                                       <EmptySpace min="-2" max="-2" attributes="0"/>
@@ -196,7 +194,6 @@
                   <Component id="jbGerarRelatoriosComentarios" alignment="3" min="-2" max="-2" attributes="0"/>
                   <Component id="jchComentados" alignment="3" min="-2" max="-2" attributes="0"/>
                   <Component id="jbExportarExcel" alignment="3" min="-2" max="-2" attributes="0"/>
-                  <Component id="btnAvisos" alignment="3" min="-2" max="-2" attributes="0"/>
                   <Component id="cbxAssiduidade" alignment="3" min="-2" max="-2" attributes="0"/>
                   <Component id="cbxNaoApontados" alignment="3" min="-2" max="-2" attributes="0"/>
                   <Component id="jcbSemJustificativa" alignment="3" min="-2" max="-2" attributes="0"/>
@@ -599,14 +596,6 @@
         </Container>
       </SubComponents>
     </Container>
-    <Component class="javax.swing.JButton" name="btnAvisos">
-      <Properties>
-        <Property name="text" type="java.lang.String" value="Avisos"/>
-      </Properties>
-      <Events>
-        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="btnAvisosActionPerformed"/>
-      </Events>
-    </Component>
     <Component class="javax.swing.JCheckBox" name="cbxAssiduidade">
       <Properties>
         <Property name="text" type="java.lang.String" value="Sem Assiduidade"/>

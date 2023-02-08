@@ -133,6 +133,7 @@ public class ApontamentoPontoTableModel extends AbstractTableModel {
         }
         if (coluna == COLUNA_AJUSTADO) {
             apontamento.setAjustado((boolean) valor);
+            apontamento.setProblema(false);
             try {
                 apontamentoService.editarApontamentoPonto(apontamento);
             } catch (SQLException ex) {

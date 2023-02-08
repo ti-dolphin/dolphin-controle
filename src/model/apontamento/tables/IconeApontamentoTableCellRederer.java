@@ -53,12 +53,16 @@ public class IconeApontamentoTableCellRederer extends JLabel implements TableCel
             }
             setForeground(Color.BLACK);
         }
-
-        if (value.equals("Positivo")) {
-            setIcon(iconeVerde);
-        } else if (value.equals("Negativo")) {
-            setIcon(iconeVermelho);
-        } else {
+        
+        if (value instanceof Boolean) {
+            if ((boolean) value) {
+                setIcon(iconeVerde);
+            } else {
+                setIcon(iconeVermelho);
+            }
+        }
+        
+        if (value instanceof Double) {
             setText(value.toString());
         }
 

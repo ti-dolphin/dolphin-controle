@@ -187,6 +187,10 @@ public class Funcionario {
     public void setBancoHoras(double bancoHoras) {
         this.bancoHoras = bancoHoras;
     }
+    
+    public boolean bancoDeHorasPositivo() {
+        return bancoHoras >= 0;
+    }
 
     @Override
     public String toString() {

@@ -6,9 +6,10 @@
 package view.apontamento;
 
 import dao.DAOFactory;
-import dao.apontamento.StatusApontDAO;
+import dao.apontamento.StatusApontamentoDAO;
 import dao.os.CentroCustoDAO;
 import dao.os.PessoaDAO;
+import java.awt.Color;
 import java.awt.event.KeyEvent;
 import java.sql.SQLException;
 import java.util.ArrayList;
@@ -22,6 +23,7 @@ import model.apontamento.StatusApont;
 import model.os.CentroCusto;
 import model.os.Pessoa;
 import services.apontamento.ApontamentoService;
+import services.apontamento.StatusApontamentoService;
 import view.Menu;
 import view.UIManPessoas;
 
@@ -36,10 +38,12 @@ public class UIApontamento extends javax.swing.JDialog {
     private CentroCusto centroCusto;
     private ArrayList<CentroCusto> ca;
     private ApontamentoService apontamentoService;
+    private StatusApontamentoService statusApontamentoService;
 
     public UIApontamento(UIApontamentos uiApontamentos) {
         initComponents();
         this.apontamentoService = new ApontamentoService();
+        this.statusApontamentoService = new StatusApontamentoService();
         this.uiApontamentos = uiApontamentos;
         preencherComboSA();
         preencherComboBoxLider();
@@ -47,11 +51,19 @@ public class UIApontamento extends javax.swing.JDialog {
         jlstCentroCusto.setVisible(false);
         preencherCampos();
         darPermissoes();
+        setMensagemFolgaNaoPermitida();
     }
 
     public void darPermissoes() {
         if (Menu.logado.isPermPessoas()) {
             jbAbrirLider.setEnabled(true);
+        }
+    }
+    
+    private void setMensagemFolgaNaoPermitida() {
+        if (!uiApontamentos.getApontamento().getFuncionario().bancoDeHorasPositivo()) {
+            lblMensagemFolgaNaoPermitida.setForeground(Color.red);
+            lblMensagemFolgaNaoPermitida.setText("Não é permitido o status \"FOLGA\" se o banco de horas for negativo");
         }
     }
 
@@ -84,10 +96,15 @@ public class UIApontamento extends javax.swing.JDialog {
     }
 
     public void preencherComboSA() {
-        StatusApontDAO dao = DAOFactory.getSTATUSAPONTDAO();
+        ArrayList<StatusApont> statusApontamento;
 
         try {
-            for (StatusApont sa : dao.buscarCombo(false)) {
+            if (uiApontamentos.getApontamento().getFuncionario().bancoDeHorasPositivo()) {
+                statusApontamento = (ArrayList) statusApontamentoService.buscarStatusApontamento();
+            } else {
+                statusApontamento = (ArrayList) statusApontamentoService.buscarStatusApontamentoSemFolga();
+            }
+            for (StatusApont sa : statusApontamento) {
                 jcbStatus.addItem(sa);
             }
         } catch (SQLException se) {
@@ -176,12 +193,6 @@ public class UIApontamento extends javax.swing.JDialog {
                         //Se nao for vinculado a OS pode editar
                         if (apontamento.getOrdemServico().getCodOs() == 0) {
 
-                            if (apontamento.getFuncionario().getBancoHoras() <= 0
-                                    && sa.getCodStatusApont().equals("FO")
-                                    && !Menu.getUiLogin().getPessoa().isPermFolga()) {
-                                throw new Exception("Não é permitido folga com banco de horas negativo");
-                            }
-
                             //se centro de custo for vazio nao pode editar
                             if (jtfCodCentroCusto.getText().isEmpty()) {
                                 throw new Exception("Insira o centro de custo!");
@@ -256,7 +267,7 @@ public class UIApontamento extends javax.swing.JDialog {
                     Menu.carregamento(false);
                 }
             }
-            
+
             if (apontamentoSalvo) {
                 JOptionPane.showMessageDialog(UIApontamento.this, "Apontamento salvo!");
                 this.dispose();
@@ -303,6 +314,7 @@ public class UIApontamento extends javax.swing.JDialog {
         jchAtualizarLiderNaoPreenchido = new javax.swing.JCheckBox();
         jchAtualizarStatusNaoPreenchido = new javax.swing.JCheckBox();
         jchAtivos = new javax.swing.JCheckBox();
+        lblMensagemFolgaNaoPermitida = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
         setTitle("Apontar Colaborador");
@@ -404,6 +416,7 @@ public class UIApontamento extends javax.swing.JDialog {
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(lblMensagemFolgaNaoPermitida, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(jspAtividade, javax.swing.GroupLayout.DEFAULT_SIZE, 585, Short.MAX_VALUE)
                     .addGroup(layout.createSequentialGroup()
                         .addGap(0, 0, Short.MAX_VALUE)
@@ -426,7 +439,9 @@ public class UIApontamento extends javax.swing.JDialog {
                 .addComponent(jlAtividade)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jspAtividade, javax.swing.GroupLayout.PREFERRED_SIZE, 174, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 18, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(lblMensagemFolgaNaoPermitida, javax.swing.GroupLayout.DEFAULT_SIZE, 16, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jbSalvar)
                     .addComponent(jbCancelar))
@@ -496,5 +511,6 @@ public class UIApontamento extends javax.swing.JDialog {
     private javax.swing.JTextArea jtaAtividade;
     private javax.swing.JTextField jtfCentroCusto;
     private javax.swing.JTextField jtfCodCentroCusto;
+    private javax.swing.JLabel lblMensagemFolgaNaoPermitida;
     // End of variables declaration//GEN-END:variables
 }

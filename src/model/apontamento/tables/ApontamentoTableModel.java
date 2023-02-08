@@ -90,7 +90,7 @@ public class ApontamentoTableModel extends AbstractTableModel {
         Apontamento apontamento = apontamentos.get(linha);
         switch (coluna) {
             case COLUNA_PONTO:
-                return apontamento.isPontoAviso();
+                return !apontamento.isPontoAviso();
             case COLUNA_ASSIDUIDADE:
                 return apontamento.isAssiduidade();
             case COLUNA_COMENTADO:
@@ -102,11 +102,7 @@ public class ApontamentoTableModel extends AbstractTableModel {
                 if (Menu.logado.isPermBancoHoras()) {
                     return apontamento.getFuncionario().getBancoHoras();
                 } else {
-                    if (apontamento.getFuncionario().getBancoHoras() >= 0.0) {
-                        return "Positivo";
-                    } else {
-                        return "Negativo";
-                    }
+                    return apontamento.getFuncionario().bancoDeHorasPositivo();
                 }
             case COLUNA_CHAPA:
                 return apontamento.getFuncionario().getChapa();

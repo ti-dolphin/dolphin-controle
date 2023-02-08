@@ -17,18 +17,13 @@ import persistencia.ConexaoBanco;
  *
  * @author guilherme.oliveira
  */
-public class StatusApontDAO {
-    public ArrayList<StatusApont> buscarCombo(boolean seFiltrar) throws SQLException{
+public class StatusApontamentoDAO {
+    public ArrayList<StatusApont> filtrarStatusApontamento(String query) throws SQLException{
         Connection con = ConexaoBanco.getConexao();
         PreparedStatement pstmt = null;
         
         try {
-            String sql;
-            if (seFiltrar) {
-                sql = "select * from STATUSAPONT";
-            } else {
-                sql = "select * from STATUSAPONT where CODSTATUSAPONT <> 'SE'";
-            }
+            String sql = "select * from STATUSAPONT " + query;
             
             pstmt = con.prepareStatement(sql);
             ResultSet rs = pstmt.executeQuery(sql);
